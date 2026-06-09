@@ -1,7 +1,11 @@
 @use 'variables' as v;
+@use 'mixins' as m;
+
+// ─── Root ────────────────────────────────────────────────────────────────────
 
 html,
 body {
+  height: 100dvh;
   background-color: v.$color-bg;
   overflow: hidden;
 }
@@ -13,6 +17,57 @@ app-root {
   overflow: hidden;
 }
 
+// ─── App Shell (3-panel) ──────────────────────────────────────────────────────
+
+.app-shell {
+  display: flex;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: v.$color-bg;
+  padding: v.$space-3;
+  gap: v.$space-3;
+  border-radius: v.$radius-lg;
+}
+
+.app-sidebar {
+  width: v.$sidebar-width;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: v.$radius-lg;
+  background-color: v.$color-surface;
+  transition: width v.$transition-slow;
+
+  &.is-collapsed { width: 0; }
+
+  @include m.respond-md { width: 100%; border-radius: 0; }
+}
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: v.$radius-lg;
+  background-color: v.$color-surface;
+}
+
+.app-thread {
+  width: v.$thread-panel-width;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: v.$radius-lg;
+  background-color: v.$color-surface;
+  transition: width v.$transition-slow;
+
+  &.is-hidden { width: 0; }
+
+  @include m.respond-lg { display: none; }
+}
+
+// ─── Auth Layout ─────────────────────────────────────────────────────────────
+
 .page-center {
   display: flex;
   align-items: center;
@@ -20,6 +75,7 @@ app-root {
   min-height: 100dvh;
   width: 100%;
   padding: v.$space-4;
+  background-color: v.$color-bg;
 }
 
 .auth-card {
@@ -28,5 +84,88 @@ app-root {
   box-shadow: v.$shadow-lg;
   padding: v.$space-12 v.$space-10;
   width: 100%;
-  max-width: 480px;
+  max-width: v.$auth-card-width;
+
+  @include m.respond-sm {
+    padding: v.$space-8 v.$space-6;
+    border-radius: v.$radius-md;
+  }
 }
+
+// ─── Cards ───────────────────────────────────────────────────────────────────
+
+.card {
+  background-color: v.$color-surface;
+  border-radius: v.$radius-md;
+  box-shadow: v.$shadow-sm;
+  overflow: hidden;
+}
+
+.card-sm  { border-radius: v.$radius-sm; }
+.card-lg  { border-radius: v.$radius-lg; }
+.card-shadow { box-shadow: v.$shadow-md; }
+
+// ─── Container ───────────────────────────────────────────────────────────────
+
+.container {
+  width: 100%;
+  max-width: v.$content-max-width;
+  margin-inline: auto;
+  padding-inline: v.$space-4;
+}
+
+// ─── Flex Utilities ───────────────────────────────────────────────────────────
+
+.flex           { display: flex; }
+.flex-col       { display: flex; flex-direction: column; }
+.flex-center    { @include m.flex-center; }
+.flex-between   { @include m.flex-between; }
+.flex-start     { @include m.flex-start; }
+.flex-wrap      { flex-wrap: wrap; }
+.flex-1         { flex: 1; }
+.flex-shrink-0  { flex-shrink: 0; }
+.items-center   { align-items: center; }
+.items-start    { align-items: flex-start; }
+.items-end      { align-items: flex-end; }
+.justify-center { justify-content: center; }
+.justify-end    { justify-content: flex-end; }
+
+// ─── Gap Utilities ────────────────────────────────────────────────────────────
+
+.gap-1  { gap: v.$space-1; }
+.gap-2  { gap: v.$space-2; }
+.gap-3  { gap: v.$space-3; }
+.gap-4  { gap: v.$space-4; }
+.gap-6  { gap: v.$space-6; }
+.gap-8  { gap: v.$space-8; }
+
+// ─── Grid Utilities ───────────────────────────────────────────────────────────
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: v.$space-4;
+  @include m.respond-sm { grid-template-columns: 1fr; }
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: v.$space-4;
+  @include m.respond-md { grid-template-columns: repeat(2, 1fr); }
+  @include m.respond-sm { grid-template-columns: 1fr; }
+}
+
+// ─── Overflow / Scroll ───────────────────────────────────────────────────────
+
+.overflow-hidden  { overflow: hidden; }
+.scroll-y         { overflow-y: auto; }
+.scroll-hidden    { @include m.scrollbar-hidden; }
+
+// ─── Visibility ───────────────────────────────────────────────────────────────
+
+.hidden            { display: none !important; }
+.sr-only           { @include m.visually-hidden; }
+
+.hidden-mobile  { @include m.respond-md { display: none !important; } }
+.hidden-desktop { @include m.from-md   { display: none !important; } }

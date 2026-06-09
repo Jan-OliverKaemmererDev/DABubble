@@ -4,3 +4,37 @@
 @use 'styles/layout';
 @use 'styles/buttons';
 @use 'styles/forms';
+
+// ─── CSS Custom Properties ────────────────────────────────────────────────────
+// Exposed so component-level SCSS can use var(--...) without @use.
+
+:root {
+  --color-primary:         #{v.$color-primary};
+  --color-primary-hover:   #{v.$color-primary-hover};
+  --color-primary-active:  #{v.$color-primary-active};
+  --color-primary-light:   #{v.$color-primary-light};
+  --color-secondary:       #{v.$color-secondary};
+  --color-bg:              #{v.$color-bg};
+  --color-surface:         #{v.$color-surface};
+  --color-surface-alt:     #{v.$color-surface-alt};
+  --color-text:            #{v.$color-text};
+  --color-text-muted:      #{v.$color-text-muted};
+  --color-text-subtle:     #{v.$color-text-subtle};
+  --color-border:          #{v.$color-border};
+  --color-success:         #{v.$color-success};
+  --color-error:           #{v.$color-error};
+  --color-warning:         #{v.$color-warning};
+  --color-online:          #{v.$color-online};
+  --color-offline:         #{v.$color-offline};
+  --radius-sm:             #{v.$radius-sm};
+  --radius-md:             #{v.$radius-md};
+  --radius-lg:             #{v.$radius-lg};
+  --radius-pill:           #{v.$radius-pill};
+  --shadow-sm:             #{v.$shadow-sm};
+  --shadow-md:             #{v.$shadow-md};
+  --shadow-lg:             #{v.$shadow-lg};
+  --sidebar-width:         #{v.$sidebar-width};
+  --thread-panel-width:    #{v.$thread-panel-width};
+  --topbar-height:         #{v.$topbar-height};
+  --transition-base:       #{v.$transition-base};
+}

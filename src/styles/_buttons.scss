@@ -1,64 +1,115 @@
 @use 'variables' as v;
+@use 'mixins' as m;
+
+// ─── Base Button ─────────────────────────────────────────────────────────────
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: v.$space-2;
-  padding: v.$space-3 v.$space-6;
-  border-radius: v.$radius-xl;
+  height: v.$btn-height;
+  padding: 0 v.$space-6;
+  border-radius: v.$radius-pill;
+  border: none;
+  font-family: v.$font-family-base;
   font-size: v.$font-size-md;
   font-weight: v.$font-weight-semibold;
+  line-height: 1;
   cursor: pointer;
-  border: none;
-  transition: background-color v.$transition-base, color v.$transition-base,
+  white-space: nowrap;
+  text-decoration: none;
+  transition:
+    background-color v.$transition-base,
+    color v.$transition-base,
+    border-color v.$transition-base,
     box-shadow v.$transition-base;
 
-  &:disabled {
+  &:focus-visible {
+    @include m.focus-ring;
+  }
+
+  &:disabled,
+  &[aria-disabled='true'] {
     opacity: 0.45;
     cursor: not-allowed;
     pointer-events: none;
   }
 }
 
+.btn-sm {
+  height: v.$btn-height-sm;
+  padding: 0 v.$space-4;
+  font-size: v.$font-size-sm;
+}
+
+// ─── Primary ─────────────────────────────────────────────────────────────────
+
 .btn-primary {
   background-color: v.$color-primary;
-  color: v.$color-text-on-primary;
+  color: v.$color-primary-on;
 
-  &:hover {
-    background-color: v.$color-primary-light;
-  }
-
-  &:active {
-    background-color: v.$color-primary-dark;
-  }
+  &:hover   { background-color: v.$color-primary-hover; }
+  &:active  { background-color: v.$color-primary-active; }
+  &:focus-visible { @include m.focus-ring(v.$color-primary); }
 }
+
+// ─── Secondary ───────────────────────────────────────────────────────────────
 
 .btn-secondary {
   background-color: transparent;
   color: v.$color-primary;
-  border: 2px solid v.$color-primary;
+  border: 1.5px solid v.$color-primary;
 
-  &:hover {
-    background-color: v.$color-bg;
+  &:hover  {
+    background-color: v.$color-primary-light;
+    border-color: v.$color-primary-hover;
   }
+
+  &:active { background-color: v.$color-surface-active; }
+  &:focus-visible { @include m.focus-ring(v.$color-primary); }
 }
+
+// ─── Ghost ───────────────────────────────────────────────────────────────────
 
 .btn-ghost {
   background-color: transparent;
   color: v.$color-text-muted;
 
-  &:hover {
+  &:hover  {
     background-color: v.$color-surface-alt;
     color: v.$color-text;
   }
+
+  &:active { background-color: v.$color-surface-active; }
+  &:focus-visible { @include m.focus-ring(v.$color-primary); }
 }
 
-.btn-icon {
-  padding: v.$space-2;
-  border-radius: v.$radius-round;
+// ─── Danger ──────────────────────────────────────────────────────────────────
 
-  &:hover {
-    background-color: v.$color-surface-alt;
+.btn-danger {
+  background-color: v.$color-error;
+  color: v.$color-primary-on;
+
+  &:hover  { background-color: v.$color-error-text; }
+  &:active { filter: brightness(0.9); }
+  &:focus-visible { @include m.focus-ring(v.$color-error); }
+}
+
+// ─── Icon Button ─────────────────────────────────────────────────────────────
+
+.btn-icon {
+  width: v.$btn-height;
+  height: v.$btn-height;
+  padding: 0;
+  border-radius: v.$radius-round;
+  flex-shrink: 0;
+
+  &:hover  { background-color: v.$color-surface-alt; }
+  &:active { background-color: v.$color-surface-active; }
+
+  &.btn-sm {
+    width: v.$btn-height-sm;
+    height: v.$btn-height-sm;
   }
 }

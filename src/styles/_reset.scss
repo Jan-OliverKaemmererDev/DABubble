@@ -6,15 +6,17 @@
   padding: 0;
 }
 
-html,
-body {
+html {
   height: 100%;
-  width: 100%;
+  -webkit-text-size-adjust: 100%;
+  color-scheme: light;
 }
 
 body {
+  height: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 a {
@@ -28,6 +30,9 @@ ol {
 }
 
 img,
+picture,
+video,
+canvas,
 svg {
   display: block;
   max-width: 100%;
@@ -38,6 +43,9 @@ button {
   border: none;
   background: none;
   font: inherit;
+  color: inherit;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 input,
@@ -46,10 +54,35 @@ select {
   border: none;
   outline: none;
   font: inherit;
+  color: inherit;
   background: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+textarea {
+  resize: vertical;
+}
+
+select {
+  cursor: pointer;
+}
+
+fieldset {
+  border: none;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
 :focus-visible {
   outline: 2px solid var(--color-primary, #5c35e5);
   outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
 }

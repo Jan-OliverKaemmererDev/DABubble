@@ -1,4 +1,7 @@
 @use 'variables' as v;
+@use 'mixins' as m;
+
+// ─── Field Wrapper ────────────────────────────────────────────────────────────
 
 .form-field {
   display: flex;
@@ -6,43 +9,159 @@
   gap: v.$space-1;
 }
 
+// ─── Label ───────────────────────────────────────────────────────────────────
+
 .form-label {
   font-size: v.$font-size-sm;
-  font-weight: v.$font-weight-medium;
+  font-weight: v.$font-weight-semibold;
   color: v.$color-text;
 }
 
-.form-input {
-  width: 100%;
-  padding: v.$space-3 v.$space-4;
-  border: 1.5px solid v.$color-border;
-  border-radius: v.$radius-xl;
-  font-size: v.$font-size-md;
-  color: v.$color-text;
-  background-color: v.$color-surface;
-  transition: border-color v.$transition-base, box-shadow v.$transition-base;
+// ─── Input Wrapper (for icon slots) ───────────────────────────────────────────
 
-  &::placeholder {
+.form-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .form-input { padding-left: v.$space-10; }
+
+  .form-input-icon {
+    position: absolute;
+    left: v.$space-4;
+    width: v.$icon-md;
+    height: v.$icon-md;
+    pointer-events: none;
     color: v.$color-text-muted;
   }
 
+  .form-input-action {
+    position: absolute;
+    right: v.$space-3;
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: v.$color-text-muted;
+    padding: v.$space-1;
+    &:hover { color: v.$color-text; }
+  }
+}
+
+// ─── Input & Textarea ────────────────────────────────────────────────────────
+
+.form-input {
+  width: 100%;
+  height: v.$input-height;
+  padding: 0 v.$space-4;
+  border: 1.5px solid v.$color-border;
+  border-radius: v.$radius-pill;
+  font-size: v.$font-size-md;
+  font-weight: v.$font-weight-medium;
+  color: v.$color-text;
+  background-color: v.$color-surface;
+  transition:
+    border-color v.$transition-base,
+    box-shadow v.$transition-base;
+
+  &::placeholder {
+    color: v.$color-text-subtle;
+    font-weight: v.$font-weight-regular;
+  }
+
   &:focus {
-    border-color: v.$color-primary;
-    box-shadow: 0 0 0 3px rgba(v.$color-primary, 0.15);
+    border-color: v.$color-border-focus;
+    box-shadow: v.$shadow-focus;
+    outline: none;
+  }
+
+  &.is-valid {
+    border-color: v.$color-success;
+    &:focus { box-shadow: 0 0 0 3px rgba(v.$color-success, 0.18); }
   }
 
   &.is-invalid {
     border-color: v.$color-error;
+    &:focus { box-shadow: v.$shadow-focus-error; }
+  }
+
+  &:disabled {
+    background-color: v.$color-surface-alt;
+    color: v.$color-text-subtle;
+    cursor: not-allowed;
+    opacity: 0.7;
   }
 }
 
+.form-textarea {
+  height: auto;
+  min-height: 96px;
+  padding: v.$space-3 v.$space-4;
+  border-radius: v.$radius-md;
+  resize: vertical;
+  line-height: v.$line-height-base;
+}
+
+// ─── Messages ────────────────────────────────────────────────────────────────
+
 .form-error {
+  display: flex;
+  align-items: center;
+  gap: v.$space-1;
   font-size: v.$font-size-xs;
+  font-weight: v.$font-weight-medium;
   color: v.$color-error;
-  min-height: 16px;
+  min-height: 18px;
+}
+
+.form-success {
+  font-size: v.$font-size-xs;
+  font-weight: v.$font-weight-medium;
+  color: v.$color-success;
+  min-height: 18px;
 }
 
 .form-hint {
   font-size: v.$font-size-xs;
   color: v.$color-text-muted;
+}
+
+// ─── Checkbox ────────────────────────────────────────────────────────────────
+
+.form-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: v.$space-2;
+  cursor: pointer;
+  user-select: none;
+  font-size: v.$font-size-sm;
+  color: v.$color-text;
+}
+
+.form-checkbox {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid v.$color-border;
+  border-radius: v.$radius-xs;
+  background-color: v.$color-surface;
+  flex-shrink: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  position: relative;
+  transition: border-color v.$transition-base, background-color v.$transition-base;
+
+  &:checked {
+    background-color: v.$color-primary;
+    border-color: v.$color-primary;
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpath d='M1 5l3.5 3.5L11 1' stroke='white' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+    }
+  }
+
+  &:focus-visible { @include m.focus-ring; }
 }
