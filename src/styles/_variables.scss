@@ -1,57 +1,56 @@
-// ─── Primary Palette ─────────────────────────────────────────────────────────
-$color-primary: #5c35e5;
-$color-primary-hover: #7c5af0;
-$color-primary-active: #4423c4;
-$color-primary-light: #ede8fc;
-$color-primary-on: #ffffff;
+@use 'sass:map';
 
-// ─── Secondary / Accent ──────────────────────────────────────────────────────
-$color-secondary: #797ef3;
-$color-secondary-hover: #9198f6;
-$color-secondary-light: #eceefe;
+// ─── Colors ──────────────────────────────────────────────────────────────────
+// Canonical Figma palette (design-system.md §1). Single source of truth.
+$colors: (
+  white:          #ffffff,
+  bg:             #eceefe,
+  lines:          #adb0d9,
+  black:          #000000,
+  text-gray:      #686868,
+  primary:        #444df2,
+  primary-hover:  #797ef3,
+  primary-active: #535af1,
+  online:         #92c83e,
+  error:          #ed1e79,
+);
 
-// ─── Background ──────────────────────────────────────────────────────────────
-$color-bg: #eeeaf9;
-$color-bg-subtle: #f8f7fd;
+@function color($key) {
+  @return map.get($colors, $key);
+}
 
-// ─── Surfaces ────────────────────────────────────────────────────────────────
-$color-surface: #ffffff;
-$color-surface-alt: #f6f4fc;
-$color-surface-hover: #f0edfb;
-$color-surface-active: #e8e4f8;
+// ─── Font Sizes ──────────────────────────────────────────────────────────────
+// Semantic type scale (design-system.md §2); base html { font-size: 112.5% }.
+$font-sizes: (
+  h1:   2.556rem,
+  h2:   2.111rem,
+  h3:   1.778rem,
+  h4:   1.444rem,
+  h5:   1.222rem,
+  body: 1rem,
+  sm:   0.833rem,
+  xs:   0.667rem,
+);
 
-// ─── Text ────────────────────────────────────────────────────────────────────
-$color-text: #1d1d2e;
-$color-text-muted: #686877;
-$color-text-subtle: #92929e;
-$color-text-inverse: #ffffff;
-$color-text-link: $color-primary;
-$color-text-link-hover: $color-primary-hover;
+@function font-size($key) {
+  @return map.get($font-sizes, $key);
+}
 
-// ─── Borders ─────────────────────────────────────────────────────────────────
-$color-border: #d8d4ea;
-$color-border-strong: #aea7d4;
-$color-border-focus: $color-primary;
-
-// ─── Feedback — Success ───────────────────────────────────────────────────────
-$color-success: #2dc653;
-$color-success-light: #e6f9ec;
-$color-success-text: #1a8c3a;
-
-// ─── Feedback — Error ────────────────────────────────────────────────────────
-$color-error: #e54935;
-$color-error-light: #fdecea;
-$color-error-text: #b8291a;
-
-// ─── Feedback — Warning ──────────────────────────────────────────────────────
-$color-warning: #f0ad4e;
-$color-warning-light: #fff8ec;
-$color-warning-text: #8a5a00;
-
-// ─── Presence ────────────────────────────────────────────────────────────────
-$color-online: #2dc653;
-$color-offline: #92929e;
-$color-away: #f0ad4e;
+// ─── Font Families ───────────────────────────────────────────────────────────
+$font-base: 'Inter', Arial, sans-serif;
+$font-heading: 'Nunito', 'Inter', Arial, sans-serif;
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+$font-weight-extrabold: 800;
+$line-height-tight: 1.2;
+$line-height-snug: 1.375;
+$line-height-base: 1.5;
+$line-height-relaxed: 1.625;
+$letter-spacing-tight: -0.01em;
+$letter-spacing-normal: 0;
+$letter-spacing-wide: 0.02em;
 
 // ─── Border Radius ───────────────────────────────────────────────────────────
 $radius-xs: 4px;
@@ -62,19 +61,23 @@ $radius-xl: 32px;
 $radius-pill: 999px;
 $radius-round: 50%;
 
-// ─── Spacing (4-point scale) ─────────────────────────────────────────────────
-$space-1: 4px;
-$space-2: 8px;
-$space-3: 12px;
-$space-4: 16px;
-$space-5: 20px;
-$space-6: 24px;
-$space-8: 32px;
-$space-10: 40px;
-$space-12: 48px;
-$space-16: 64px;
-$space-20: 80px;
-$space-24: 96px;
+// ─── Spacing ─────────────────────────────────────────────────────────────────
+// 8px-based scale (design-system.md §7). sm-md (12px) and xl-xxl (40px) are
+// in-use Figma-screen steps documented as additions to the default scale.
+$space: (
+  xs:     4px,
+  sm:     8px,
+  sm-md:  12px,
+  md:     16px,
+  lg:     24px,
+  xl:     32px,
+  xl-xxl: 40px,
+  xxl:    48px,
+);
+
+@function space($key) {
+  @return map.get($space, $key);
+}
 
 // ─── Component Sizes ─────────────────────────────────────────────────────────
 $input-height: 48px;
@@ -97,8 +100,8 @@ $shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
 $shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
 $shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.20);
 $shadow-inset: inset 0 1px 3px rgba(0, 0, 0, 0.08);
-$shadow-focus: 0 0 0 3px rgba($color-primary, 0.20);
-$shadow-focus-error: 0 0 0 3px rgba($color-error, 0.20);
+$shadow-focus: 0 0 0 3px rgba(color('primary'), 0.2);
+$shadow-focus-error: 0 0 0 3px rgba(color('error'), 0.2);
 
 // ─── Z-Index Scale ────────────────────────────────────────────────────────────
 $z-below: -1;
@@ -110,31 +113,6 @@ $z-overlay: 300;
 $z-modal: 400;
 $z-toast: 500;
 $z-tooltip: 600;
-
-// ─── Typography ──────────────────────────────────────────────────────────────
-$font-family-base: 'Inter', Arial, sans-serif;
-$font-family-display: 'Nunito', 'Inter', Arial, sans-serif;
-$font-size-2xs: 10px;
-$font-size-xs: 12px;       // Figma: 12px / 0.667rem
-$font-size-sm: 15px;       // Figma: 15px / 0.833rem
-$font-size-md: 18px;       // Figma: 18px / 1rem (body base)
-$font-size-lg: 22px;       // Figma: 22px / 1.222rem
-$font-size-xl: 26px;       // Figma: 26px / 1.444rem
-$font-size-2xl: 32px;      // Figma: 32px / 1.778rem
-$font-size-3xl: 38px;      // Figma: 38px / 2.111rem
-$font-size-4xl: 46px;      // Figma: 46px / 2.556rem (display, Nunito)
-$font-weight-regular: 400;
-$font-weight-medium: 500;
-$font-weight-semibold: 600;
-$font-weight-bold: 700;
-$font-weight-extrabold: 800;
-$line-height-tight: 1.2;
-$line-height-snug: 1.375;
-$line-height-base: 1.5;
-$line-height-relaxed: 1.625;
-$letter-spacing-tight: -0.01em;
-$letter-spacing-normal: 0;
-$letter-spacing-wide: 0.02em;
 
 // ─── Layout Dimensions ────────────────────────────────────────────────────────
 $sidebar-width: 320px;

@@ -9,23 +9,22 @@
 // Exposed so component-level SCSS can use var(--...) without @use.
 
 :root {
-  --color-primary:         #{v.$color-primary};
-  --color-primary-hover:   #{v.$color-primary-hover};
-  --color-primary-active:  #{v.$color-primary-active};
-  --color-primary-light:   #{v.$color-primary-light};
-  --color-secondary:       #{v.$color-secondary};
-  --color-bg:              #{v.$color-bg};
-  --color-surface:         #{v.$color-surface};
-  --color-surface-alt:     #{v.$color-surface-alt};
-  --color-text:            #{v.$color-text};
-  --color-text-muted:      #{v.$color-text-muted};
-  --color-text-subtle:     #{v.$color-text-subtle};
-  --color-border:          #{v.$color-border};
-  --color-success:         #{v.$color-success};
-  --color-error:           #{v.$color-error};
-  --color-warning:         #{v.$color-warning};
-  --color-online:          #{v.$color-online};
-  --color-offline:         #{v.$color-offline};
+  --color-primary:         #{v.color('primary')};
+  --color-primary-hover:   #{v.color('primary-hover')};
+  --color-primary-active:  #{v.color('primary-active')};
+  --color-primary-light:   #{rgba(v.color('primary'), 0.1)};
+  --color-secondary:       #{v.color('primary-hover')};
+  --color-bg:              #{v.color('bg')};
+  --color-surface:         #{v.color('white')};
+  --color-surface-alt:     #{v.color('bg')};
+  --color-text:            #{v.color('black')};
+  --color-text-muted:      #{v.color('text-gray')};
+  --color-text-subtle:     #{v.color('text-gray')};
+  --color-border:          #{v.color('lines')};
+  --color-success:         #{v.color('online')};
+  --color-error:           #{v.color('error')};
+  --color-online:          #{v.color('online')};
+  --color-offline:         #{v.color('text-gray')};
   --radius-sm:             #{v.$radius-sm};
   --radius-md:             #{v.$radius-md};
   --radius-lg:             #{v.$radius-lg};

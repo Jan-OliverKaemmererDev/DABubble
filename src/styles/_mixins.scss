@@ -73,20 +73,20 @@
 // ─── Surface Card ─────────────────────────────────────────────────────────────
 
 @mixin card($radius: v.$radius-md, $shadow: v.$shadow-md) {
-  background-color: v.$color-surface;
+  background-color: v.color('white');
   border-radius: $radius;
   box-shadow: $shadow;
 }
 
 // ─── Focus Ring ───────────────────────────────────────────────────────────────
 
-@mixin focus-ring($color: v.$color-primary) {
+@mixin focus-ring($color: v.color('primary')) {
   outline: none;
   box-shadow: 0 0 0 3px rgba($color, 0.22);
 }
 
 @mixin focus-ring-error {
-  @include focus-ring(v.$color-error);
+  @include focus-ring(v.color('error'));
 }
 
 // ─── Text Helpers ─────────────────────────────────────────────────────────────
@@ -114,22 +114,22 @@
 
 @mixin scrollbar-thin {
   scrollbar-width: thin;
-  scrollbar-color: v.$color-border transparent;
+  scrollbar-color: v.color('lines') transparent;
   &::-webkit-scrollbar { width: 4px; }
   &::-webkit-scrollbar-thumb {
-    background-color: v.$color-border;
+    background-color: v.color('lines');
     border-radius: v.$radius-pill;
   }
 }
 
 // ─── Status Dot ───────────────────────────────────────────────────────────────
 
-@mixin status-dot($color: v.$color-online, $size: 10px) {
+@mixin status-dot($color: v.color('online'), $size: 10px) {
   width: $size;
   height: $size;
   border-radius: v.$radius-round;
   background-color: $color;
-  border: 2px solid v.$color-surface;
+  border: 2px solid v.color('white');
   flex-shrink: 0;
 }
 

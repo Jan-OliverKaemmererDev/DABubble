@@ -1,3 +1,5 @@
+@use 'variables' as v;
+
 *,
 *::before,
 *::after {
@@ -8,6 +10,7 @@
 
 html {
   height: 100%;
+  font-size: 112.5%;
   -webkit-text-size-adjust: 100%;
   color-scheme: light;
 }
@@ -79,7 +82,7 @@ table {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-primary, #5c35e5);
+  outline: 2px solid var(--color-primary, #{v.color('primary')});
   outline-offset: 2px;
 }
 

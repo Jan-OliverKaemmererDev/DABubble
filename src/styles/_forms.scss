@@ -6,15 +6,15 @@
 .form-field {
   display: flex;
   flex-direction: column;
-  gap: v.$space-1;
+  gap: v.space('xs');
 }
 
 // ─── Label ───────────────────────────────────────────────────────────────────
 
 .form-label {
-  font-size: v.$font-size-sm;
+  font-size: v.font-size('sm');
   font-weight: v.$font-weight-semibold;
-  color: v.$color-text;
+  color: v.color('black');
 }
 
 // ─── Input Wrapper (for icon slots) ───────────────────────────────────────────
@@ -24,28 +24,28 @@
   display: flex;
   align-items: center;
 
-  .form-input { padding-left: v.$space-10; }
+  .form-input { padding-left: v.space('xl-xxl'); }
 
   .form-input-icon {
     position: absolute;
-    left: v.$space-4;
+    left: v.space('md');
     width: v.$icon-md;
     height: v.$icon-md;
     pointer-events: none;
-    color: v.$color-text-muted;
+    color: v.color('text-gray');
   }
 
   .form-input-action {
     position: absolute;
-    right: v.$space-3;
+    right: v.space('sm-md');
     display: flex;
     align-items: center;
     background: none;
     border: none;
     cursor: pointer;
-    color: v.$color-text-muted;
-    padding: v.$space-1;
-    &:hover { color: v.$color-text; }
+    color: v.color('text-gray');
+    padding: v.space('xs');
+    &:hover { color: v.color('black'); }
   }
 }
 
@@ -54,41 +54,41 @@
 .form-input {
   width: 100%;
   height: v.$input-height;
-  padding: 0 v.$space-4;
-  border: 1.5px solid v.$color-border;
+  padding: 0 v.space('md');
+  border: 1.5px solid transparent;
   border-radius: v.$radius-pill;
-  font-size: v.$font-size-md;
+  font-size: v.font-size('body');
   font-weight: v.$font-weight-medium;
-  color: v.$color-text;
-  background-color: v.$color-surface;
+  color: v.color('black');
+  background-color: v.color('bg');
   transition:
     border-color v.$transition-base,
     box-shadow v.$transition-base;
 
   &::placeholder {
-    color: v.$color-text-subtle;
+    color: v.color('text-gray');
     font-weight: v.$font-weight-regular;
   }
 
   &:focus {
-    border-color: v.$color-border-focus;
+    border-color: v.color('primary');
     box-shadow: v.$shadow-focus;
     outline: none;
   }
 
   &.is-valid {
-    border-color: v.$color-success;
-    &:focus { box-shadow: 0 0 0 3px rgba(v.$color-success, 0.18); }
+    border-color: v.color('online');
+    &:focus { box-shadow: 0 0 0 3px rgba(v.color('online'), 0.18); }
   }
 
   &.is-invalid {
-    border-color: v.$color-error;
+    border-color: v.color('error');
     &:focus { box-shadow: v.$shadow-focus-error; }
   }
 
   &:disabled {
-    background-color: v.$color-surface-alt;
-    color: v.$color-text-subtle;
+    background-color: v.color('bg');
+    color: v.color('text-gray');
     cursor: not-allowed;
     opacity: 0.7;
   }
@@ -97,7 +97,7 @@
 .form-textarea {
   height: auto;
   min-height: 96px;
-  padding: v.$space-3 v.$space-4;
+  padding: v.space('sm-md') v.space('md');
   border-radius: v.$radius-md;
   resize: vertical;
   line-height: v.$line-height-base;
@@ -108,23 +108,23 @@
 .form-error {
   display: flex;
   align-items: center;
-  gap: v.$space-1;
-  font-size: v.$font-size-xs;
+  gap: v.space('xs');
+  font-size: v.font-size('xs');
   font-weight: v.$font-weight-medium;
-  color: v.$color-error;
+  color: v.color('error');
   min-height: 18px;
 }
 
 .form-success {
-  font-size: v.$font-size-xs;
+  font-size: v.font-size('xs');
   font-weight: v.$font-weight-medium;
-  color: v.$color-success;
+  color: v.color('online');
   min-height: 18px;
 }
 
 .form-hint {
-  font-size: v.$font-size-xs;
-  color: v.$color-text-muted;
+  font-size: v.font-size('xs');
+  color: v.color('text-gray');
 }
 
 // ─── Checkbox ────────────────────────────────────────────────────────────────
@@ -132,19 +132,19 @@
 .form-checkbox-label {
   display: flex;
   align-items: center;
-  gap: v.$space-2;
+  gap: v.space('sm');
   cursor: pointer;
   user-select: none;
-  font-size: v.$font-size-sm;
-  color: v.$color-text;
+  font-size: v.font-size('sm');
+  color: v.color('black');
 }
 
 .form-checkbox {
   width: 18px;
   height: 18px;
-  border: 1.5px solid v.$color-border;
+  border: 1.5px solid v.color('lines');
   border-radius: v.$radius-xs;
-  background-color: v.$color-surface;
+  background-color: v.color('white');
   flex-shrink: 0;
   appearance: none;
   -webkit-appearance: none;
@@ -153,8 +153,8 @@
   transition: border-color v.$transition-base, background-color v.$transition-base;
 
   &:checked {
-    background-color: v.$color-primary;
-    border-color: v.$color-primary;
+    background-color: v.color('primary');
+    border-color: v.color('primary');
     &::after {
       content: '';
       position: absolute;
