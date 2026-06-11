@@ -17,24 +17,10 @@ const DUMMY_CREATED_AT = Timestamp.fromMillis(0);
 
 export const DUMMY_USERS: readonly UserDoc[] = [
   {
-    uid: 'dummy-elias',
-    name: 'Elias Neumann',
-    email: 'elias@example.com',
-    avatarPath: 'avatars/Elias-Neumann.png',
-    createdAt: DUMMY_CREATED_AT,
-  },
-  {
-    uid: 'dummy-elise',
-    name: 'Elise Roth',
-    email: 'elise@example.com',
-    avatarPath: 'avatars/Elise-Roth.png',
-    createdAt: DUMMY_CREATED_AT,
-  },
-  {
-    uid: 'dummy-frederik',
-    name: 'Frederik Beck',
-    email: 'frederik@example.com',
-    avatarPath: 'avatars/Frederik-Beck.png',
+    uid: 'dummy-sofia',
+    name: 'Sofia Müller',
+    email: 'sofia@example.com',
+    avatarPath: 'avatars/Sofia-Müller.png',
     createdAt: DUMMY_CREATED_AT,
   },
   {
@@ -45,10 +31,17 @@ export const DUMMY_USERS: readonly UserDoc[] = [
     createdAt: DUMMY_CREATED_AT,
   },
   {
-    uid: 'dummy-sofia',
-    name: 'Sofia Müller',
-    email: 'sofia@example.com',
-    avatarPath: 'avatars/Sofia-Müller.png',
+    uid: 'dummy-elise',
+    name: 'Elise Roth',
+    email: 'elise@example.com',
+    avatarPath: 'avatars/Elise-Roth.png',
+    createdAt: DUMMY_CREATED_AT,
+  },
+  {
+    uid: 'dummy-elias',
+    name: 'Elias Neumann',
+    email: 'elias@example.com',
+    avatarPath: 'avatars/Elias-Neumann.png',
     createdAt: DUMMY_CREATED_AT,
   },
   {
@@ -66,17 +59,7 @@ export const DUMMY_CHANNELS: readonly ChannelEntry[] = [
     doc: {
       name: 'Entwicklerteam',
       description: 'Alles rund um die Entwicklung',
-      createdBy: 'dummy-frederik',
-      memberIds: DUMMY_USERS.map(user => user.uid),
-      createdAt: DUMMY_CREATED_AT,
-    },
-  },
-  {
-    id: 'dummy-allgemein',
-    doc: {
-      name: 'Allgemein',
-      description: 'Allgemeiner Austausch',
-      createdBy: 'dummy-noah',
+      createdBy: DUMMY_USERS[0].uid,
       memberIds: DUMMY_USERS.map(user => user.uid),
       createdAt: DUMMY_CREATED_AT,
     },

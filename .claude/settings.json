@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git rm *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4200/)",
+      "Bash(node .claude-tmp/shell-check.mjs .claude-tmp 1920 1080)",
+      "Bash(node .claude-tmp/smoke.mjs)",
+      "Bash(python3 -c \"import sys,json; d=sys.stdin.read\\(\\); j=d[:d.rfind\\('CONSOLE'\\)]; m=json.loads\\(j\\); print\\('scrollbars:', m['pageScrollbars']\\); print\\('menuToggle:', m['menuToggle']\\); print\\(d[d.rfind\\('CONSOLE'\\):]\\)\")",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\('scripts:', Object.keys\\(p.scripts\\).join\\(', '\\)\\); console.log\\('puppeteer in deps:', JSON.stringify\\(p.devDependencies\\).includes\\('puppeteer'\\)\\)\")",
+      "Bash(rm -rf .claude-tmp)",
+      "Bash(npm uninstall *)",
+      "Bash(echo \"tsc exit: $?\")"
+    ]
+  }
+}
