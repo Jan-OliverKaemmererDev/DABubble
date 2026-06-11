@@ -56,7 +56,11 @@
         </div>
 
         <footer class="create-channel__actions">
-          <button class="btn btn-primary" type="submit" [disabled]="nameControl.invalid">
+          <button
+            class="btn btn-primary"
+            type="submit"
+            [disabled]="nameControl.invalid || nameControl.pending"
+          >
             Erstellen
           </button>
         </footer>

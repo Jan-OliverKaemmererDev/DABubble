@@ -10,6 +10,8 @@ import { FieldValue, Timestamp } from '@angular/fire/firestore';
 export interface ChannelDoc {
   /** Channel name without the leading hash. */
   name: string;
+  /** Trimmed lowercase copy of name for the global duplicate-name query. */
+  nameLower: string;
   /** Short description shown in the channel details. */
   description: string;
   /** Uid of the user who created the channel. */

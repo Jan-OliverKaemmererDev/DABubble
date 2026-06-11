@@ -15,7 +15,11 @@
       "Bash(node .claude-tmp/debug-dialog.mjs)",
       "Bash(node .claude-tmp/debug-warning.mjs)",
       "Bash(node .claude-tmp/debug-row.mjs)",
-      "Bash(node .claude-tmp/cleanup.mjs)"
+      "Bash(node .claude-tmp/cleanup.mjs)",
+      "Bash(node .claude-tmp/migrate-and-seed.mjs)",
+      "Bash(node .claude-tmp/verify-duplicate.mjs)",
+      "Bash(node .claude-tmp/purge-gast.mjs --delete)",
+      "Bash(node .claude-tmp/final-check.mjs)"
     ]
   }
 }

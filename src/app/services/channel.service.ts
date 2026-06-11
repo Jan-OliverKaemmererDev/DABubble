@@ -9,6 +9,8 @@ import {
   addDoc,
   collection,
   collectionData,
+  getDocs,
+  limit,
   query,
   serverTimestamp,
   where,
@@ -52,6 +54,7 @@ export class ChannelService {
     const creatorUid = this.requireUid();
     const channel: ChannelDoc = {
       name,
+      nameLower: name.trim().toLowerCase(),
       description,
       createdBy: creatorUid,
       memberIds: [...new Set([creatorUid, ...memberIds])],
@@ -59,6 +62,34 @@ export class ChannelService {
     };
     const reference = await addDoc(collection(this.firestore, 'channels'), channel);
     return reference.id;
+  }
+
+
+  /**
+   * Checks whether any channel in the whole collection already uses the
+   * given name (case-insensitive, via the denormalized nameLower field).
+   * @param name Channel name typed by the user.
+   */
+  isNameTaken(name: string): Promise<boolean> {
+    const normalized = name.trim().toLowerCase();
+    if (!normalized) return Promise.resolve(false);
+    return runInInjectionContext(this.injector, () => this.queryNameTaken(normalized));
+  }
+
+
+  /**
+   * Runs the duplicate-name query; created in the injection context as
+   * required by AngularFire.
+   * @param nameLower Normalized channel name to look up.
+   */
+  private async queryNameTaken(nameLower: string): Promise<boolean> {
+    const duplicatesQuery = query(
+      collection(this.firestore, 'channels'),
+      where('nameLower', '==', nameLower),
+      limit(1),
+    );
+    const snapshot = await getDocs(duplicatesQuery);
+    return !snapshot.empty;
   }
 
 

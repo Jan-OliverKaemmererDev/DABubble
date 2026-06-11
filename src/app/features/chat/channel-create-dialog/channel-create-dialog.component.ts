@@ -15,8 +15,15 @@ import {
   viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, ReactiveFormsModule, ValidatorFn } from '@angular/forms';
+import {
+  AsyncValidatorFn,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidatorFn,
+} from '@angular/forms';
 import { Router } from '@angular/router';
+import { catchError, map, of, switchMap, timer } from 'rxjs';
 
 import { UserDoc } from '../../../models/user.model';
 import { AuthService } from '../../../services/auth.service';
@@ -28,6 +35,7 @@ import { UserService } from '../../../services/user.service';
 const NAME_REQUIRED_ERROR = 'Bitte gib einen Channel-Namen ein.';
 const NAME_DUPLICATE_ERROR = 'Ein Channel mit diesem Namen existiert bereits.';
 const CREATE_ERROR = 'Der Channel konnte nicht erstellt werden.';
+const DUPLICATE_CHECK_DEBOUNCE_MS = 300;
 const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), input:not([disabled])';
 
 type DialogStep = 'details' | 'members';
@@ -79,7 +87,8 @@ export class ChannelCreateDialogComponent implements AfterViewInit, OnDestroy {
 
   protected readonly nameControl = new FormControl('', {
     nonNullable: true,
-    validators: [this.nameValidator()],
+    validators: [this.requiredNameValidator()],
+    asyncValidators: [this.duplicateNameValidator()],
   });
 
   protected readonly descriptionControl = new FormControl('', { nonNullable: true });
@@ -136,11 +145,10 @@ export class ChannelCreateDialogComponent implements AfterViewInit, OnDestroy {
 
 
   /**
-   * Advances to the member step when the channel name is valid.
+   * Advances to the member step when the channel name is validated.
    */
   protected goToMembers(): void {
-    this.nameControl.updateValueAndValidity();
-    if (this.nameControl.invalid) return;
+    if (this.nameControl.invalid || this.nameControl.pending) return;
     this.step.set('members');
     setTimeout(() => this.firstRadio()?.nativeElement.focus());
   }
@@ -241,18 +249,25 @@ export class ChannelCreateDialogComponent implements AfterViewInit, OnDestroy {
 
 
   /**
-   * Validates the channel name: required after trimming and unique among
-   * the existing channel names (case-insensitive).
+   * Validates that the channel name is non-empty after trimming.
    */
-  private nameValidator(): ValidatorFn {
-    return control => {
-      const name = String(control.value ?? '').trim().toLowerCase();
-      if (!name) return { required: true };
-      const taken = this.channelService
-        .channels()
-        .some(channel => channel.name.toLowerCase() === name);
-      return taken ? { duplicate: true } : null;
-    };
+  private requiredNameValidator(): ValidatorFn {
+    return control => (String(control.value ?? '').trim() ? null : { required: true });
+  }
+
+
+  /**
+   * Validates the channel name against the whole channels collection
+   * (case-insensitive, debounced); lookup failures do not block the form —
+   * creating still fails visibly via the error toast.
+   */
+  private duplicateNameValidator(): AsyncValidatorFn {
+    return control =>
+      timer(DUPLICATE_CHECK_DEBOUNCE_MS).pipe(
+        switchMap(() => this.channelService.isNameTaken(String(control.value ?? ''))),
+        map(taken => (taken ? { duplicate: true } : null)),
+        catchError(() => of(null)),
+      );
   }
 
 
