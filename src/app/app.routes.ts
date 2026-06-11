@@ -1,8 +1,15 @@
+/**
+ * @file Application route table with lazy-loaded standalone components.
+ */
 import { Routes } from '@angular/router';
+
+import { registrationFormGuard } from './guards/registration-form.guard';
 
 export const routes: Routes = [
   {
     path: 'auth',
+    loadComponent: () =>
+      import('./shared/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
     children: [
       {
         path: 'login',
@@ -15,7 +22,8 @@ export const routes: Routes = [
           import('./features/auth/register/register.component').then(m => m.RegisterComponent),
       },
       {
-        path: 'avatar',
+        path: 'register/avatar',
+        canActivate: [registrationFormGuard],
         loadComponent: () =>
           import('./features/auth/avatar-picker/avatar-picker.component').then(
             m => m.AvatarPickerComponent,

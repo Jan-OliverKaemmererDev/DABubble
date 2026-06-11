@@ -1,12 +1,16 @@
-/** Profile visibility across the app. */
-export type UserStatus = 'online' | 'offline' | 'away';
+/**
+ * @file Typed shape of the Firestore user document at users/{uid}.
+ */
+import { FieldValue, Timestamp } from '@angular/fire/firestore';
 
-/** Core user profile data stored in the database. */
-export interface UserProfile {
+/**
+ * Firestore document stored at users/{uid}. On write, createdAt holds the
+ * serverTimestamp() sentinel; on read it resolves to a Timestamp.
+ */
+export interface UserDoc {
   uid: string;
-  displayName: string;
+  name: string;
   email: string;
-  avatarUrl: string;
-  status: UserStatus;
-  createdAt: Date;
+  avatarPath: string;
+  createdAt: Timestamp | FieldValue;
 }

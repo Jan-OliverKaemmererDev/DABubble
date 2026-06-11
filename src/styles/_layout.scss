@@ -88,6 +88,27 @@ app-root {
   }
 }
 
+.auth-card__head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  > .btn-icon {
+    position: absolute;
+    left: 0;
+  }
+
+  &--start {
+    justify-content: flex-start;
+    gap: v.space('md');
+    text-align: left;
+
+    > .btn-icon { position: static; }
+  }
+}
+
 // ─── Cards ───────────────────────────────────────────────────────────────────
 
 .card {

@@ -4,8 +4,10 @@
     <span class="header__wordmark">DABubble</span>
   </a>
 
-  <div class="header__cta">
-    <p class="header__cta-text">Neu bei DABubble?</p>
-    <a class="header__cta-link" routerLink="/auth/register">Konto erstellen</a>
-  </div>
+  @if (showCta()) {
+    <div class="header__cta">
+      <p class="header__cta-text">Neu bei DABubble?</p>
+      <a class="header__cta-link" routerLink="/auth/register">Konto erstellen</a>
+    </div>
+  }
 </header>

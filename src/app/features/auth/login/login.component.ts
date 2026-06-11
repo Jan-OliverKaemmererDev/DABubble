@@ -1,11 +1,9 @@
 /**
- * @file Login page composed of intro splash, brand header, auth card and footer.
+ * @file Login card with intro splash overlay, rendered inside the auth layout.
  */
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { FooterComponent } from '../../../shared/footer/footer.component';
-import { HeaderComponent } from '../../../shared/header/header.component';
 import { IntroComponent } from '../intro/intro.component';
 
 /**
@@ -14,7 +12,7 @@ import { IntroComponent } from '../intro/intro.component';
  */
 @Component({
   selector: 'app-login',
-  imports: [RouterLink, HeaderComponent, FooterComponent, IntroComponent],
+  imports: [RouterLink, IntroComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
