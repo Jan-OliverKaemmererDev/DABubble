@@ -8,10 +8,14 @@ import { FieldValue, Timestamp } from '@angular/fire/firestore';
  * serverTimestamp() sentinel; on read it resolves to a Timestamp.
  */
 export interface UserDoc {
+  /** Firebase Auth user id, duplicated for convenient querying. */
   uid: string;
+  /** Display name; "Gast" for anonymous accounts. */
   name: string;
-  email: string;
+  /** Account e-mail; null for guest (anonymous) accounts. */
+  email: string | null;
   /** Local public asset path (e.g. avatars/profile.png) — never an external URL. */
   avatarPath: string;
+  /** Creation time; serverTimestamp() sentinel on write, Timestamp on read. */
   createdAt: Timestamp | FieldValue;
 }

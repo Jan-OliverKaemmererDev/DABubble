@@ -1,26 +1,118 @@
 @use 'variables' as v;
+@use 'mixins' as m;
 
 :host {
   display: block;
   width: 100%;
 }
 
-.app-placeholder {
+.shell {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: v.color('bg');
+}
+
+.shell__panels {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: v.space('lg');
+  padding: 0 v.space('lg') v.space('lg');
+}
+
+.shell__menu-toggle {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  z-index: v.$z-raised;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: v.space('lg');
-  text-align: center;
+  gap: v.space('sm');
+  padding: v.space('md') v.space('xs');
+  border: none;
+  border-radius: 0 v.$radius-md v.$radius-md 0;
+  background-color: v.color('white');
+  box-shadow: v.$shadow-sm;
+  cursor: pointer;
+  transform: translateY(-50%);
+
+  &:hover .shell__menu-toggle-label {
+    color: v.color('primary');
+  }
 }
 
-.app-placeholder__avatar {
-  width: v.$avatar-xl;
-  height: v.$avatar-xl;
-  border-radius: v.$radius-round;
-  object-fit: cover;
+.shell__menu-toggle-icon {
+  width: v.$icon-md;
+  height: v.$icon-md;
 }
 
-.app-placeholder__title {
-  font-size: v.font-size('h3');
+.shell__menu-toggle-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: v.font-size('sm');
+  font-weight: v.$font-weight-semibold;
   color: v.color('black');
+}
+
+.shell__workspace {
+  width: v.$sidebar-width;
+  flex-shrink: 0;
+  margin-left: v.space('lg');
+  border-radius: v.$radius-lg;
+  background-color: v.color('white');
+  box-shadow: v.$shadow-sm;
+  overflow: hidden;
+  transition: width v.$transition-slow, margin-left v.$transition-slow, opacity v.$transition-slow;
+
+  &--closed {
+    width: 0;
+    margin-left: 0;
+    opacity: 0;
+  }
+}
+
+.shell__chat {
+  flex: 1;
+  min-width: 0;
+  border-radius: v.$radius-lg;
+  background-color: v.color('white');
+  box-shadow: v.$shadow-sm;
+  overflow: hidden;
+}
+
+.shell__thread {
+  width: 0;
+  flex-shrink: 0;
+  border-radius: v.$radius-lg;
+  background-color: v.color('white');
+  box-shadow: v.$shadow-sm;
+  overflow: hidden;
+  opacity: 0;
+  transition: width v.$transition-slow, opacity v.$transition-slow;
+
+  &--open {
+    width: v.$thread-panel-width;
+    opacity: 1;
+  }
+}
+
+.shell__thread-placeholder {
+  padding: v.space('lg');
+}
+
+.shell__thread-title {
+  font-size: v.font-size('h4');
+  font-weight: v.$font-weight-bold;
+  color: v.color('black');
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell__workspace,
+  .shell__thread {
+    transition: none;
+  }
 }

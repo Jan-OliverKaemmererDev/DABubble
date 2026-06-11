@@ -190,7 +190,7 @@ export class AuthService {
     return {
       uid: firebaseUser.uid,
       name: firebaseUser.displayName ?? GUEST_NAME,
-      email: firebaseUser.email ?? '',
+      email: firebaseUser.email,
       avatarPath: DEFAULT_AVATAR_PATH,
       createdAt: serverTimestamp(),
     };

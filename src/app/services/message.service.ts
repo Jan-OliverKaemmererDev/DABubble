@@ -1,10 +1,10 @@
 import { Injectable, signal } from '@angular/core';
-import { Message } from '../models/message.model';
+import { MessageDoc } from '../models/message.model';
 
 /** Manages messages in channels and direct conversations. Backend integration pending. */
 @Injectable({ providedIn: 'root' })
 export class MessageService {
-  readonly messages = signal<Message[]>([]);
+  readonly messages = signal<MessageDoc[]>([]);
 
   /** Placeholder — will persist message to database. */
   sendMessage(_conversationId: string, _content: string): Promise<void> {

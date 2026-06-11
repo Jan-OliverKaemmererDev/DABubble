@@ -1,66 +1,46 @@
 /**
- * @file Signed-in placeholder for the app area.
- * TODO: replaced by the main chat layout in the next module.
+ * @file Main app shell: topbar, workspace column, chat area and thread panel.
  */
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
-import { AuthService } from '../../../services/auth.service';
-import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
+import { TopbarComponent } from '../topbar/topbar.component';
+import { WorkspaceMenuComponent } from '../workspace-menu/workspace-menu.component';
 
-const GUEST_NAME = 'Gast';
+const OPEN_MENU_LABEL = 'Workspace-Menü öffnen';
+const CLOSE_MENU_LABEL = 'Workspace-Menü schließen';
 
 /**
- * Minimal authenticated landing page showing the signed-in identity and a
- * logout action.
+ * Three-panel chat layout per the Figma frames 06/07. The workspace column
+ * is collapsible via the vertical edge tab; the thread panel stays closed
+ * behind a signal until module 5 takes over. The chat area hosts the router
+ * outlet for the upcoming chat views.
  */
 @Component({
   selector: 'app-shell',
+  imports: [RouterOutlet, TopbarComponent, WorkspaceMenuComponent],
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppShellComponent {
-  private readonly authService = inject(AuthService);
+  protected readonly workspaceOpen = signal(true);
 
-  private readonly router = inject(Router);
+  protected readonly threadOpen = signal(false);
 
-  protected readonly userName = computed(
-    () => this.authService.currentUser()?.displayName ?? GUEST_NAME,
+  protected readonly toggleLabel = computed(() =>
+    this.workspaceOpen() ? CLOSE_MENU_LABEL : OPEN_MENU_LABEL,
   );
 
-  protected readonly avatarSrc = computed(() => this.resolveAvatar());
-
-  protected readonly avatarAlt = computed(() => `Avatar von ${this.userName()}`);
-
-
-  /**
-   * Resolves the avatar image source from the auth profile. The avatar
-   * system is local-path based: external URLs (e.g. Google profile photos)
-   * are replaced by the placeholder.
-   */
-  private resolveAvatar(): string {
-    const path = this.authService.currentUser()?.photoURL ?? DEFAULT_AVATAR_PATH;
-    return path.startsWith('http') ? `/${DEFAULT_AVATAR_PATH}` : `/${path}`;
-  }
+  protected readonly toggleIcon = computed(() =>
+    this.workspaceOpen() ? '/icons/group-left.svg' : '/icons/group-right.svg',
+  );
 
 
   /**
-   * Swaps the avatar to the placeholder when the image fails to load.
-   * @param event Error event of the avatar image element.
+   * Toggles the workspace column.
    */
-  protected useAvatarFallback(event: Event): void {
-    const image = event.target as HTMLImageElement;
-    if (image.src.endsWith(DEFAULT_AVATAR_PATH)) return;
-    image.src = `/${DEFAULT_AVATAR_PATH}`;
-  }
-
-
-  /**
-   * Signs out and returns to the login page.
-   */
-  protected async logout(): Promise<void> {
-    await this.authService.logout();
-    this.router.navigate(['/auth/login']);
+  protected toggleWorkspace(): void {
+    this.workspaceOpen.update(open => !open);
   }
 }

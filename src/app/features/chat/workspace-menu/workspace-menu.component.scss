@@ -1,0 +1,138 @@
+@use 'variables' as v;
+@use 'mixins' as m;
+
+.workspace {
+  display: flex;
+  flex-direction: column;
+  gap: v.space('lg');
+  height: 100%;
+  padding: v.space('lg');
+  overflow-y: auto;
+  @include m.scrollbar-thin;
+}
+
+.workspace__head {
+  display: flex;
+  align-items: center;
+  gap: v.space('md');
+  padding-bottom: v.space('md');
+  border-bottom: 1px solid v.color('lines');
+}
+
+.workspace__head-logo {
+  width: v.$icon-lg;
+  height: v.$icon-lg;
+}
+
+.workspace__title {
+  flex: 1;
+  font-size: v.font-size('h4');
+  font-weight: v.$font-weight-bold;
+  color: v.color('black');
+}
+
+.workspace__section {
+  display: flex;
+  flex-direction: column;
+  gap: v.space('sm');
+}
+
+.workspace__section-toggle {
+  display: flex;
+  align-items: center;
+  gap: v.space('sm');
+  padding: v.space('xs');
+  border: none;
+  background: none;
+  border-radius: v.$radius-sm;
+  cursor: pointer;
+  font-size: v.font-size('h5');
+  font-weight: v.$font-weight-bold;
+  color: v.color('black');
+
+  &:hover {
+    color: v.color('primary');
+  }
+}
+
+.workspace__caret {
+  width: v.$icon-md;
+  height: v.$icon-md;
+  transition: transform v.$transition-base;
+
+  &--closed {
+    transform: rotate(-90deg);
+  }
+}
+
+.workspace__section-icon {
+  width: v.$icon-md;
+  height: v.$icon-md;
+}
+
+.workspace__section-title {
+  flex: 1;
+  text-align: left;
+}
+
+.workspace__list {
+  display: flex;
+  flex-direction: column;
+  gap: v.space('xs');
+  padding-left: v.space('xl');
+}
+
+.workspace__item {
+  display: flex;
+  align-items: center;
+  gap: v.space('md');
+  width: 100%;
+  padding: v.space('xs') v.space('sm-md');
+  border: none;
+  background: none;
+  border-radius: v.$radius-pill;
+  cursor: pointer;
+  font-size: v.font-size('body');
+  color: v.color('black');
+  text-align: left;
+  transition: background-color v.$transition-fast;
+
+  &:hover {
+    background-color: v.color('bg');
+  }
+
+  &--add {
+    color: v.color('text-gray');
+  }
+}
+
+.workspace__item-icon {
+  width: v.$icon-md;
+  height: v.$icon-md;
+}
+
+.workspace__avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.workspace__avatar {
+  width: v.$avatar-md;
+  height: v.$avatar-md;
+  border-radius: v.$radius-round;
+  object-fit: cover;
+}
+
+.workspace__status {
+  @include m.status-dot;
+
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workspace__caret {
+    transition: none;
+  }
+}

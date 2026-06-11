@@ -1,0 +1,50 @@
+<header class="topbar" (keydown.escape)="closeMenu()">
+  <div class="topbar__brand">
+    <img class="topbar__logo" src="/logos/logo.svg" alt="" aria-hidden="true" />
+    <span class="topbar__wordmark">DABubble</span>
+  </div>
+
+  <div class="topbar__search">
+    <label class="sr-only" for="topbar-search">Devspace durchsuchen</label>
+    <input
+      id="topbar-search"
+      class="form-input topbar__search-input"
+      type="search"
+      placeholder="Devspace durchsuchen"
+    />
+    <img class="topbar__search-icon" src="/icons/search.svg" alt="" aria-hidden="true" />
+  </div>
+
+  <div class="topbar__profile">
+    <button
+      #profileTrigger
+      class="topbar__user"
+      type="button"
+      aria-haspopup="menu"
+      aria-controls="topbar-profile-menu"
+      [attr.aria-expanded]="menuOpen()"
+      (click)="toggleMenu()"
+    >
+      <span class="topbar__user-name">{{ userName() }}</span>
+      <span class="topbar__avatar-wrap">
+        <img
+          class="topbar__avatar"
+          [src]="avatarSrc()"
+          [alt]="avatarAlt()"
+          (error)="useAvatarFallback($event)"
+        />
+        <span class="topbar__status" aria-hidden="true"></span>
+      </span>
+      <img class="topbar__chevron" src="/icons/arrow-drop-down.svg" alt="" aria-hidden="true" />
+    </button>
+
+    @if (menuOpen()) {
+      <div class="topbar__menu" id="topbar-profile-menu" role="menu">
+        <button class="topbar__menu-item" type="button" role="menuitem" (click)="logout()">
+          <img src="/icons/logout.svg" alt="" aria-hidden="true" />
+          Log out
+        </button>
+      </div>
+    }
+  </div>
+</header>
