@@ -23,6 +23,12 @@
   p {
     overflow-wrap: break-word;
   }
+
+  .btn-icon {
+    &:hover {
+      background-color: v.color('white');
+    }
+  }
 }
 
 .privacy-page__title {

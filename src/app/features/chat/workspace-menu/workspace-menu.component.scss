@@ -61,8 +61,8 @@
 }
 
 .workspace__caret {
-  width: v.$icon-sm;
-  height: v.$icon-sm;
+  width: 12px;
+  height: 12px;
   transition: transform v.$transition-base;
 
   &--closed {
