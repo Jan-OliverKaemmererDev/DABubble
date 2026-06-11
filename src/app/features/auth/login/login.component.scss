@@ -1,5 +1,4 @@
 @use 'variables' as v;
-@use 'mixins' as m;
 
 :host {
   display: block;
@@ -26,12 +25,8 @@
 .login-card {
   display: flex;
   flex-direction: column;
-  gap: v.space('xl-xxl');
+  gap: v.space-fluid('lg', 'xl-xxl');
   text-align: center;
-
-  @include m.respond-short {
-    gap: v.space('lg');
-  }
 }
 
 .login-card__title {
@@ -41,11 +36,7 @@
 .login-card__form {
   display: flex;
   flex-direction: column;
-  gap: v.space('xl-xxl');
-
-  @include m.respond-short {
-    gap: v.space('lg');
-  }
+  gap: v.space-fluid('lg', 'xl-xxl');
 }
 
 .login-card__forgot {

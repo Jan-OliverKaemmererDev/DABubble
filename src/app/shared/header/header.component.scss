@@ -7,14 +7,10 @@
   justify-content: space-between;
   gap: v.space('md');
   flex-wrap: wrap;
-  padding: v.space('xl-xxl') v.$header-inset;
-
-  @include m.respond-short {
-    padding: v.space('md') v.$header-inset;
-  }
+  padding: v.space-fluid('sm-md', 'xl-xxl') v.$header-inset;
 
   @include m.respond-md {
-    padding: v.space('md');
+    padding: v.space-fluid('sm-md', 'xl-xxl') v.space('md');
   }
 }
 

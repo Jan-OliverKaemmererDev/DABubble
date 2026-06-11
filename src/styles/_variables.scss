@@ -1,4 +1,5 @@
 @use 'sass:map';
+@use 'sass:math';
 
 // ─── Colors ──────────────────────────────────────────────────────────────────
 // Canonical Figma palette (design-system.md §1). Single source of truth.
@@ -91,6 +92,20 @@ $space: (
   @return map.get($space, $key);
 }
 
+// ─── Fluid Spacing ───────────────────────────────────────────────────────────
+// Vertical rhythm interpolates linearly between two anchor viewport heights:
+// minimum token value at $viewport-fit-min, maximum at $viewport-fit-max.
+$viewport-fit-min: 750px;
+$viewport-fit-max: 1080px;
+
+@function space-fluid($min-key, $max-key) {
+  $min: space($min-key);
+  $max: space($max-key);
+  $slope: math.div($max - $min, $viewport-fit-max - $viewport-fit-min);
+
+  @return clamp(#{$min}, calc(#{$min} + (100vh - #{$viewport-fit-min}) * #{$slope}), #{$max});
+}
+
 // ─── Component Sizes ─────────────────────────────────────────────────────────
 $input-height: 60px;
 $input-height-sm: 40px;
@@ -141,7 +156,6 @@ $breakpoint-sm: 576px;
 $breakpoint-md: 768px;
 $breakpoint-lg: 1024px;
 $breakpoint-xl: 1280px;
-$breakpoint-short: 800px;
 
 // ─── Transitions ─────────────────────────────────────────────────────────────
 $transition-fast: 150ms ease;

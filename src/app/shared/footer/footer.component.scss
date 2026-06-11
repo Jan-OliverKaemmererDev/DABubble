@@ -1,14 +1,9 @@
 @use 'variables' as v;
-@use 'mixins' as m;
 
 .footer {
   display: flex;
   justify-content: center;
-  padding: v.space('lg');
-
-  @include m.respond-short {
-    padding: v.space('md');
-  }
+  padding: v.space-fluid('sm-md', 'lg') v.space('lg');
 }
 
 .footer__nav {
