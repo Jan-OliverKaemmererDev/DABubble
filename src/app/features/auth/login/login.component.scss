@@ -52,10 +52,14 @@
 .login-card__google {
   width: 100%;
   background-color: v.color('bg');
-  color: v.color('primary');
+  font-weight: v.$font-weight-regular;
+  color: v.color('primary-hover');
+  border: 1.5px solid transparent;
 
   &:hover {
-    color: v.color('primary-hover');
+    color: v.color('primary');
+    font-weight: v.$font-weight-medium;
+    border-color: v.color('primary');
   }
 
   &:active {
