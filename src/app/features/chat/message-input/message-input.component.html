@@ -1,4 +1,14 @@
 <div class="composer">
+  @if (mention() !== null && suggestions().length > 0) {
+    <app-suggestion-dropdown
+      class="composer__suggestions"
+      [suggestions]="suggestions()"
+      [activeIndex]="activeIndex()"
+      [idPrefix]="suggestionIdPrefix"
+      (picked)="pickSuggestion($event)"
+    />
+  }
+
   <label class="sr-only" [for]="inputId">{{ placeholder() }}</label>
   <textarea
     #textarea
@@ -7,8 +17,15 @@
     rows="1"
     [placeholder]="placeholder()"
     [value]="text()"
+    role="combobox"
+    [attr.aria-expanded]="mention() !== null && suggestions().length > 0"
+    [attr.aria-activedescendant]="
+      mention() !== null && suggestions().length > 0
+        ? suggestionIdPrefix + '-' + activeIndex()
+        : null
+    "
     (input)="onInput($event)"
-    (keydown.enter)="onEnter($event)"
+    (keydown)="onKeydown($event)"
   ></textarea>
 
   <div class="composer__toolbar">
@@ -31,7 +48,13 @@
           />
         }
       </span>
-      <button class="composer__tool" type="button" aria-label="Person erwähnen">
+      <button
+        class="composer__tool"
+        type="button"
+        aria-label="Person erwähnen"
+        [attr.aria-expanded]="mention()?.type === '@'"
+        (click)="toggleMentionButton()"
+      >
         <img src="/icons/at.svg" alt="" aria-hidden="true" />
       </button>
     </div>

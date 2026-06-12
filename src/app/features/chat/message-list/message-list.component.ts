@@ -19,12 +19,14 @@ import { Timestamp } from '@angular/fire/firestore';
 
 import { Message } from '../../../models/message.model';
 import { AuthService } from '../../../services/auth.service';
+import { MessageFocusService } from '../../../services/message-focus.service';
 import { MessageItemComponent } from '../message-item/message-item.component';
 
 const TODAY_LABEL = 'Heute';
 const DATE_KEY_FORMAT = 'yyyy-MM-dd';
 const DAY_LABEL_FORMAT = 'EEEE, d. MMMM';
 const NEAR_BOTTOM_THRESHOLD_PX = 120;
+const FOCUS_HIGHLIGHT_DURATION_MS = 2000;
 
 /** Consecutive messages of one calendar day under a shared separator. */
 interface MessageGroup {
@@ -62,6 +64,8 @@ export class MessageListComponent {
 
   private readonly authService = inject(AuthService);
 
+  private readonly messageFocusService = inject(MessageFocusService);
+
   private readonly scrollContainer = viewChild<ElementRef<HTMLElement>>('scrollContainer');
 
   private stickToBottom = true;
@@ -87,12 +91,29 @@ export class MessageListComponent {
 
 
   /**
-   * Reacts to context switches (scroll reset) and to message changes
-   * (conditional auto-scroll).
+   * Reacts to context switches (scroll reset), message changes
+   * (conditional auto-scroll) and a searched message to scroll to.
    */
   constructor() {
     effect(() => this.handleContextSwitch(this.resetKey()));
     effect(() => this.handleMessagesRendered(this.groups()));
+    effect(() => this.handleFocusTarget(this.groups()));
+  }
+
+
+  /**
+   * Scrolls a searched message into view once it is rendered and clears
+   * the highlight after a brief moment.
+   * @param groups Rendered message groups (effect dependency).
+   */
+  private handleFocusTarget(groups: MessageGroup[]): void {
+    const targetId = this.messageFocusService.target();
+    if (!targetId || !groups.some(group => group.messages.some(m => m.id === targetId))) return;
+    this.stickToBottom = false;
+    requestAnimationFrame(() => {
+      document.getElementById(`message-${targetId}`)?.scrollIntoView({ block: 'center' });
+      setTimeout(() => this.messageFocusService.clear(), FOCUS_HIGHLIGHT_DURATION_MS);
+    });
   }
 
 

@@ -19,6 +19,7 @@ import { Timestamp } from '@angular/fire/firestore';
 
 import { ChatEntry } from '../../../models/message.model';
 import { AuthService } from '../../../services/auth.service';
+import { MessageFocusService } from '../../../services/message-focus.service';
 import { MessageService } from '../../../services/message.service';
 import { RecentEmojiService } from '../../../services/recent-emoji.service';
 import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
@@ -49,6 +50,8 @@ const EDIT_WINDOW_MS = 15 * 60 * 1000;
   host: {
     class: 'message',
     '[class.message--own]': 'own()',
+    '[class.message--focus]': 'focusHighlight()',
+    '[id]': '"message-" + entry().id',
   },
 })
 export class MessageItemComponent {
@@ -74,6 +77,8 @@ export class MessageItemComponent {
 
   private readonly recentEmojiService = inject(RecentEmojiService);
 
+  private readonly messageFocusService = inject(MessageFocusService);
+
   private readonly toastService = inject(ToastService);
 
   private readonly locale = inject(LOCALE_ID);
@@ -92,6 +97,10 @@ export class MessageItemComponent {
 
   protected readonly own = computed(
     () => this.entry().authorId === this.authService.currentUser()?.uid,
+  );
+
+  protected readonly focusHighlight = computed(
+    () => this.messageFocusService.target() === this.entry().id,
   );
 
   protected readonly deleted = computed(() => Boolean(this.entry().deletedAt));

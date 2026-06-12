@@ -3,16 +3,7 @@
     <img class="topbar__logo" src="/logos/logo-text.svg" alt="DABubble" />
   </div>
 
-  <div class="topbar__search">
-    <label class="sr-only" for="topbar-search">Devspace durchsuchen</label>
-    <input
-      id="topbar-search"
-      class="form-input topbar__search-input"
-      type="search"
-      placeholder="Devspace durchsuchen"
-    />
-    <img class="topbar__search-icon" src="/icons/search.svg" alt="" aria-hidden="true" />
-  </div>
+  <app-search-bar (userSelected)="openUserProfile($event)" />
 
   <div class="topbar__profile">
     <button
@@ -53,6 +44,6 @@
   </app-dialog-shell>
 }
 
-@if (state() === 'profile' && selfUid(); as uid) {
-  <app-profile-dialog [uid]="uid" (closed)="close()" />
+@if (profileUid(); as uid) {
+  <app-profile-dialog [uid]="uid" (closed)="profileUid.set(null)" />
 }

@@ -9,6 +9,7 @@ import { AuthService } from '../../../services/auth.service';
 import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
 import { UserService } from '../../../services/user.service';
 import { ProfileDialogComponent } from '../../profile/profile-dialog/profile-dialog.component';
+import { SearchBarComponent } from '../../search/search-bar/search-bar.component';
 import {
   DialogAnchor,
   DialogShellComponent,
@@ -17,17 +18,18 @@ import {
 
 const GUEST_NAME = 'Gast';
 
-type TopbarState = 'closed' | 'menu' | 'profile';
+type TopbarState = 'closed' | 'menu';
 
 /**
- * Top bar of the app shell. Shows the brand, a static search input (search
- * logic follows in a later module) and the signed-in user's live identity
- * resolved from the users collection. The profile area opens the anchored
- * profile menu with the profile dialog and the logout action.
+ * Top bar of the app shell. Shows the brand, the global workspace search
+ * and the signed-in user's live identity resolved from the users
+ * collection. The profile area opens the anchored profile menu with the
+ * profile dialog and the logout action; search results can open any
+ * user's profile.
  */
 @Component({
   selector: 'app-topbar',
-  imports: [DialogShellComponent, ProfileDialogComponent],
+  imports: [DialogShellComponent, ProfileDialogComponent, SearchBarComponent],
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,6 +42,8 @@ export class TopbarComponent {
   private readonly router = inject(Router);
 
   protected readonly state = signal<TopbarState>('closed');
+
+  protected readonly profileUid = signal<string | null>(null);
 
   protected readonly menuAnchor = signal<DialogAnchor | null>(null);
 
@@ -85,7 +89,17 @@ export class TopbarComponent {
    * Switches from the menu to the own-profile dialog.
    */
   protected openProfile(): void {
-    this.state.set('profile');
+    this.state.set('closed');
+    this.profileUid.set(this.selfUid());
+  }
+
+
+  /**
+   * Opens the profile dialog for a user picked in the global search.
+   * @param uid Uid of the selected user.
+   */
+  protected openUserProfile(uid: string): void {
+    this.profileUid.set(uid);
   }
 
 

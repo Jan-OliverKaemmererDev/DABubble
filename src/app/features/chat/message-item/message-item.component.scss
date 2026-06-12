@@ -12,6 +12,18 @@
   flex-direction: row-reverse;
 }
 
+:host(.message--focus) {
+  background-color: rgba(v.color('primary'), 0.08);
+  border-radius: v.$radius-lg;
+  transition: background-color v.$transition-slow;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host(.message--focus) {
+    transition: none;
+  }
+}
+
 .message__avatar {
   width: v.$avatar-message;
   height: v.$avatar-message;

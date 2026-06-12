@@ -2,6 +2,7 @@
 @use 'mixins' as m;
 
 .composer {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: v.space('sm');
@@ -13,6 +14,13 @@
   &:focus-within {
     border-color: v.color('primary');
   }
+}
+
+.composer__suggestions {
+  position: absolute;
+  bottom: calc(100% + #{v.space('xs')});
+  left: 0;
+  z-index: v.$z-dropdown;
 }
 
 .composer__text {

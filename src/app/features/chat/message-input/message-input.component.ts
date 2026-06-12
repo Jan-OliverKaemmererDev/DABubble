@@ -1,32 +1,48 @@
 /**
- * @file Message composer card with growing textarea, emoji insertion and
- * send handling.
+ * @file Message composer card with growing textarea, emoji insertion,
+ * mention suggestions and send handling.
  */
 import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
   computed,
+  inject,
   input,
   output,
   signal,
   viewChild,
 } from '@angular/core';
 
+import { ChannelService } from '../../../services/channel.service';
+import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
+import { UserService } from '../../../services/user.service';
+import {
+  Suggestion,
+  SuggestionDropdownComponent,
+} from '../../../shared/suggestion-dropdown/suggestion-dropdown.component';
 import { EmojiPickerComponent } from '../emoji-picker/emoji-picker.component';
 
 const MAX_TEXTAREA_HEIGHT_PX = 200;
 
+/** Open mention context inside the textarea. */
+interface MentionState {
+  readonly type: '@' | '#';
+  readonly query: string;
+  readonly start: number;
+}
+
 /**
- * Presentational composer per the Figma chat frames: outlined card with a
- * growing textarea, the emoji picker (inserts at the caret), an inert
- * mention button (module 9) and a send button. Enter sends, Shift+Enter
- * inserts a newline; trimmed-empty input is not sendable. After sending,
- * the field clears and keeps focus.
+ * Presentational composer per the Figma frames: outlined card with a
+ * growing textarea, the emoji picker (inserts at the caret), mention
+ * dropdowns for "@" (members) and "#" (channels) per the component sheet
+ * and a send button. Enter sends (or picks the active suggestion while a
+ * dropdown is open), Shift+Enter inserts a newline; trimmed-empty input
+ * or an externally disabled state block sending.
  */
 @Component({
   selector: 'app-message-input',
-  imports: [EmojiPickerComponent],
+  imports: [EmojiPickerComponent, SuggestionDropdownComponent],
   templateUrl: './message-input.component.html',
   styleUrl: './message-input.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,17 +52,33 @@ export class MessageInputComponent {
 
   readonly placeholder = input.required<string>();
 
+  readonly sendDisabled = input(false);
+
   readonly send = output<string>();
+
+  private readonly userService = inject(UserService);
+
+  private readonly channelService = inject(ChannelService);
 
   private readonly textarea = viewChild.required<ElementRef<HTMLTextAreaElement>>('textarea');
 
   protected readonly inputId = `composer-text-${MessageInputComponent.instanceCounter++}`;
 
+  protected readonly suggestionIdPrefix = `${this.inputId}-suggestion`;
+
   protected readonly text = signal('');
 
   protected readonly pickerOpen = signal(false);
 
-  protected readonly canSend = computed(() => this.text().trim().length > 0);
+  protected readonly mention = signal<MentionState | null>(null);
+
+  protected readonly activeIndex = signal(0);
+
+  protected readonly canSend = computed(
+    () => !this.sendDisabled() && this.text().trim().length > 0,
+  );
+
+  protected readonly suggestions = computed(() => this.buildSuggestions());
 
 
   /**
@@ -58,7 +90,8 @@ export class MessageInputComponent {
 
 
   /**
-   * Syncs the signal with the textarea and grows it with its content.
+   * Syncs the signal with the textarea, grows it with its content and
+   * tracks an open mention at the caret.
    * @param event Input event of the textarea.
    */
   protected onInput(event: Event): void {
@@ -66,17 +99,22 @@ export class MessageInputComponent {
     this.text.set(element.value);
     element.style.height = 'auto';
     element.style.height = `${Math.min(element.scrollHeight, MAX_TEXTAREA_HEIGHT_PX)}px`;
+    this.syncMention(element);
   }
 
 
   /**
-   * Sends on Enter; Shift+Enter falls through and inserts a newline.
-   * @param event Keydown event of the Enter key.
+   * Handles composer keys: suggestion navigation while a mention dropdown
+   * is open, otherwise Enter sends (Shift+Enter falls through).
+   * @param event Keydown event of the textarea.
    */
-  protected onEnter(event: Event): void {
-    if (!(event instanceof KeyboardEvent) || event.shiftKey) return;
-    event.preventDefault();
-    this.submit();
+  protected onKeydown(event: Event): void {
+    if (!(event instanceof KeyboardEvent)) return;
+    if (this.mention() !== null && this.handleMentionKey(event)) return;
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      this.submit();
+    }
   }
 
 
@@ -95,6 +133,40 @@ export class MessageInputComponent {
 
 
   /**
+   * Toggles the member dropdown via the @ button, inserting the trigger
+   * character at the caret as if it was typed; a separating space is
+   * added when the caret follows other text so the trigger stays valid.
+   */
+  protected toggleMentionButton(): void {
+    if (this.mention()?.type === '@') return this.mention.set(null);
+    const element = this.textarea().nativeElement;
+    const start = element.selectionStart ?? element.value.length;
+    const needsSpace = start > 0 && !/\s/.test(element.value[start - 1]);
+    element.setRangeText(needsSpace ? ' @' : '@', start, element.selectionEnd ?? start, 'end');
+    this.text.set(element.value);
+    element.focus();
+    this.syncMention(element);
+  }
+
+
+  /**
+   * Replaces the open mention token with the picked suggestion as plain
+   * text ("@Name " / "#channelname ") and closes the dropdown.
+   * @param suggestion Picked suggestion row.
+   */
+  protected pickSuggestion(suggestion: Suggestion): void {
+    const mention = this.mention();
+    if (!mention) return;
+    const element = this.textarea().nativeElement;
+    const caret = element.selectionStart ?? element.value.length;
+    element.setRangeText(`${mention.type}${suggestion.label} `, mention.start, caret, 'end');
+    this.text.set(element.value);
+    this.mention.set(null);
+    element.focus();
+  }
+
+
+  /**
    * Emits the trimmed text, clears the composer and keeps focus. The DOM
    * value is cleared imperatively: the value binding may have never seen
    * the typed text (zoneless change detection coalesces), so resetting the
@@ -104,9 +176,96 @@ export class MessageInputComponent {
     if (!this.canSend()) return;
     this.send.emit(this.text().trim());
     this.text.set('');
+    this.mention.set(null);
     const element = this.textarea().nativeElement;
     element.value = '';
     element.style.height = 'auto';
     element.focus();
   }
+
+
+  /**
+   * Navigates and resolves the mention dropdown from the keyboard.
+   * @param event Keydown event while the dropdown is open.
+   * @returns True when the key was consumed by the dropdown.
+   */
+  private handleMentionKey(event: KeyboardEvent): boolean {
+    const count = this.suggestions().length;
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      const delta = event.key === 'ArrowDown' ? 1 : -1;
+      this.activeIndex.set((this.activeIndex() + delta + count) % Math.max(count, 1));
+      return true;
+    }
+    if (event.key === 'Enter' && count > 0) {
+      event.preventDefault();
+      this.pickSuggestion(this.suggestions()[this.activeIndex()]);
+      return true;
+    }
+    if (event.key === 'Escape') {
+      event.stopPropagation();
+      this.mention.set(null);
+      return true;
+    }
+    return false;
+  }
+
+
+  /**
+   * Detects an open mention token at the caret and resets the selection.
+   * @param element Composer textarea.
+   */
+  private syncMention(element: HTMLTextAreaElement): void {
+    const caret = element.selectionStart ?? element.value.length;
+    this.mention.set(detectMention(element.value, caret));
+    this.activeIndex.set(0);
+  }
+
+
+  /**
+   * Builds the suggestion rows for the open mention type, filtered live
+   * by the typed query.
+   */
+  private buildSuggestions(): Suggestion[] {
+    const mention = this.mention();
+    if (!mention) return [];
+    const query = mention.query.toLowerCase();
+    if (mention.type === '#') {
+      return this.channelService
+        .channels()
+        .filter(channel => channel.name.toLowerCase().includes(query))
+        .map(channel => ({ id: channel.id, label: channel.name, hash: true }));
+    }
+    return this.userService
+      .users()
+      .filter(user => user.name.toLowerCase().includes(query))
+      .map(user => ({ id: user.uid, label: user.name, avatar: avatarUrl(user.avatarPath) }));
+  }
+}
+
+
+/**
+ * Finds a mention trigger ("@" or "#") starting the token at the caret;
+ * the trigger must begin the text or follow whitespace.
+ * @param text Full textarea value.
+ * @param caret Caret position inside the value.
+ */
+function detectMention(text: string, caret: number): MentionState | null {
+  for (let index = caret - 1; index >= 0; index -= 1) {
+    const char = text[index];
+    if (/\s/.test(char)) return null;
+    if (char !== '@' && char !== '#') continue;
+    if (index > 0 && !/\s/.test(text[index - 1])) return null;
+    return { type: char, query: text.slice(index + 1, caret), start: index };
+  }
+  return null;
+}
+
+
+/**
+ * Maps an avatar path to an absolute asset URL with placeholder fallback.
+ * @param path Avatar path stored on a user document.
+ */
+function avatarUrl(path: string): string {
+  return path.startsWith('http') ? `/${DEFAULT_AVATAR_PATH}` : `/${path}`;
 }

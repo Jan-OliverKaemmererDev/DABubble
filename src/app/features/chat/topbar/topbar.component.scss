@@ -20,26 +20,8 @@
   width: auto;
 }
 
-.topbar__search {
-  position: relative;
-  display: flex;
-  align-items: center;
-  flex: 1;
-  min-width: 0;
-}
 
-.topbar__search-input {
-  background-color: v.color('white');
-  padding-right: v.space('lg') + v.$icon-md + v.space('md');
-}
 
-.topbar__search-icon {
-  position: absolute;
-  right: v.space('lg');
-  width: v.$icon-md;
-  height: v.$icon-md;
-  pointer-events: none;
-}
 
 .topbar__profile {
   position: relative;
