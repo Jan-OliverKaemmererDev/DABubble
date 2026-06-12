@@ -20,6 +20,7 @@ import {
   collectionData,
   doc,
   getDocs,
+  orderBy,
   query,
   serverTimestamp,
   updateDoc,
@@ -224,6 +225,28 @@ export class ChannelService {
     );
     const snapshot = await getDocs(duplicatesQuery);
     return snapshot.docs.some(docSnapshot => docSnapshot.id !== excludeChannelId);
+  }
+
+
+  /**
+   * Streams every channel in the workspace, ordered by name — the
+   * new-message address list shows all existing channels per checklist
+   * US4. Subscribed per consumer, not held open by the service.
+   */
+  streamAllChannels(): Observable<Channel[]> {
+    return this.inContext(() => this.queryAllChannels());
+  }
+
+
+  /**
+   * Builds the live all-channels query; on Firestore errors a toast is
+   * shown and an empty list keeps the UI functional.
+   */
+  private queryAllChannels(): Observable<Channel[]> {
+    const channelsQuery = query(collection(this.firestore, 'channels'), orderBy('nameLower'));
+    return (collectionData(channelsQuery, { idField: 'id' }) as Observable<Channel[]>).pipe(
+      catchError(() => this.reportLoadError()),
+    );
   }
 
 

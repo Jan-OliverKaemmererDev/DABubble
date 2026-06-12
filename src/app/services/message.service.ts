@@ -81,7 +81,42 @@ export class MessageService {
    * @param text Trimmed message text.
    */
   async sendMessage(collectionPath: string, text: string): Promise<void> {
-    const message: MessageDoc = {
+    const message = this.buildMessage(text);
+    await runInInjectionContext(this.injector, () =>
+      addDoc(collection(this.firestore, collectionPath), message),
+    );
+    this.playNotificationSound();
+  }
+
+
+  /**
+   * Persists a channel message and joins the sender to the channel in the
+   * same batch — join-on-send for the new-message flow, where the "#" list
+   * shows all channels regardless of membership (see CLAUDE.md). Joining
+   * is idempotent for existing members.
+   * @param channelId Firestore id of the target channel.
+   * @param text Trimmed message text.
+   */
+  async sendChannelMessageAsJoiner(channelId: string, text: string): Promise<void> {
+    const uid = this.authService.requireUid();
+    const message = this.buildMessage(text);
+    await runInInjectionContext(this.injector, () => {
+      const batch = writeBatch(this.firestore);
+      batch.set(doc(collection(this.firestore, channelMessagesPath(channelId))), message);
+      batch.update(doc(this.firestore, `channels/${channelId}`), { memberIds: arrayUnion(uid) });
+      return batch.commit();
+    });
+    this.playNotificationSound();
+  }
+
+
+  /**
+   * Builds a message document authored by the signed-in user with the
+   * data-model defaults.
+   * @param text Trimmed message text.
+   */
+  private buildMessage(text: string): MessageDoc {
+    return {
       authorId: this.authService.requireUid(),
       text,
       createdAt: serverTimestamp(),
@@ -89,10 +124,6 @@ export class MessageService {
       replyCount: 0,
       lastReplyAt: null,
     };
-    await runInInjectionContext(this.injector, () =>
-      addDoc(collection(this.firestore, collectionPath), message),
-    );
-    this.playNotificationSound();
   }
 
 

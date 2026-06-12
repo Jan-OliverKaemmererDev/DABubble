@@ -17,8 +17,9 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { DirectMessageService } from '../../../services/direct-message.service';
+import { Channel } from '../../../models/channel.model';
 import { ChannelService } from '../../../services/channel.service';
-import { MessageService, channelMessagesPath } from '../../../services/message.service';
+import { MessageService } from '../../../services/message.service';
 import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
 import { ToastService } from '../../../services/toast.service';
 import { UserService } from '../../../services/user.service';
@@ -43,11 +44,12 @@ interface Recipient {
 
 /**
  * "Neue Nachricht" view per the Figma frame: the address field resolves
- * "#" to the user's channels, "@" to workspace members and plain text to
- * channel names, user names and e-mail addresses. Exactly one recipient
- * locks as a removable chip; sending routes the message to the target and
- * navigates there (behavioral convention — Figma defines no post-send
- * flow).
+ * "#" to ALL existing channels (checklist US4), "@" to workspace members
+ * and plain text to channel names, user names and e-mail addresses.
+ * Exactly one recipient locks as a removable chip; sending routes the
+ * message to the target — joining the sender to non-member channels —
+ * and navigates there (behavioral convention — Figma defines no
+ * post-send flow).
  */
 @Component({
   selector: 'app-new-message',
@@ -72,6 +74,10 @@ export class NewMessageComponent implements AfterViewInit {
   private readonly addressInput = viewChild<ElementRef<HTMLInputElement>>('addressInput');
 
   protected readonly addressControl = new FormControl('', { nonNullable: true });
+
+  private readonly allChannels = toSignal(this.channelService.streamAllChannels(), {
+    initialValue: [] as Channel[],
+  });
 
   private readonly addressTerm = toSignal(this.addressControl.valueChanges, {
     initialValue: '',
@@ -160,7 +166,7 @@ export class NewMessageComponent implements AfterViewInit {
    */
   private deliver(recipient: Recipient, text: string): Promise<void> {
     if (recipient.kind === 'channel') {
-      return this.messageService.sendMessage(channelMessagesPath(recipient.id), text);
+      return this.messageService.sendChannelMessageAsJoiner(recipient.id, text);
     }
     return this.directMessageService.send(recipient.id, text);
   }
@@ -194,13 +200,13 @@ export class NewMessageComponent implements AfterViewInit {
 
 
   /**
-   * Builds channel suggestions filtered by name.
+   * Builds channel suggestions filtered by name; per checklist US4 the
+   * list covers ALL existing channels, not only member channels.
    * @param query Lowercased-comparable filter term.
    */
   private channelSuggestions(query: string): Suggestion[] {
     const normalized = query.toLowerCase();
-    return this.channelService
-      .channels()
+    return this.allChannels()
       .filter(channel => channel.name.toLowerCase().includes(normalized))
       .map(channel => ({ id: `${CHANNEL_PREFIX}${channel.id}`, label: channel.name, hash: true }));
   }
