@@ -7,13 +7,17 @@ import {
   addDoc,
   collection,
   collectionData,
+  doc,
+  docData,
+  increment,
   orderBy,
   query,
   serverTimestamp,
+  writeBatch,
 } from '@angular/fire/firestore';
 import { Observable, catchError, of } from 'rxjs';
 
-import { Message, MessageDoc } from '../models/message.model';
+import { Message, MessageDoc, Reply, ReplyDoc } from '../models/message.model';
 import { AuthService } from './auth.service';
 import { ToastService } from './toast.service';
 
@@ -80,6 +84,77 @@ export class MessageService {
     };
     await runInInjectionContext(this.injector, () =>
       addDoc(collection(this.firestore, collectionPath), message),
+    );
+  }
+
+
+  /**
+   * Streams a single message document live, e.g. the origin message of an
+   * open thread; emits undefined when the document is missing.
+   * @param messagePath Firestore path of the message document.
+   */
+  streamMessage(messagePath: string): Observable<Message | undefined> {
+    return runInInjectionContext(this.injector, () =>
+      docData(doc(this.firestore, messagePath), { idField: 'id' }),
+    ) as Observable<Message | undefined>;
+  }
+
+
+  /**
+   * Streams a message's thread replies live, oldest first.
+   * @param messagePath Firestore path of the parent message document.
+   */
+  streamReplies(messagePath: string): Observable<Reply[]> {
+    return runInInjectionContext(this.injector, () => this.queryReplies(messagePath));
+  }
+
+
+  /**
+   * Persists a thread reply and atomically updates the parent message's
+   * denormalized replyCount and lastReplyAt in the same batched write.
+   * @param messagePath Firestore path of the parent message document.
+   * @param text Trimmed reply text.
+   */
+  async sendReply(messagePath: string, text: string): Promise<void> {
+    const reply = this.buildReply(text);
+    await runInInjectionContext(this.injector, () => {
+      const batch = writeBatch(this.firestore);
+      batch.set(doc(collection(this.firestore, `${messagePath}/replies`)), reply);
+      batch.update(doc(this.firestore, messagePath), {
+        replyCount: increment(1),
+        lastReplyAt: serverTimestamp(),
+      });
+      return batch.commit();
+    });
+  }
+
+
+  /**
+   * Builds a reply document authored by the signed-in user.
+   * @param text Trimmed reply text.
+   */
+  private buildReply(text: string): ReplyDoc {
+    return {
+      authorId: this.authService.requireUid(),
+      text,
+      createdAt: serverTimestamp(),
+      reactions: {},
+    };
+  }
+
+
+  /**
+   * Builds the live replies query; on Firestore errors a toast is shown
+   * and an empty list keeps the UI functional.
+   * @param messagePath Firestore path of the parent message document.
+   */
+  private queryReplies(messagePath: string): Observable<Reply[]> {
+    const repliesQuery = query(
+      collection(this.firestore, `${messagePath}/replies`),
+      orderBy('createdAt'),
+    );
+    return (collectionData(repliesQuery, { idField: 'id' }) as Observable<Reply[]>).pipe(
+      catchError(() => this.reportLoadError()),
     );
   }
 

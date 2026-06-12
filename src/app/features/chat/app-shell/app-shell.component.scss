@@ -100,16 +100,6 @@
   }
 }
 
-.shell__thread-placeholder {
-  padding: v.space('lg');
-}
-
-.shell__thread-title {
-  font-size: v.font-size('h4');
-  font-weight: v.$font-weight-bold;
-  color: v.color('black');
-}
-
 @media (prefers-reduced-motion: reduce) {
   .shell__workspace,
   .shell__thread {

@@ -27,11 +27,15 @@ const MAX_TEXTAREA_HEIGHT_PX = 200;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MessageInputComponent {
+  private static instanceCounter = 0;
+
   readonly placeholder = input.required<string>();
 
   readonly send = output<string>();
 
   private readonly textarea = viewChild.required<ElementRef<HTMLTextAreaElement>>('textarea');
+
+  protected readonly inputId = `composer-text-${MessageInputComponent.instanceCounter++}`;
 
   protected readonly text = signal('');
 
@@ -70,13 +74,18 @@ export class MessageInputComponent {
 
 
   /**
-   * Emits the trimmed text, clears the composer and keeps focus.
+   * Emits the trimmed text, clears the composer and keeps focus. The DOM
+   * value is cleared imperatively: the value binding may have never seen
+   * the typed text (zoneless change detection coalesces), so resetting the
+   * signal alone would not reliably clear the textarea.
    */
   protected submit(): void {
     if (!this.canSend()) return;
     this.send.emit(this.text().trim());
     this.text.set('');
-    this.textarea().nativeElement.style.height = 'auto';
-    this.focusInput();
+    const element = this.textarea().nativeElement;
+    element.value = '';
+    element.style.height = 'auto';
+    element.focus();
   }
 }

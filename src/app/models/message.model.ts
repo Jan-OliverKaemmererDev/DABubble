@@ -41,6 +41,21 @@ export interface Message extends MessageDoc {
 }
 
 /**
+ * Reply document paired with its Firestore document id as read from a
+ * replies subcollection (collectionData idField).
+ */
+export interface Reply extends ReplyDoc {
+  /** Firestore document id of the reply. */
+  readonly id: string;
+}
+
+/**
+ * Union of everything the shared message item renders: chat messages carry
+ * the denormalized thread counters, thread replies do not.
+ */
+export type ChatEntry = Message | Reply;
+
+/**
  * Firestore document stored at .../messages/{messageId}/replies/{replyId}.
  */
 export interface ReplyDoc {

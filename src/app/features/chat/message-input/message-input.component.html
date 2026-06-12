@@ -1,8 +1,8 @@
 <div class="composer">
-  <label class="sr-only" for="composer-text">{{ placeholder() }}</label>
+  <label class="sr-only" [for]="inputId">{{ placeholder() }}</label>
   <textarea
     #textarea
-    id="composer-text"
+    [id]="inputId"
     class="composer__text"
     rows="1"
     [placeholder]="placeholder()"

@@ -19,6 +19,7 @@ import { UserDoc } from '../../../models/user.model';
 import { ChannelService } from '../../../services/channel.service';
 import { MessageService, channelMessagesPath } from '../../../services/message.service';
 import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
+import { ThreadService } from '../../../services/thread.service';
 import { ToastService } from '../../../services/toast.service';
 import { UserService } from '../../../services/user.service';
 import { MessageInputComponent } from '../message-input/message-input.component';
@@ -49,6 +50,8 @@ export class ChannelViewComponent {
   private readonly userService = inject(UserService);
 
   private readonly toastService = inject(ToastService);
+
+  private readonly threadService = inject(ThreadService);
 
   private readonly composer = viewChild(MessageInputComponent);
 
@@ -107,11 +110,25 @@ export class ChannelViewComponent {
 
 
   /**
-   * Focuses the composer once per channel switch, after rendering.
+   * Opens the thread panel for a channel message.
+   * @param message Message whose thread was requested.
+   */
+  protected openThread(message: Message): void {
+    this.threadService.open({
+      messagePath: `${channelMessagesPath(this.channelId())}/${message.id}`,
+      contextLabel: `# ${this.channel()?.name ?? ''}`,
+    });
+  }
+
+
+  /**
+   * Focuses the composer and closes a thread from the previous channel
+   * once per channel switch.
    * @param channelId Currently routed channel id.
    */
   private handleChannelSwitch(channelId: string): void {
     if (channelId === this.focusedChannelId) return;
+    if (this.focusedChannelId !== null) this.threadService.close();
     this.focusedChannelId = channelId;
     requestAnimationFrame(() => this.composer()?.focusInput());
   }

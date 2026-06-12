@@ -1,9 +1,11 @@
 /**
  * @file Main app shell: topbar, workspace column, chat area and thread panel.
  */
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, computed, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
+import { ThreadService } from '../../../services/thread.service';
+import { ThreadPanelComponent } from '../thread-panel/thread-panel.component';
 import { TopbarComponent } from '../topbar/topbar.component';
 import { WorkspaceMenuComponent } from '../workspace-menu/workspace-menu.component';
 
@@ -14,21 +16,31 @@ const WORKSPACE_OPEN_STORAGE_KEY = 'dabubble:workspace-open';
 /**
  * Three-panel chat layout per the Figma frames 06/07. The workspace column
  * is collapsible via the vertical edge tab and its state survives reloads
- * via localStorage; the thread panel stays closed behind a signal until
- * module 5 takes over. The chat area hosts the router outlet for the chat
- * views.
+ * via localStorage; the thread panel opens while a thread context is set.
+ * The chat area hosts the router outlet for the chat views.
  */
 @Component({
   selector: 'app-shell',
-  imports: [RouterOutlet, TopbarComponent, WorkspaceMenuComponent],
+  imports: [RouterOutlet, ThreadPanelComponent, TopbarComponent, WorkspaceMenuComponent],
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppShellComponent {
+export class AppShellComponent implements OnDestroy {
+  private readonly threadService = inject(ThreadService);
+
   protected readonly workspaceOpen = signal(readStoredWorkspaceOpen());
 
-  protected readonly threadOpen = signal(false);
+  protected readonly threadOpen = this.threadService.isOpen;
+
+
+  /**
+   * Closes a leftover thread when the shell is destroyed (e.g. logout) so
+   * the next session starts without stale state.
+   */
+  ngOnDestroy(): void {
+    this.threadService.close();
+  }
 
   protected readonly toggleLabel = computed(() =>
     this.workspaceOpen() ? CLOSE_MENU_LABEL : OPEN_MENU_LABEL,

@@ -28,7 +28,11 @@
     </div>
   } @else {
     <div class="dm__list">
-      <app-message-list [messages]="messages()" [resetKey]="uid()" />
+      <app-message-list
+        [messages]="messages()"
+        [resetKey]="uid()"
+        (threadRequested)="openThread($event)"
+      />
     </div>
   }
 

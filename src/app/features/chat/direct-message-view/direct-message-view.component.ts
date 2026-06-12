@@ -18,6 +18,7 @@ import { Message } from '../../../models/message.model';
 import { AuthService } from '../../../services/auth.service';
 import { DirectMessageService } from '../../../services/direct-message.service';
 import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
+import { ThreadService } from '../../../services/thread.service';
 import { ToastService } from '../../../services/toast.service';
 import { UserService } from '../../../services/user.service';
 import { MessageInputComponent } from '../message-input/message-input.component';
@@ -50,6 +51,8 @@ export class DirectMessageViewComponent {
   private readonly authService = inject(AuthService);
 
   private readonly toastService = inject(ToastService);
+
+  private readonly threadService = inject(ThreadService);
 
   private readonly composer = viewChild(MessageInputComponent);
 
@@ -112,11 +115,25 @@ export class DirectMessageViewComponent {
 
 
   /**
-   * Focuses the composer once per conversation switch, after rendering.
+   * Opens the thread panel for a direct message.
+   * @param message Message whose thread was requested.
+   */
+  protected openThread(message: Message): void {
+    this.threadService.open({
+      messagePath: this.directMessageService.messagePathFor(this.uid(), message.id),
+      contextLabel: this.partnerName(),
+    });
+  }
+
+
+  /**
+   * Focuses the composer and closes a thread from the previous
+   * conversation once per conversation switch.
    * @param uid Currently routed partner uid.
    */
   private handleConversationSwitch(uid: string): void {
     if (uid === this.focusedUid) return;
+    if (this.focusedUid !== null) this.threadService.close();
     this.focusedUid = uid;
     requestAnimationFrame(() => this.composer()?.focusInput());
   }

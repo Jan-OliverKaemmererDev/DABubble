@@ -65,6 +65,17 @@ export class DirectMessageService {
 
 
   /**
+   * Builds the Firestore path of a message document in the conversation
+   * with the given partner, e.g. for opening its thread.
+   * @param partnerUid Uid of the conversation partner.
+   * @param messageId Firestore id of the message.
+   */
+  messagePathFor(partnerUid: string, messageId: string): string {
+    return `${directMessagesPath(this.conversationIdWith(partnerUid))}/${messageId}`;
+  }
+
+
+  /**
    * Builds the deterministic conversation id for the signed-in user and a
    * partner (both uids sorted, joined with "_").
    * @param partnerUid Uid of the conversation partner.

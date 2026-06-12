@@ -1,0 +1,28 @@
+<img class="message__avatar" [src]="authorAvatar()" alt="" aria-hidden="true" />
+
+<div class="message__body">
+  <div class="message__meta">
+    <span class="message__author">{{ authorName() }}</span>
+    <span class="message__time">{{ time() }} Uhr</span>
+  </div>
+  <p class="message__bubble">{{ entry().text }}</p>
+  @if (threadable() && replyCount() > 0) {
+    <div class="message__thread">
+      <button class="message__thread-link" type="button" (click)="openThread.emit()">
+        {{ replyLabel() }}
+      </button>
+      <span class="message__thread-meta">Letzte Antwort {{ lastReplyTime() }}</span>
+    </div>
+  }
+</div>
+
+@if (threadable()) {
+  <button
+    class="message__thread-start"
+    type="button"
+    aria-label="Thread starten"
+    (click)="openThread.emit()"
+  >
+    <img src="/icons/comment.svg" alt="" aria-hidden="true" />
+  </button>
+}

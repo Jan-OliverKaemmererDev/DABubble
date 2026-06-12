@@ -12,20 +12,17 @@ import {
   effect,
   inject,
   input,
+  output,
   viewChild,
 } from '@angular/core';
 import { Timestamp } from '@angular/fire/firestore';
 
 import { Message } from '../../../models/message.model';
-import { AuthService } from '../../../services/auth.service';
-import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
-import { UserService } from '../../../services/user.service';
+import { MessageItemComponent } from '../message-item/message-item.component';
 
 const TODAY_LABEL = 'Heute';
 const DATE_KEY_FORMAT = 'yyyy-MM-dd';
 const DAY_LABEL_FORMAT = 'EEEE, d. MMMM';
-const TIME_FORMAT = 'HH:mm';
-const UNKNOWN_AUTHOR = 'Unbekannt';
 const NEAR_BOTTOM_THRESHOLD_PX = 120;
 
 /** Consecutive messages of one calendar day under a shared separator. */
@@ -36,14 +33,15 @@ interface MessageGroup {
 }
 
 /**
- * Scrollable message list per Figma frames 06/09: German date separators,
- * own messages mirrored right, foreign messages left with live-resolved
- * author identity, and thread previews. Auto-scrolls to new messages
- * unless the user scrolled up to read history; switching the context
- * (resetKey) re-enables sticking to the bottom.
+ * Scrollable message list per Figma frames 06/09: German date separators
+ * and shared message rows. Messages can open their thread; the request
+ * bubbles up to the owning chat view, which knows the Firestore context.
+ * Auto-scrolls to new messages unless the user scrolled up to read
+ * history; switching the context (resetKey) re-enables sticking.
  */
 @Component({
   selector: 'app-message-list',
+  imports: [MessageItemComponent],
   templateUrl: './message-list.component.html',
   styleUrl: './message-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -53,9 +51,7 @@ export class MessageListComponent {
 
   readonly resetKey = input.required<string>();
 
-  private readonly userService = inject(UserService);
-
-  private readonly authService = inject(AuthService);
+  readonly threadRequested = output<Message>();
 
   private readonly locale = inject(LOCALE_ID);
 
@@ -66,10 +62,6 @@ export class MessageListComponent {
   private renderedResetKey: string | null = null;
 
   protected readonly groups = computed(() => this.groupMessages());
-
-  private readonly usersById = computed(
-    () => new Map(this.userService.users().map(user => [user.uid, user])),
-  );
 
 
   /**
@@ -91,63 +83,6 @@ export class MessageListComponent {
     if (!element) return;
     const distance = element.scrollHeight - element.scrollTop - element.clientHeight;
     this.stickToBottom = distance < NEAR_BOTTOM_THRESHOLD_PX;
-  }
-
-
-  /**
-   * Reports whether the message was written by the signed-in user.
-   * @param message Message from the live stream.
-   */
-  protected isOwn(message: Message): boolean {
-    return message.authorId === this.authService.currentUser()?.uid;
-  }
-
-
-  /**
-   * Resolves the author's display name live via the user stream.
-   * @param message Message from the live stream.
-   */
-  protected authorName(message: Message): string {
-    return this.usersById().get(message.authorId)?.name ?? UNKNOWN_AUTHOR;
-  }
-
-
-  /**
-   * Resolves the author's avatar with the placeholder as fallback.
-   * @param message Message from the live stream.
-   */
-  protected authorAvatar(message: Message): string {
-    const path = this.usersById().get(message.authorId)?.avatarPath;
-    if (!path || path.startsWith('http')) return `/${DEFAULT_AVATAR_PATH}`;
-    return `/${path}`;
-  }
-
-
-  /**
-   * Formats a message's creation time as HH:mm.
-   * @param message Message from the live stream.
-   */
-  protected messageTime(message: Message): string {
-    return formatDate(resolveDate(message.createdAt), TIME_FORMAT, this.locale);
-  }
-
-
-  /**
-   * Formats the latest reply time as HH:mm; empty without replies.
-   * @param message Message from the live stream.
-   */
-  protected lastReplyTime(message: Message): string {
-    if (!message.lastReplyAt) return '';
-    return formatDate(resolveDate(message.lastReplyAt), TIME_FORMAT, this.locale);
-  }
-
-
-  /**
-   * Builds the singular/plural reply-count label for the thread preview.
-   * @param message Message from the live stream.
-   */
-  protected replyLabel(message: Message): string {
-    return message.replyCount === 1 ? '1 Antwort' : `${message.replyCount} Antworten`;
   }
 
 

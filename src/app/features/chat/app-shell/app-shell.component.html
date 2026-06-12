@@ -26,9 +26,9 @@
     </main>
 
     <aside class="shell__thread" [class.shell__thread--open]="threadOpen()">
-      <div class="shell__thread-placeholder">
-        <h2 class="shell__thread-title">Thread</h2>
-      </div>
+      @if (threadOpen()) {
+        <app-thread-panel />
+      }
     </aside>
   </div>
 </div>

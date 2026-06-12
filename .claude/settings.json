@@ -35,7 +35,12 @@
       "Bash(node .claude-tmp/clean-dms.mjs)",
       "Bash(node .claude-tmp/verify-m4.mjs)",
       "Bash(node .claude-tmp/debug-dialog-reload.mjs)",
-      "Bash(node .claude-tmp/cleanup-m4.mjs)"
+      "Bash(node .claude-tmp/cleanup-m4.mjs)",
+      "Bash(xargs kill -9)",
+      "Bash(node .claude-tmp/clean-m5.mjs)",
+      "Bash(node .claude-tmp/verify-m5.mjs)",
+      "Bash(node .claude-tmp/debug-clear.mjs)",
+      "Bash(node -e ' *)"
     ]
   }
 }

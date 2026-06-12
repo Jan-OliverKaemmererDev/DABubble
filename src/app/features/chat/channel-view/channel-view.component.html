@@ -25,7 +25,11 @@
   </header>
 
   <div class="channel__list">
-    <app-message-list [messages]="messages()" [resetKey]="channelId()" />
+    <app-message-list
+      [messages]="messages()"
+      [resetKey]="channelId()"
+      (threadRequested)="openThread($event)"
+    />
   </div>
 
   <div class="channel__composer">
