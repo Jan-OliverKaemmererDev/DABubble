@@ -55,13 +55,15 @@
 .chips__tooltip {
   display: flex;
   align-items: center;
+  justify-content: center;
+  text-align: center;
   gap: v.space('xs');
   position: absolute;
   bottom: calc(100% + #{v.space('xs')});
   left: 50%;
   transform: translateX(-50%);
   z-index: v.$z-tooltip;
-  padding: v.space('xs') v.space('sm-md');
+  padding: v.space('xs') v.space('md');
   border: 1px solid v.color('lines');
   border-radius: v.$radius-sm;
   background-color: v.color('white');
