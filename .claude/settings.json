@@ -25,7 +25,13 @@
       "Bash(node .claude-tmp/repair-guest.mjs)",
       "Bash(node .claude-tmp/verify-repair.mjs)",
       "Bash(node .claude-tmp/check-tokens.mjs)",
-      "Bash(node .claude-tmp/delete-channel.mjs)"
+      "Bash(node .claude-tmp/delete-channel.mjs)",
+      "Bash(node .claude-tmp/verify-m3.mjs)",
+      "Bash(node .claude-tmp/debug-view.mjs)",
+      "Bash(node .claude-tmp/trace-warning.mjs)",
+      "Bash(node .claude-tmp/clean-channels.mjs)",
+      "Bash(node .claude-tmp/debug-header.mjs)",
+      "Bash(node .claude-tmp/cleanup-m3.mjs)"
     ]
   }
 }

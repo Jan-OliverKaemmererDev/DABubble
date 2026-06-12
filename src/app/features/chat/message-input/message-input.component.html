@@ -1,0 +1,33 @@
+<div class="composer">
+  <label class="sr-only" for="composer-text">{{ placeholder() }}</label>
+  <textarea
+    #textarea
+    id="composer-text"
+    class="composer__text"
+    rows="1"
+    [placeholder]="placeholder()"
+    [value]="text()"
+    (input)="onInput($event)"
+    (keydown.enter)="onEnter($event)"
+  ></textarea>
+
+  <div class="composer__toolbar">
+    <div class="composer__tools">
+      <button class="composer__tool" type="button" aria-label="Emoji einfügen">
+        <img src="/icons/smile.svg" alt="" aria-hidden="true" />
+      </button>
+      <button class="composer__tool" type="button" aria-label="Person erwähnen">
+        <img src="/icons/at.svg" alt="" aria-hidden="true" />
+      </button>
+    </div>
+    <button
+      class="composer__send"
+      type="button"
+      aria-label="Nachricht senden"
+      [disabled]="!canSend()"
+      (click)="submit()"
+    >
+      <img src="/icons/send.svg" alt="" aria-hidden="true" />
+    </button>
+  </div>
+</div>

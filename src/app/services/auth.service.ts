@@ -1,7 +1,9 @@
 /**
  * @file Authentication service wrapping Firebase Auth and the user document.
+ * All Firebase calls run in the injection context as required by AngularFire,
+ * because service methods are invoked from component event handlers.
  */
-import { Injectable, inject } from '@angular/core';
+import { EnvironmentInjector, Injectable, inject, runInInjectionContext } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   Auth,
@@ -34,6 +36,7 @@ import { DEFAULT_AVATAR_PATH, RegistrationFormData } from './registration.servic
 const GUEST_NAME = 'Gast';
 const GUEST_EMAIL = 'gast@dabubble.dev';
 const GUEST_PASSWORD = 'DABubble-Gast-2026!';
+const NOT_SIGNED_IN_ERROR = 'Operation requires a signed-in user.';
 
 /**
  * Handles authentication against Firebase Auth and keeps the related
@@ -45,7 +48,19 @@ export class AuthService {
 
   private readonly firestore = inject(Firestore);
 
+  private readonly injector = inject(EnvironmentInjector);
+
   readonly currentUser = toSignal(user(this.auth), { initialValue: null });
+
+
+  /**
+   * Returns the signed-in user's uid or fails fast when called signed out.
+   */
+  requireUid(): string {
+    const uid = this.currentUser()?.uid;
+    if (!uid) throw new Error(NOT_SIGNED_IN_ERROR);
+    return uid;
+  }
 
 
   /**
@@ -55,8 +70,12 @@ export class AuthService {
    * @param avatarPath Public asset path of the selected avatar.
    */
   async register(data: RegistrationFormData, avatarPath: string): Promise<void> {
-    const credential = await createUserWithEmailAndPassword(this.auth, data.email, data.password);
-    await updateProfile(credential.user, { displayName: data.name, photoURL: avatarPath });
+    const credential = await this.inContext(() =>
+      createUserWithEmailAndPassword(this.auth, data.email, data.password),
+    );
+    await this.inContext(() =>
+      updateProfile(credential.user, { displayName: data.name, photoURL: avatarPath }),
+    );
     await this.createUserDocument(credential.user.uid, data, avatarPath);
   }
 
@@ -67,7 +86,7 @@ export class AuthService {
    * @param password Account password.
    */
   async signIn(email: string, password: string): Promise<void> {
-    await signInWithEmailAndPassword(this.auth, email, password);
+    await this.inContext(() => signInWithEmailAndPassword(this.auth, email, password));
   }
 
 
@@ -75,7 +94,9 @@ export class AuthService {
    * Signs in via Google popup and creates the user document on first login.
    */
   async signInWithGoogle(): Promise<void> {
-    const credential = await signInWithPopup(this.auth, new GoogleAuthProvider());
+    const credential = await this.inContext(() =>
+      signInWithPopup(this.auth, new GoogleAuthProvider()),
+    );
     await this.ensureUserDocument(credential.user);
   }
 
@@ -87,26 +108,10 @@ export class AuthService {
    * debt): the account has no privileges beyond a normal user.
    */
   async signInAsGuest(): Promise<void> {
-    const credential = await signInWithEmailAndPassword(this.auth, GUEST_EMAIL, GUEST_PASSWORD);
+    const credential = await this.inContext(() =>
+      signInWithEmailAndPassword(this.auth, GUEST_EMAIL, GUEST_PASSWORD),
+    );
     await this.resetGuestDocument(credential.user.uid);
-  }
-
-
-  /**
-   * Overwrites the guest user document with the default profile. The doc
-   * e-mail stays null so the technical account address is never shown.
-   * @param uid Uid of the fixed guest account.
-   */
-  private resetGuestDocument(uid: string): Promise<void> {
-    const reference = doc(this.firestore, `users/${uid}`);
-    const document: UserDoc = {
-      uid,
-      name: GUEST_NAME,
-      email: null,
-      avatarPath: DEFAULT_AVATAR_PATH,
-      createdAt: serverTimestamp(),
-    };
-    return setDoc(reference, document);
   }
 
 
@@ -114,7 +119,7 @@ export class AuthService {
    * Signs the current user out.
    */
   logout(): Promise<void> {
-    return signOut(this.auth);
+    return this.inContext(() => signOut(this.auth));
   }
 
 
@@ -124,7 +129,7 @@ export class AuthService {
    */
   sendPasswordReset(email: string): Promise<void> {
     const settings = { url: `${window.location.origin}/auth/reset-password` };
-    return sendPasswordResetEmail(this.auth, email, settings);
+    return this.inContext(() => sendPasswordResetEmail(this.auth, email, settings));
   }
 
 
@@ -134,7 +139,7 @@ export class AuthService {
    * @returns The e-mail address belonging to the code.
    */
   verifyResetCode(code: string): Promise<string> {
-    return verifyPasswordResetCode(this.auth, code);
+    return this.inContext(() => verifyPasswordResetCode(this.auth, code));
   }
 
 
@@ -144,7 +149,34 @@ export class AuthService {
    * @param newPassword Password chosen on the reset screen.
    */
   completePasswordReset(code: string, newPassword: string): Promise<void> {
-    return confirmPasswordReset(this.auth, code, newPassword);
+    return this.inContext(() => confirmPasswordReset(this.auth, code, newPassword));
+  }
+
+
+  /**
+   * Runs a Firebase API call in the injection context; required because
+   * AngularFire warns about calls scheduled from event handlers.
+   * @param operation Firebase call to execute.
+   */
+  private inContext<T>(operation: () => T): T {
+    return runInInjectionContext(this.injector, operation);
+  }
+
+
+  /**
+   * Overwrites the guest user document with the default profile. The doc
+   * e-mail stays null so the technical account address is never shown.
+   * @param uid Uid of the fixed guest account.
+   */
+  private resetGuestDocument(uid: string): Promise<void> {
+    const document: UserDoc = {
+      uid,
+      name: GUEST_NAME,
+      email: null,
+      avatarPath: DEFAULT_AVATAR_PATH,
+      createdAt: serverTimestamp(),
+    };
+    return this.inContext(() => setDoc(doc(this.firestore, `users/${uid}`), document));
   }
 
 
@@ -159,7 +191,6 @@ export class AuthService {
     data: RegistrationFormData,
     avatarPath: string,
   ): Promise<void> {
-    const reference = doc(this.firestore, `users/${uid}`);
     const document: UserDoc = {
       uid,
       name: data.name,
@@ -167,20 +198,22 @@ export class AuthService {
       avatarPath,
       createdAt: serverTimestamp(),
     };
-    return setDoc(reference, document);
+    return this.inContext(() => setDoc(doc(this.firestore, `users/${uid}`), document));
   }
 
 
   /**
-   * Creates the user document for popup or guest sign-ins if it is missing,
+   * Creates the user document for popup sign-ins if it is missing,
    * otherwise repairs legacy documents with external avatar URLs.
    * @param firebaseUser Authenticated Firebase user.
    */
   private async ensureUserDocument(firebaseUser: User): Promise<void> {
-    const reference = doc(this.firestore, `users/${firebaseUser.uid}`);
-    const snapshot = await getDoc(reference);
+    const reference = this.inContext(() =>
+      doc(this.firestore, `users/${firebaseUser.uid}`),
+    );
+    const snapshot = await this.inContext(() => getDoc(reference));
     if (!snapshot.exists()) {
-      await setDoc(reference, this.buildUserDoc(firebaseUser));
+      await this.inContext(() => setDoc(reference, this.buildUserDoc(firebaseUser)));
       return;
     }
     await this.normalizeAvatarPath(reference, snapshot);
@@ -199,7 +232,7 @@ export class AuthService {
   ): Promise<void> {
     const avatarPath = (snapshot.data() as UserDoc | undefined)?.avatarPath ?? '';
     if (!avatarPath.startsWith('http')) return;
-    await updateDoc(reference, { avatarPath: DEFAULT_AVATAR_PATH });
+    await this.inContext(() => updateDoc(reference, { avatarPath: DEFAULT_AVATAR_PATH }));
   }
 
 

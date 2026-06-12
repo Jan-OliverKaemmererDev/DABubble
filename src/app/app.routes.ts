@@ -77,6 +77,14 @@ export const routes: Routes = [
       import('./features/chat/app-shell/app-shell.component').then(m => m.AppShellComponent),
     children: [
       {
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () =>
+          import('./features/chat/channel-redirect/channel-redirect.component').then(
+            m => m.ChannelRedirectComponent,
+          ),
+      },
+      {
         path: 'channel/:channelId',
         loadComponent: () =>
           import('./features/chat/channel-view/channel-view.component').then(

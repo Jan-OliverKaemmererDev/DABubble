@@ -32,6 +32,15 @@ export interface MessageDoc {
 }
 
 /**
+ * Message document paired with its Firestore document id as read from a
+ * messages subcollection (collectionData idField).
+ */
+export interface Message extends MessageDoc {
+  /** Firestore document id of the message. */
+  readonly id: string;
+}
+
+/**
  * Firestore document stored at .../messages/{messageId}/replies/{replyId}.
  */
 export interface ReplyDoc {

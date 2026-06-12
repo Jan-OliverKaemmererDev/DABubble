@@ -1,7 +1,13 @@
 /**
  * @file Live stream of the signed-in user's channels and channel creation.
  */
-import { EnvironmentInjector, Injectable, inject, runInInjectionContext } from '@angular/core';
+import {
+  EnvironmentInjector,
+  Injectable,
+  inject,
+  runInInjectionContext,
+  signal,
+} from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import {
   Firestore,
@@ -15,14 +21,13 @@ import {
   serverTimestamp,
   where,
 } from '@angular/fire/firestore';
-import { Observable, catchError, map, of, switchMap } from 'rxjs';
+import { Observable, catchError, map, of, switchMap, tap } from 'rxjs';
 
 import { Channel, ChannelDoc } from '../models/channel.model';
 import { AuthService } from './auth.service';
 import { ToastService } from './toast.service';
 
 const CHANNELS_LOAD_ERROR = 'Channels konnten nicht geladen werden.';
-const NOT_SIGNED_IN_ERROR = 'Cannot create a channel without a signed-in user.';
 
 /**
  * Streams all channels the signed-in user is a member of and persists new
@@ -39,6 +44,10 @@ export class ChannelService {
 
   private readonly injector = inject(EnvironmentInjector);
 
+  private readonly loadedState = signal(false);
+
+  readonly channelsLoaded = this.loadedState.asReadonly();
+
   readonly channels = toSignal(this.streamChannels(), { initialValue: [] as Channel[] });
 
 
@@ -51,7 +60,7 @@ export class ChannelService {
    * @returns Firestore document id of the new channel.
    */
   async createChannel(name: string, description: string, memberIds: string[]): Promise<string> {
-    const creatorUid = this.requireUid();
+    const creatorUid = this.authService.requireUid();
     const channel: ChannelDoc = {
       name,
       nameLower: name.trim().toLowerCase(),
@@ -60,7 +69,9 @@ export class ChannelService {
       memberIds: [...new Set([creatorUid, ...memberIds])],
       createdAt: serverTimestamp(),
     };
-    const reference = await addDoc(collection(this.firestore, 'channels'), channel);
+    const reference = await runInInjectionContext(this.injector, () =>
+      addDoc(collection(this.firestore, 'channels'), channel),
+    );
     return reference.id;
   }
 
@@ -100,11 +111,12 @@ export class ChannelService {
    */
   private streamChannels(): Observable<Channel[]> {
     return toObservable(this.authService.currentUser).pipe(
-      switchMap(current =>
-        current
+      switchMap(current => {
+        this.loadedState.set(false);
+        return current
           ? runInInjectionContext(this.injector, () => this.queryChannels(current.uid))
-          : of([]),
-      ),
+          : of([]);
+      }),
     );
   }
 
@@ -122,6 +134,7 @@ export class ChannelService {
     );
     return (collectionData(channelsQuery, { idField: 'id' }) as Observable<Channel[]>).pipe(
       map(channels => [...channels].sort((a, b) => createdAtMillis(a) - createdAtMillis(b))),
+      tap(() => this.loadedState.set(true)),
       catchError(() => this.reportLoadError()),
     );
   }
@@ -133,16 +146,6 @@ export class ChannelService {
   private reportLoadError(): Observable<Channel[]> {
     this.toastService.show(CHANNELS_LOAD_ERROR);
     return of([]);
-  }
-
-
-  /**
-   * Returns the signed-in user's uid or fails fast when called signed out.
-   */
-  private requireUid(): string {
-    const uid = this.authService.currentUser()?.uid;
-    if (!uid) throw new Error(NOT_SIGNED_IN_ERROR);
-    return uid;
   }
 }
 

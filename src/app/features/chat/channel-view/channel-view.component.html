@@ -1,0 +1,62 @@
+<section class="channel">
+  <header class="channel__head">
+    <button class="channel__title" type="button" aria-label="Channel-Details öffnen">
+      <img class="channel__title-icon" src="/icons/tag.svg" alt="" aria-hidden="true" />
+      <span class="channel__name">{{ channel()?.name }}</span>
+      <img class="channel__caret" src="/icons/arrow-drop-down.svg" alt="" aria-hidden="true" />
+    </button>
+
+    <div class="channel__members">
+      <button class="channel__members-list" type="button" aria-label="Mitglieder anzeigen">
+        @for (member of headMembers(); track member.uid) {
+          <img
+            class="channel__member-avatar"
+            [src]="avatarSrc(member.avatarPath)"
+            alt=""
+            aria-hidden="true"
+          />
+        }
+        <span class="channel__member-count">{{ memberCount() }}</span>
+      </button>
+      <button class="channel__add-member" type="button" aria-label="Mitglieder hinzufügen">
+        <img src="/icons/add-person.svg" alt="" aria-hidden="true" />
+      </button>
+    </div>
+  </header>
+
+  <div class="channel__scroll" #scrollContainer (scroll)="onScroll()">
+    @for (group of groups(); track group.key) {
+      <div class="channel__separator" role="separator">
+        <span class="channel__separator-label">{{ group.label }}</span>
+      </div>
+      <ul class="channel__messages">
+        @for (message of group.messages; track message.id) {
+          <li class="message" [class.message--own]="isOwn(message)">
+            <img class="message__avatar" [src]="authorAvatar(message)" alt="" aria-hidden="true" />
+            <div class="message__body">
+              <div class="message__meta">
+                <span class="message__author">{{ authorName(message) }}</span>
+                <span class="message__time">{{ messageTime(message) }} Uhr</span>
+              </div>
+              <p class="message__bubble">{{ message.text }}</p>
+              @if (message.replyCount > 0) {
+                <div class="message__thread">
+                  <button class="message__thread-link" type="button">
+                    {{ replyLabel(message) }}
+                  </button>
+                  <span class="message__thread-meta">
+                    Letzte Antwort {{ lastReplyTime(message) }}
+                  </span>
+                </div>
+              }
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  <div class="channel__composer">
+    <app-message-input [placeholder]="composerPlaceholder()" (send)="sendMessage($event)" />
+  </div>
+</section>
