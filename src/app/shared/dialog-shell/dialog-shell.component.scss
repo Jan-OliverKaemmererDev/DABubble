@@ -44,7 +44,7 @@
     width: auto;
     padding: v.space('sm-md');
     transform-origin: top right;
-    animation: balloon-inflate 350ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation: balloon-inflate 500ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
   }
 
   @include m.respond-sm {
@@ -55,6 +55,8 @@
   &--anchor-left {
     position: absolute;
     border-top-left-radius: 0;
+    transform-origin: top left;
+    animation: balloon-inflate 500ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
   }
 
   &--anchor-right {
@@ -80,7 +82,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dialog-shell__card--menu {
+  .dialog-shell__card--menu,
+  .dialog-shell__card--anchor-left {
     animation: none;
   }
 }

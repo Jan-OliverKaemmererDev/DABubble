@@ -145,6 +145,15 @@ export class ChannelCreateDialogComponent implements AfterViewInit, OnDestroy {
 
 
   /**
+   * Closes the dialog when the click lands on the scrim itself.
+   * @param event Click event on the overlay.
+   */
+  protected onOverlayClick(event: Event): void {
+    if (event.target === event.currentTarget) this.close();
+  }
+
+
+  /**
    * Advances to the member step when the channel name is validated.
    */
   protected goToMembers(): void {
