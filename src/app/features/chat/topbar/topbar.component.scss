@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   gap: v.space('lg');
-  padding: v.space('md') v.space('lg') v.space('md') calc(v.space('lg') * 2);
+  padding: v.space('md') calc(v.space('lg') * 2);
 }
 
 .topbar__brand {
