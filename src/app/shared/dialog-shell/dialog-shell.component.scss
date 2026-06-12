@@ -34,4 +34,18 @@
     padding: v.space('lg');
     border-radius: v.$radius-md;
   }
+
+  &--anchor-left {
+    position: absolute;
+    border-top-left-radius: 0;
+  }
+
+  &--anchor-right {
+    position: absolute;
+    border-top-right-radius: 0;
+  }
+}
+
+.dialog-shell--anchored {
+  padding: 0;
 }

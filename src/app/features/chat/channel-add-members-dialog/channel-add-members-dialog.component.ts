@@ -12,7 +12,10 @@ import { ChannelService } from '../../../services/channel.service';
 import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
 import { ToastService } from '../../../services/toast.service';
 import { UserService } from '../../../services/user.service';
-import { DialogShellComponent } from '../../../shared/dialog-shell/dialog-shell.component';
+import {
+  DialogAnchor,
+  DialogShellComponent,
+} from '../../../shared/dialog-shell/dialog-shell.component';
 
 const ADD_ERROR = 'Die Mitglieder konnten nicht hinzugefügt werden.';
 
@@ -31,6 +34,8 @@ const ADD_ERROR = 'Die Mitglieder konnten nicht hinzugefügt werden.';
 })
 export class ChannelAddMembersDialogComponent {
   readonly channel = input.required<Channel>();
+
+  readonly anchor = input<DialogAnchor | null>(null);
 
   readonly closed = output<void>();
 

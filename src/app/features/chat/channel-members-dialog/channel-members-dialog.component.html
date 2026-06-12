@@ -1,4 +1,4 @@
-<app-dialog-shell labelledBy="channel-members-title" size="sm" (closed)="closed.emit()">
+<app-dialog-shell [anchor]="anchor()" labelledBy="channel-members-title" size="sm" (closed)="closed.emit()">
   <header class="members__head">
     <h2 class="members__title" id="channel-members-title">Mitglieder</h2>
     <button class="btn btn-icon btn-sm" type="button" aria-label="Dialog schließen" (click)="closed.emit()">

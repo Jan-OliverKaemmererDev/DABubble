@@ -1,4 +1,4 @@
-<app-dialog-shell labelledBy="channel-settings-title" (closed)="closed.emit()">
+<app-dialog-shell [anchor]="anchor()" labelledBy="channel-settings-title" (closed)="closed.emit()">
   <header class="settings__head">
     <h2 class="settings__title" id="channel-settings-title"># {{ channel().name }}</h2>
     <button class="btn btn-icon btn-sm" type="button" aria-label="Dialog schließen" (click)="closed.emit()">

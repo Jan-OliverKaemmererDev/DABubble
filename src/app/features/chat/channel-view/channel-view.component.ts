@@ -4,6 +4,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   computed,
   effect,
   inject,
@@ -23,6 +24,7 @@ import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
 import { ThreadService } from '../../../services/thread.service';
 import { ToastService } from '../../../services/toast.service';
 import { UserService } from '../../../services/user.service';
+import { DialogAnchor } from '../../../shared/dialog-shell/dialog-shell.component';
 import { ChannelAddMembersDialogComponent } from '../channel-add-members-dialog/channel-add-members-dialog.component';
 import { ChannelMembersDialogComponent } from '../channel-members-dialog/channel-members-dialog.component';
 import { ChannelSettingsDialogComponent } from '../channel-settings-dialog/channel-settings-dialog.component';
@@ -31,6 +33,8 @@ import { MessageListComponent } from '../message-list/message-list.component';
 
 const SEND_ERROR = 'Die Nachricht konnte nicht gesendet werden.';
 const HEAD_AVATAR_LIMIT = 3;
+const ANCHOR_GAP_PX = 8;
+const ANCHOR_MIN_VIEWPORT_PX = 768;
 
 type ChannelDialog = 'settings' | 'members' | 'add';
 
@@ -67,9 +71,13 @@ export class ChannelViewComponent {
 
   private readonly composer = viewChild(MessageInputComponent);
 
+  private readonly host = inject(ElementRef<HTMLElement>);
+
   private focusedChannelId: string | null = null;
 
   protected readonly dialog = signal<ChannelDialog | null>(null);
+
+  protected readonly dialogAnchor = signal<DialogAnchor | null>(null);
 
   protected readonly messages = toSignal(
     toObservable(this.channelId).pipe(
@@ -128,6 +136,36 @@ export class ChannelViewComponent {
   protected avatarSrc(path: string | undefined): string {
     if (!path || path.startsWith('http')) return `/${DEFAULT_AVATAR_PATH}`;
     return `/${path}`;
+  }
+
+
+  /**
+   * Opens a header dialog anchored to its trigger per the Figma prototype:
+   * the settings card left-aligns with the channel name, member dialogs
+   * right-align with the chat card edge. Small viewports fall back to the
+   * centered variant.
+   * @param kind Dialog to open.
+   * @param event Click event of the header trigger.
+   */
+  protected openDialog(kind: ChannelDialog, event: Event): void {
+    this.dialogAnchor.set(this.anchorFor(kind, event));
+    this.dialog.set(kind);
+  }
+
+
+  /**
+   * Computes the viewport anchor for a dialog; null centers it.
+   * @param kind Dialog to open.
+   * @param event Click event of the header trigger.
+   */
+  private anchorFor(kind: ChannelDialog, event: Event): DialogAnchor | null {
+    const trigger = event.currentTarget;
+    if (!(trigger instanceof HTMLElement)) return null;
+    if (window.innerWidth <= ANCHOR_MIN_VIEWPORT_PX) return null;
+    const top = trigger.getBoundingClientRect().bottom + ANCHOR_GAP_PX;
+    if (kind === 'settings') return { top, left: trigger.getBoundingClientRect().left };
+    const hostRight = this.host.nativeElement.getBoundingClientRect().right;
+    return { top, right: window.innerWidth - hostRight };
   }
 
 

@@ -9,7 +9,10 @@ import { Channel } from '../../../models/channel.model';
 import { ChannelService } from '../../../services/channel.service';
 import { ToastService } from '../../../services/toast.service';
 import { UserService } from '../../../services/user.service';
-import { DialogShellComponent } from '../../../shared/dialog-shell/dialog-shell.component';
+import {
+  DialogAnchor,
+  DialogShellComponent,
+} from '../../../shared/dialog-shell/dialog-shell.component';
 
 const NAME_REQUIRED_ERROR = 'Bitte gib einen Channel-Namen ein.';
 const NAME_DUPLICATE_ERROR = 'Ein Channel mit diesem Namen existiert bereits.';
@@ -33,6 +36,8 @@ const UNKNOWN_CREATOR = 'Unbekannt';
 })
 export class ChannelSettingsDialogComponent {
   readonly channel = input.required<Channel>();
+
+  readonly anchor = input<DialogAnchor | null>(null);
 
   readonly closed = output<void>();
 

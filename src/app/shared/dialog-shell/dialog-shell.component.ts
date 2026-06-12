@@ -14,12 +14,24 @@ import {
 } from '@angular/core';
 
 const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled])';
+const ANCHORED_BOTTOM_INSET_PX = 24;
+
+/** Viewport position a dialog card is anchored to (Figma prototype). */
+export interface DialogAnchor {
+  /** Top edge of the card in viewport pixels. */
+  readonly top: number;
+  /** Left edge for trigger-left-aligned cards. */
+  readonly left?: number;
+  /** Right inset for cards aligned with the chat card's right edge. */
+  readonly right?: number;
+}
 
 /**
  * Modal wrapper shared by the channel-management dialogs: renders the
  * scrim and the card, traps Tab focus, closes on Escape and on clicks on
  * the scrim, focuses the first focusable element on open and returns
- * focus to the opening element on destroy.
+ * focus to the opening element on destroy. With an anchor the card docks
+ * below its trigger (squared corner towards it) instead of centering.
  */
 @Component({
   selector: 'app-dialog-shell',
@@ -34,6 +46,8 @@ export class DialogShellComponent implements AfterViewInit, OnDestroy {
   readonly labelledBy = input.required<string>();
 
   readonly size = input<'md' | 'sm'>('md');
+
+  readonly anchor = input<DialogAnchor | null>(null);
 
   readonly closed = output<void>();
 
@@ -64,6 +78,17 @@ export class DialogShellComponent implements AfterViewInit, OnDestroy {
    */
   protected onOverlayClick(event: Event): void {
     if (event.target === event.currentTarget) this.closed.emit();
+  }
+
+
+  /**
+   * Limits an anchored card to the space between its top edge and the
+   * bottom of the viewport; null while centered (styled via SCSS).
+   */
+  protected anchoredMaxHeight(): string | null {
+    const anchor = this.anchor();
+    if (!anchor) return null;
+    return `calc(100dvh - ${anchor.top + ANCHORED_BOTTOM_INSET_PX}px)`;
   }
 
 
