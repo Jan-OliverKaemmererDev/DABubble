@@ -6,9 +6,18 @@
     [attr.aria-label]="'Reaktion ' + entry.emoji + ' umschalten'"
     (click)="toggled.emit(entry.emoji)"
   >
-    <span aria-hidden="true">{{ entry.emoji }}</span>
+    @if (assetFor(entry.emoji); as asset) {
+      <img class="chips__emoji" [src]="asset" alt="" aria-hidden="true" />
+    } @else {
+      <span aria-hidden="true">{{ entry.emoji }}</span>
+    }
     <span class="chips__count">{{ entry.uids.length }}</span>
-    <span class="chips__tooltip" role="tooltip">{{ reactorNames(entry) }}</span>
+    <span class="chips__tooltip" role="tooltip">
+      @if (assetFor(entry.emoji); as asset) {
+        <img class="chips__tooltip-emoji" [src]="asset" alt="" aria-hidden="true" />
+      }
+      {{ reactorNames(entry) }}
+    </span>
   </button>
 }
 

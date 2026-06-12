@@ -14,6 +14,7 @@ import {
 import { ReactionMap } from '../../../models/message.model';
 import { AuthService } from '../../../services/auth.service';
 import { UserService } from '../../../services/user.service';
+import { emojiAsset } from '../emoji-catalog';
 
 const SELF_LABEL = 'Du';
 const UNKNOWN_REACTOR = 'Unbekannt';
@@ -51,6 +52,8 @@ export class ReactionChipsComponent {
   private readonly userService = inject(UserService);
 
   protected readonly expanded = signal(false);
+
+  protected readonly assetFor = emojiAsset;
 
   protected readonly entries = computed<ReactionEntry[]>(() =>
     Object.entries(this.reactions())

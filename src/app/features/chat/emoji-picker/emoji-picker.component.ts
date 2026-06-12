@@ -1,19 +1,15 @@
 /**
- * @file Emoji picker popover with the predefined emoji set.
+ * @file Emoji picker popover with the predefined Emojitwo set.
  */
 import { ChangeDetectionStrategy, Component, ElementRef, inject, output } from '@angular/core';
 
-const EMOJI_SET = [
-  '✅', '🙌', '👍', '🚀', '🤓', '😀',
-  '😂', '❤️', '🎉', '🔥', '😎', '🤔',
-  '👀', '💯', '😅', '🙏', '👏', '😍',
-  '🥳', '😢', '💡', '⚡', '👎', '🍀',
-] as const;
+import { EMOJI_SET, emojiAsset } from '../emoji-catalog';
 
 /**
- * Popover with the predefined emoji grid, shared by the reaction flows and
- * the composer. Emits the picked emoji and closes on Escape or any click
- * outside; the opening component positions it and restores focus.
+ * Popover with the predefined Emojitwo emoji grid, shared by the reaction
+ * flows and the composer. Emits the picked emoji character and closes on
+ * Escape or any click outside; the opening component positions it and
+ * restores focus.
  */
 @Component({
   selector: 'app-emoji-picker',
@@ -33,6 +29,8 @@ export class EmojiPickerComponent {
   private readonly host = inject(ElementRef<HTMLElement>);
 
   protected readonly emojis = EMOJI_SET;
+
+  protected readonly assetFor = emojiAsset;
 
 
   /**

@@ -15,6 +15,7 @@ import {
 } from '@angular/core';
 
 import { RecentEmojiService } from '../../../services/recent-emoji.service';
+import { emojiAsset } from '../emoji-catalog';
 
 type MenuState = 'closed' | 'menu' | 'confirm';
 
@@ -66,6 +67,8 @@ export class MessageActionsComponent {
   protected readonly menuState = signal<MenuState>('closed');
 
   protected readonly quickEmojis = computed(() => this.recentEmojiService.recent());
+
+  protected readonly assetFor = emojiAsset;
 
 
   /**

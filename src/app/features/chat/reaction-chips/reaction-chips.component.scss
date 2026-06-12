@@ -42,7 +42,20 @@
   font-size: v.font-size('sm');
 }
 
+.chips__emoji {
+  width: v.$icon-sm;
+  height: v.$icon-sm;
+}
+
+.chips__tooltip-emoji {
+  width: v.$icon-sm;
+  height: v.$icon-sm;
+}
+
 .chips__tooltip {
+  display: flex;
+  align-items: center;
+  gap: v.space('xs');
   position: absolute;
   bottom: calc(100% + #{v.space('xs')});
   left: 50%;

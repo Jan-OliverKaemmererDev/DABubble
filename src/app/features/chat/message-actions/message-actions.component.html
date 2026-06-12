@@ -6,7 +6,11 @@
       [attr.aria-label]="'Mit ' + emoji + ' reagieren'"
       (click)="reacted.emit(emoji)"
     >
-      {{ emoji }}
+      @if (assetFor(emoji); as asset) {
+        <img [src]="asset" alt="" aria-hidden="true" />
+      } @else {
+        <span aria-hidden="true">{{ emoji }}</span>
+      }
     </button>
   }
 
@@ -42,7 +46,7 @@
         [attr.aria-expanded]="menuState() !== 'closed'"
         (click)="toggleMenu(); $event.stopPropagation()"
       >
-        <span class="actions__kebab" aria-hidden="true">⋮</span>
+        <img src="/icons/more-vert.svg" alt="" aria-hidden="true" />
       </button>
 
       @if (menuState() === 'menu') {
