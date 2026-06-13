@@ -66,6 +66,10 @@
   &:hover {
     background-color: v.color('bg');
     color: v.color('primary');
+
+    .members__add-icon {
+      content: url('/icons/add-person-hover.svg');
+    }
   }
 
   &:focus-visible {

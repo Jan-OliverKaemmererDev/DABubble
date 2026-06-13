@@ -95,7 +95,14 @@
   border-radius: v.$radius-round;
   flex-shrink: 0;
 
-  &:hover  { background-color: v.color('bg'); }
+  &:hover {
+    background-color: v.color('bg');
+
+    img[src*='close.svg'] {
+      content: url('/icons/close-hover.svg');
+    }
+  }
+  
   &:active { background-color: rgba(v.color('primary'), 0.08); }
 
   &.btn-sm {

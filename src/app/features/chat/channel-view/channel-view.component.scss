@@ -26,7 +26,7 @@
   display: flex;
   align-items: center;
   gap: v.space('sm-md');
-  padding: v.space('xs') v.space('sm');
+  padding: v.space('xs') 12px;
   border: none;
   border-radius: v.$radius-pill;
   background: none;
@@ -35,9 +35,19 @@
   font-size: v.font-size('h5');
   font-weight: v.$font-weight-bold;
   color: v.color('black');
+  transition: background-color v.$transition-fast, color v.$transition-fast;
 
   &:hover {
+    background-color: v.color('bg');
     color: v.color('primary');
+
+    .channel__title-icon {
+      content: url('/icons/tag-hover.svg');
+    }
+
+    .channel__caret {
+      content: url('/icons/arrow-down-hover.svg');
+    }
   }
 }
 
@@ -69,12 +79,16 @@
 
   &:hover {
     background-color: v.color('bg');
+
+    .channel__member-count {
+      color: #444df2;
+    }
   }
 }
 
 .channel__member-avatar {
-  width: v.$avatar-list;
-  height: v.$avatar-list;
+  width: 42px;
+  height: 42px;
   border-radius: v.$radius-round;
   border: 2px solid v.color('white');
   object-fit: cover;
@@ -87,8 +101,9 @@
 .channel__member-count {
   margin-left: v.space('sm');
   font-size: v.font-size('h5');
-  font-weight: v.$font-weight-bold;
+  font-weight: 500;
   color: v.color('black');
+  transition: color v.$transition-fast;
 }
 
 .channel__add-member {
@@ -100,10 +115,11 @@
   border-radius: v.$radius-round;
   background-color: v.color('bg');
   cursor: pointer;
-  transition: background-color v.$transition-fast;
 
   &:hover {
-    background-color: v.color('lines');
+    img {
+      content: url('/icons/add-person-hover.svg');
+    }
   }
 
   img {
