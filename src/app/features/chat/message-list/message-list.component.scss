@@ -34,6 +34,7 @@
   border-radius: v.$radius-pill;
   background-color: v.color('white');
   font-size: v.font-size('body');
+  line-height: 1;
   color: v.color('black');
   white-space: nowrap;
 }
