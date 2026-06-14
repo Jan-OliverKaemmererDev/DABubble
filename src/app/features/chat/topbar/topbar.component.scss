@@ -14,6 +14,10 @@
   gap: v.space('md');
   flex-shrink: 0;
   width: v.$sidebar-width;
+
+  @media (max-width: 1260px) {
+    width: auto;
+  }
 }
 
 .topbar__logo {
