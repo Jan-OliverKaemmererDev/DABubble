@@ -45,6 +45,7 @@ type MobileView = 'menu' | 'chat' | 'thread';
     '[class.shell-host--view-menu]': "isMobile() && mobileView() === 'menu'",
     '[class.shell-host--view-chat]': "isMobile() && mobileView() === 'chat'",
     '[class.shell-host--view-thread]': "isMobile() && mobileView() === 'thread'",
+    '[class.shell-host--thread-open]': 'threadOpen()',
   },
 })
 export class AppShellComponent implements OnDestroy {

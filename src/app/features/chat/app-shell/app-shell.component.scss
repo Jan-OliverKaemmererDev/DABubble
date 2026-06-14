@@ -112,6 +112,17 @@
   }
 }
 
+@media (max-width: 1380px) {
+  :host(.shell-host--thread-open) .shell__chat {
+    display: none;
+  }
+
+  .shell__thread--open {
+    flex: 1;
+    width: auto;
+  }
+}
+
 @include m.respond-md {
   .shell__panels {
     padding: 0;

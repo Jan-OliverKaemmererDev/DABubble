@@ -48,7 +48,7 @@
 
 .actions__menu {
   position: absolute;
-  top: calc(100% + #{v.space('xs')});
+  top: calc(100% + #{v.space('xs')} + 0.5px);
   right: 0;
   z-index: v.$z-dropdown;
   display: flex;

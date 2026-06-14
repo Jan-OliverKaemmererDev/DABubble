@@ -18,6 +18,13 @@ $dropdown-max-height: 480px;
 .search-bar__input {
   background-color: v.color('white');
   padding-right: calc(#{v.space('lg')} + #{v.$icon-md} + #{v.space('md')});
+
+  &::-webkit-search-decoration,
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-results-button,
+  &::-webkit-search-results-decoration {
+    display: none;
+  }
 }
 
 .search-bar__icon {
