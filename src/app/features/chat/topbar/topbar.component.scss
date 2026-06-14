@@ -30,6 +30,10 @@
   width: v.$thread-panel-width;
   display: flex;
   justify-content: flex-end;
+
+  @media (max-width: 1380px) {
+    width: auto;
+  }
 }
 
 .topbar__user {
