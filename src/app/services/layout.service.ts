@@ -4,7 +4,7 @@
  */
 import { Injectable, signal } from '@angular/core';
 
-const MOBILE_MEDIA_QUERY = '(max-width: 768px)';
+const MOBILE_MEDIA_QUERY = '(max-width: 992px)';
 
 /**
  * Exposes whether the viewport is below the mobile breakpoint (mirrors
