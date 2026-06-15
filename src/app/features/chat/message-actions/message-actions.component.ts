@@ -85,6 +85,19 @@ export class MessageActionsComponent {
 
 
   /**
+   * Toggles the menu from a touch tap and cancels the compatibility mouse
+   * events the browser synthesizes at the trigger position shortly after;
+   * that residual click would otherwise re-enter toggleMenu and collapse an
+   * open confirmation back to closed, dismissing it before the user chooses.
+   * @param event Touch end of the trigger tap.
+   */
+  protected toggleMenuTouch(event: TouchEvent): void {
+    event.preventDefault();
+    this.toggleMenu();
+  }
+
+
+  /**
    * Closes the menu and returns focus to its trigger.
    */
   protected closeMenu(): void {
@@ -102,6 +115,18 @@ export class MessageActionsComponent {
   protected openConfirm(): void {
     this.menuState.set('confirm');
     this.confirmOpenedAt = Date.now();
+  }
+
+
+  /**
+   * Opens the confirmation from a touch tap and cancels the synthesized mouse
+   * events, so the opening tap leaves no residual click that could land on a
+   * delete option or the trigger and dismiss the confirmation.
+   * @param event Touch end of the delete-option tap.
+   */
+  protected openConfirmTouch(event: TouchEvent): void {
+    event.preventDefault();
+    this.openConfirm();
   }
 
 

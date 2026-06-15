@@ -45,6 +45,7 @@
         aria-haspopup="menu"
         [attr.aria-expanded]="menuState() !== 'closed'"
         (click)="toggleMenu(); $event.stopPropagation()"
+        (touchend)="toggleMenuTouch($event)"
       >
         <img src="icons/more-vert.svg" alt="" aria-hidden="true" />
       </button>
@@ -56,7 +57,13 @@
               Nachricht bearbeiten
             </button>
           }
-          <button class="actions__menu-item" type="button" role="menuitem" (click)="openConfirm()">
+          <button
+            class="actions__menu-item"
+            type="button"
+            role="menuitem"
+            (click)="openConfirm()"
+            (touchend)="openConfirmTouch($event)"
+          >
             Nachricht löschen
           </button>
         </div>
