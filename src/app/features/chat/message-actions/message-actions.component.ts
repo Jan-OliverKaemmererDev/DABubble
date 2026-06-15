@@ -19,6 +19,8 @@ import { emojiAsset } from '../emoji-catalog';
 
 type MenuState = 'closed' | 'menu' | 'confirm';
 
+const GHOST_TAP_GUARD_MS = 500;
+
 /**
  * Pill-shaped action bar per the Figma frames, shown by the message row on
  * hover and focus. Foreign messages offer the two recent quick emojis, the
@@ -67,6 +69,8 @@ export class MessageActionsComponent {
 
   protected readonly menuState = signal<MenuState>('closed');
 
+  private confirmOpenedAt = 0;
+
   protected readonly quickEmojis = computed(() => this.recentEmojiService.recent());
 
   protected readonly assetFor = emojiAsset;
@@ -91,10 +95,32 @@ export class MessageActionsComponent {
 
 
   /**
-   * Emits a menu action and closes the menu.
+   * Opens the delete confirmation and stamps the time, so the synthesized
+   * "ghost" tap that touch devices fire at the same screen position right
+   * after the menu swaps under the finger cannot trigger a deletion.
+   */
+  protected openConfirm(): void {
+    this.menuState.set('confirm');
+    this.confirmOpenedAt = Date.now();
+  }
+
+
+  /**
+   * Reports whether a confirm tap arrives within the ghost-tap guard window
+   * after the confirmation opened (i.e. is the opening tap's residual event).
+   */
+  private isGhostTap(): boolean {
+    return Date.now() - this.confirmOpenedAt < GHOST_TAP_GUARD_MS;
+  }
+
+
+  /**
+   * Emits a menu action and closes the menu. Destructive deletes are ignored
+   * while the ghost-tap guard is active so they need a deliberate tap.
    * @param action Output to emit.
    */
   protected emitAndClose(action: 'edit' | 'forMe' | 'forAll'): void {
+    if (action !== 'edit' && this.isGhostTap()) return;
     if (action === 'edit') this.editRequested.emit();
     if (action === 'forMe') this.deleteForMe.emit();
     if (action === 'forAll') this.deleteForAll.emit();
