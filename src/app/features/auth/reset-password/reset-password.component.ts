@@ -27,9 +27,15 @@ import { ToastService } from '../../../services/toast.service';
 import { PasswordInputComponent } from '../../../shared/password-input/password-input.component';
 
 const PASSWORD_MIN_LENGTH = 6;
+const RESET_MODE = 'resetPassword';
 const TOAST_MESSAGE = 'Anmelden';
 const GENERAL_ERROR_MESSAGE = 'Das hat leider nicht geklappt. Bitte versuche es später erneut.';
-const INVALID_CODE_ERRORS = ['auth/expired-action-code', 'auth/invalid-action-code'];
+const DEFAULT_INVALID_MESSAGE = 'Dieser Link ist abgelaufen oder ungültig.';
+const CODE_ERROR_MESSAGES: Record<string, string> = {
+  'auth/expired-action-code': 'Dieser Link ist abgelaufen. Bitte fordere einen neuen an.',
+  'auth/invalid-action-code':
+    'Dieser Link ist ungültig oder wurde bereits verwendet. Bitte fordere einen neuen an.',
+};
 
 const PASSWORD_ERROR_MESSAGES: Record<string, string> = {
   required: 'Bitte gib ein Passwort ein',
@@ -73,7 +79,13 @@ export class ResetPasswordComponent implements OnInit, AfterViewInit {
 
   readonly oobCode = input<string>();
 
+  readonly mode = input<string>();
+
+  readonly continueUrl = input<string>();
+
   protected readonly codeState = signal<CodeState>('checking');
+
+  protected readonly codeError = signal(DEFAULT_INVALID_MESSAGE);
 
   protected readonly pending = signal(false);
 
@@ -89,11 +101,13 @@ export class ResetPasswordComponent implements OnInit, AfterViewInit {
 
 
   /**
-   * Verifies the reset code from the e-mail link query parameters.
+   * Verifies the reset code from the e-mail link query parameters; rejects
+   * links without a code or for a different action than password reset.
    */
   async ngOnInit(): Promise<void> {
     const code = this.oobCode();
-    if (!code) {
+    const mode = this.mode();
+    if (!code || (mode && mode !== RESET_MODE)) {
       this.codeState.set('invalid');
       return;
     }
@@ -117,9 +131,21 @@ export class ResetPasswordComponent implements OnInit, AfterViewInit {
     try {
       await this.authService.verifyResetCode(code);
       this.codeState.set('valid');
-    } catch {
-      this.codeState.set('invalid');
+    } catch (error: unknown) {
+      this.markInvalid(error);
     }
+  }
+
+
+  /**
+   * Switches to the invalid-link state with a message specific to the
+   * Firebase error code (expired vs. invalid/used); generic fallback.
+   * @param error Error thrown while verifying the reset code.
+   */
+  private markInvalid(error: unknown): void {
+    const code = error instanceof FirebaseError ? error.code : '';
+    this.codeError.set(CODE_ERROR_MESSAGES[code] ?? DEFAULT_INVALID_MESSAGE);
+    this.codeState.set('invalid');
   }
 
 
@@ -183,25 +209,43 @@ export class ResetPasswordComponent implements OnInit, AfterViewInit {
 
 
   /**
-   * Shows the confirmation toast and returns to the login page.
+   * Shows the confirmation, then continues to the authorized continue URL
+   * if present, otherwise to the login page.
    */
   private finishSuccessfully(): void {
     this.toast.show(TOAST_MESSAGE);
+    const target = this.safeContinueUrl();
+    if (target) {
+      window.location.assign(target);
+      return;
+    }
     this.router.navigate(['/auth/login']);
   }
 
 
   /**
-   * Maps reset errors to the invalid-code state or a general message.
+   * Returns the continue URL only when it is same-origin (an authorized
+   * target), guarding against open redirects; null otherwise.
+   */
+  private safeContinueUrl(): string | null {
+    const url = this.continueUrl();
+    if (!url) return null;
+    try {
+      return new URL(url).origin === window.location.origin ? url : null;
+    } catch {
+      return null;
+    }
+  }
+
+
+  /**
+   * Shows a specific inline error for invalid/expired/used codes, or a
+   * general message for any other failure.
    * @param error Unknown error thrown by the reset request.
    */
   private handleResetError(error: unknown): void {
     const code = error instanceof FirebaseError ? error.code : '';
-    if (INVALID_CODE_ERRORS.includes(code)) {
-      this.codeState.set('invalid');
-      return;
-    }
-    this.generalError.set(GENERAL_ERROR_MESSAGE);
+    this.generalError.set(CODE_ERROR_MESSAGES[code] ?? GENERAL_ERROR_MESSAGE);
   }
 
 
