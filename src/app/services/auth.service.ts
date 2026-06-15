@@ -124,11 +124,13 @@ export class AuthService {
 
 
   /**
-   * Sends the password-reset e-mail with a continue link back to this app.
+   * Sends the password-reset e-mail. The continue link points at the app base
+   * (`document.baseURI`) so it stays valid under the subfolder/hash deployment
+   * and its authorized domain, instead of a hardcoded path that can be rejected.
    * @param email Address entered on the forgot-password screen.
    */
   sendPasswordReset(email: string): Promise<void> {
-    const settings = { url: `${window.location.origin}/auth/reset-password` };
+    const settings = { url: document.baseURI };
     return this.inContext(() => sendPasswordResetEmail(this.auth, email, settings));
   }
 
