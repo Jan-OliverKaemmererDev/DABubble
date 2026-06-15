@@ -15,7 +15,8 @@ import { Router } from '@angular/router';
 import { FirebaseError } from 'firebase/app';
 
 import { AuthService } from '../../../services/auth.service';
-import { RegistrationService } from '../../../services/registration.service';
+import { ChannelService } from '../../../services/channel.service';
+import { RegistrationFormData, RegistrationService } from '../../../services/registration.service';
 import { ToastService } from '../../../services/toast.service';
 import { AVATAR_OPTIONS } from '../../../shared/avatar-options';
 
@@ -39,6 +40,8 @@ const GENERAL_ERROR_MESSAGE = 'Das hat leider nicht geklappt. Bitte versuche es 
 })
 export class AvatarPickerComponent implements AfterViewInit {
   private readonly authService = inject(AuthService);
+
+  private readonly channelService = inject(ChannelService);
 
   private readonly registration = inject(RegistrationService);
 
@@ -96,12 +99,26 @@ export class AvatarPickerComponent implements AfterViewInit {
     this.isPending.set(true);
     this.generalError.set('');
     try {
-      await this.authService.register(data, this.registration.avatarPath());
+      await this.completeSignup(data);
+    } finally {
+      this.isPending.set(false);
+    }
+  }
+
+
+  /**
+   * Registers the account, then joins the default channel before showing
+   * success so the new user is a member immediately on first login.
+   * @param data Validated registration form values.
+   */
+  private async completeSignup(data: RegistrationFormData): Promise<void> {
+    try {
+      const uid = await this.authService.register(data, this.registration.avatarPath());
+      await this.channelService.ensureDefaultChannelExists();
+      await this.channelService.joinDefaultChannel(uid);
       this.finishSuccessfully();
     } catch (error: unknown) {
       this.handleSignupError(error);
-    } finally {
-      this.isPending.set(false);
     }
   }
 

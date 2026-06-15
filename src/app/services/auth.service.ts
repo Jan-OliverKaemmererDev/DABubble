@@ -72,8 +72,9 @@ export class AuthService {
    * profile and stores the user document in Firestore.
    * @param data Validated registration form values.
    * @param avatarPath Public asset path of the selected avatar.
+   * @returns Uid of the newly created user.
    */
-  async register(data: RegistrationFormData, avatarPath: string): Promise<void> {
+  async register(data: RegistrationFormData, avatarPath: string): Promise<string> {
     const credential = await this.inContext(() =>
       createUserWithEmailAndPassword(this.auth, data.email, data.password),
     );
@@ -81,6 +82,7 @@ export class AuthService {
       updateProfile(credential.user, { displayName: data.name, photoURL: avatarPath }),
     );
     await this.createUserDocument(credential.user.uid, data, avatarPath);
+    return credential.user.uid;
   }
 
 

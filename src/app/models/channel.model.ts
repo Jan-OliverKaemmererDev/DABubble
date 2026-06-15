@@ -20,6 +20,8 @@ export interface ChannelDoc {
   memberIds: string[];
   /** Creation time; serverTimestamp() sentinel on write, Timestamp on read. */
   createdAt: Timestamp | FieldValue;
+  /** True only for the permanent default channel, which is never deleted. */
+  isDefault?: boolean;
 }
 
 /**

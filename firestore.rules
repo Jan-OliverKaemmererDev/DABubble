@@ -109,14 +109,28 @@ service cloud.firestore {
           && !(request.auth.uid in resource.data.memberIds);
       }
 
+      // The permanent default channel is seeded by any signed-in client on
+      // first registration. Allowed only at the fixed id 'general' and only
+      // with the frozen system-seed shape (no creator, no members), so no
+      // arbitrary channel can be created through this branch. The 'general'
+      // literal mirrors DEFAULT_CHANNEL_ID in channels.constants.ts.
+      function isDefaultChannelSeed() {
+        return channelId == 'general'
+          && request.resource.data.createdBy == 'system'
+          && request.resource.data.isDefault == true
+          && request.resource.data.memberIds == []
+          && request.resource.data.createdAt <= request.time;
+      }
+
       // Channel names are workspace-public: search, the "#" address
       // list and the duplicate-name check read all channels.
       allow read: if signedIn();
 
       allow create: if signedIn()
-        && request.resource.data.createdBy == request.auth.uid
-        && request.auth.uid in request.resource.data.memberIds
-        && request.resource.data.createdAt <= request.time;
+        && ((request.resource.data.createdBy == request.auth.uid
+              && request.auth.uid in request.resource.data.memberIds
+              && request.resource.data.createdAt <= request.time)
+          || isDefaultChannelSeed());
 
       // Members edit name/description, add members and may remove
       // themselves (leave); non-members may only add their own uid

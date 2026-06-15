@@ -19,10 +19,12 @@ import {
   collection,
   collectionData,
   doc,
+  getDoc,
   getDocs,
   orderBy,
   query,
   serverTimestamp,
+  setDoc,
   updateDoc,
   where,
   writeBatch,
@@ -30,6 +32,12 @@ import {
 import { Observable, catchError, map, of, switchMap, tap } from 'rxjs';
 
 import { Channel, ChannelDoc } from '../models/channel.model';
+import {
+  DEFAULT_CHANNEL_CREATED_BY,
+  DEFAULT_CHANNEL_DESCRIPTION,
+  DEFAULT_CHANNEL_ID,
+  DEFAULT_CHANNEL_NAME,
+} from '../shared/channels.constants';
 import { AuthService } from './auth.service';
 import { ToastService } from './toast.service';
 
@@ -80,6 +88,48 @@ export class ChannelService {
       addDoc(collection(this.firestore, 'channels'), channel),
     );
     return reference.id;
+  }
+
+
+  /**
+   * Idempotently seeds the permanent default channel under its fixed id.
+   * An existing document is never overwritten, so its members are preserved.
+   */
+  async ensureDefaultChannelExists(): Promise<void> {
+    const reference = this.inContext(() => doc(this.firestore, `channels/${DEFAULT_CHANNEL_ID}`));
+    const snapshot = await this.inContext(() => getDoc(reference));
+    if (snapshot.exists()) return;
+    await this.inContext(() => setDoc(reference, this.buildDefaultChannelDoc()));
+  }
+
+
+  /**
+   * Adds a user to the default channel's member list.
+   * @param uid Uid to append via arrayUnion (idempotent for members).
+   */
+  joinDefaultChannel(uid: string): Promise<void> {
+    return this.inContext(() =>
+      updateDoc(doc(this.firestore, `channels/${DEFAULT_CHANNEL_ID}`), {
+        memberIds: arrayUnion(uid),
+      }),
+    );
+  }
+
+
+  /**
+   * Builds the seed document of the default channel: no creator, no members
+   * and a denormalized nameLower so the duplicate-name query stays consistent.
+   */
+  private buildDefaultChannelDoc(): ChannelDoc {
+    return {
+      name: DEFAULT_CHANNEL_NAME,
+      nameLower: DEFAULT_CHANNEL_NAME.toLowerCase(),
+      description: DEFAULT_CHANNEL_DESCRIPTION,
+      createdBy: DEFAULT_CHANNEL_CREATED_BY,
+      memberIds: [],
+      createdAt: serverTimestamp(),
+      isDefault: true,
+    };
   }
 
 
@@ -141,18 +191,31 @@ export class ChannelService {
 
 
   /**
-   * Removes the signed-in user from the channel. When the last member
-   * leaves, the channel is deleted entirely including all messages and
-   * thread replies (client-side recursive delete, see CLAUDE.md).
+   * Removes the signed-in user from the channel. When the last member of a
+   * non-default channel leaves, the channel is deleted entirely including all
+   * messages and thread replies (client-side recursive delete, see CLAUDE.md).
+   * The default channel is never deleted, so new users can always join it.
    * @param channel Channel the user is leaving.
    */
   async leaveChannel(channel: Channel): Promise<void> {
     const uid = this.authService.requireUid();
     const remaining = channel.memberIds.filter(memberId => memberId !== uid);
-    if (remaining.length === 0) return this.deleteChannelDeep(channel.id);
+    if (remaining.length === 0 && !this.isDefaultChannel(channel)) {
+      return this.deleteChannelDeep(channel.id);
+    }
     await this.inContext(() =>
       updateDoc(doc(this.firestore, `channels/${channel.id}`), { memberIds: arrayRemove(uid) }),
     );
+  }
+
+
+  /**
+   * Reports whether a channel is the permanent default channel, which must
+   * never be deleted (matched by its fixed id or the isDefault flag).
+   * @param channel Channel under consideration.
+   */
+  private isDefaultChannel(channel: Channel): boolean {
+    return channel.id === DEFAULT_CHANNEL_ID || channel.isDefault === true;
   }
 
 
