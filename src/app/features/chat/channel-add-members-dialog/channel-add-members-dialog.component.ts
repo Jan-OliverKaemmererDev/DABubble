@@ -51,12 +51,12 @@ export class ChannelAddMembersDialogComponent {
 
   protected readonly selectedUsers = signal<UserDoc[]>([]);
 
-  protected readonly pending = signal(false);
+  protected readonly isPending = signal(false);
 
   protected readonly candidates = computed(() => this.filterCandidates());
 
   protected readonly canAdd = computed(
-    () => this.selectedUsers().length > 0 && !this.pending(),
+    () => this.selectedUsers().length > 0 && !this.isPending(),
   );
 
 
@@ -93,14 +93,14 @@ export class ChannelAddMembersDialogComponent {
    */
   protected async add(): Promise<void> {
     if (!this.canAdd()) return;
-    this.pending.set(true);
+    this.isPending.set(true);
     try {
       const uids = this.selectedUsers().map(user => user.uid);
       await this.channelService.addMembers(this.channel().id, uids);
       this.closed.emit();
     } catch {
       this.toastService.show(ADD_ERROR);
-      this.pending.set(false);
+      this.isPending.set(false);
     }
   }
 

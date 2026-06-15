@@ -21,14 +21,14 @@
   </button>
 }
 
-@if (!expanded() && hiddenCount() > 0) {
-  <button class="chips__more" type="button" (click)="expanded.set(true)">
+@if (!isExpanded() && hiddenCount() > 0) {
+  <button class="chips__more" type="button" (click)="isExpanded.set(true)">
     +{{ hiddenCount() }} weitere
   </button>
 }
 
-@if (expanded() && hiddenCount() > 0) {
-  <button class="chips__more" type="button" (click)="expanded.set(false)">
+@if (isExpanded() && hiddenCount() > 0) {
+  <button class="chips__more" type="button" (click)="isExpanded.set(false)">
     Weniger anzeigen
   </button>
 }

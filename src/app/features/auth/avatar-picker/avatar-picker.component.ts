@@ -50,9 +50,9 @@ export class AvatarPickerComponent implements AfterViewInit {
 
   protected readonly avatars = AVATAR_OPTIONS;
 
-  protected readonly pending = signal(false);
+  protected readonly isPending = signal(false);
 
-  protected readonly success = signal(false);
+  protected readonly isSuccess = signal(false);
 
   protected readonly generalError = signal('');
 
@@ -92,8 +92,8 @@ export class AvatarPickerComponent implements AfterViewInit {
    */
   protected async submit(): Promise<void> {
     const data = this.registration.data();
-    if (!data || this.pending()) return;
-    this.pending.set(true);
+    if (!data || this.isPending()) return;
+    this.isPending.set(true);
     this.generalError.set('');
     try {
       await this.authService.register(data, this.registration.avatarPath());
@@ -101,7 +101,7 @@ export class AvatarPickerComponent implements AfterViewInit {
     } catch (error: unknown) {
       this.handleSignupError(error);
     } finally {
-      this.pending.set(false);
+      this.isPending.set(false);
     }
   }
 
@@ -111,7 +111,7 @@ export class AvatarPickerComponent implements AfterViewInit {
    * TODO: redirect to the main app instead once it exists.
    */
   private finishSuccessfully(): void {
-    this.success.set(true);
+    this.isSuccess.set(true);
     this.toast.show(SUCCESS_TOAST_MESSAGE);
     setTimeout(() => {
       this.registration.reset();

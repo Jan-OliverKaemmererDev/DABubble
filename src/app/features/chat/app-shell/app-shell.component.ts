@@ -47,7 +47,7 @@ type MobileView = 'menu' | 'chat' | 'thread';
     '[class.shell-host--view-menu]': "isMobile() && mobileView() === 'menu'",
     '[class.shell-host--view-chat]': "isMobile() && mobileView() === 'chat'",
     '[class.shell-host--view-thread]': "isMobile() && mobileView() === 'thread'",
-    '[class.shell-host--thread-open]': 'threadOpen()',
+    '[class.shell-host--thread-open]': 'isThreadOpen()',
   },
 })
 export class AppShellComponent implements OnDestroy {
@@ -65,9 +65,9 @@ export class AppShellComponent implements OnDestroy {
     { initialValue: this.router.url },
   );
 
-  protected readonly workspaceOpen = signal(readStoredWorkspaceOpen());
+  protected readonly isWorkspaceOpen = signal(readStoredWorkspaceOpen());
 
-  protected readonly threadOpen = this.threadService.isOpen;
+  protected readonly isThreadOpen = this.threadService.isOpen;
 
   protected readonly isMobile = this.layoutService.isMobile;
 
@@ -104,11 +104,11 @@ export class AppShellComponent implements OnDestroy {
   }
 
   protected readonly toggleLabel = computed(() =>
-    this.workspaceOpen() ? CLOSE_MENU_LABEL : OPEN_MENU_LABEL,
+    this.isWorkspaceOpen() ? CLOSE_MENU_LABEL : OPEN_MENU_LABEL,
   );
 
   protected readonly toggleIcon = computed(() =>
-    this.workspaceOpen() ? MENU_TOGGLE_OPEN_ICON : MENU_TOGGLE_CLOSED_ICON,
+    this.isWorkspaceOpen() ? MENU_TOGGLE_OPEN_ICON : MENU_TOGGLE_CLOSED_ICON,
   );
 
 
@@ -116,8 +116,8 @@ export class AppShellComponent implements OnDestroy {
    * Toggles the workspace column and persists the new state.
    */
   protected toggleWorkspace(): void {
-    this.workspaceOpen.update(open => !open);
-    storeWorkspaceOpen(this.workspaceOpen());
+    this.isWorkspaceOpen.update(open => !open);
+    storeWorkspaceOpen(this.isWorkspaceOpen());
   }
 }
 

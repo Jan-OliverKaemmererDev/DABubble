@@ -1,6 +1,6 @@
 <nav class="workspace" aria-label="Workspace">
   @if (isMobile()) {
-    <button class="workspace__search-trigger" type="button" (click)="searchOpen.set(true)">
+    <button class="workspace__search-trigger" type="button" (click)="isSearchOpen.set(true)">
       Gehe zu...
       <img class="workspace__search-icon" src="icons/search.svg" alt="" aria-hidden="true" />
     </button>
@@ -20,12 +20,12 @@
         class="workspace__section-toggle"
         type="button"
         aria-controls="workspace-channels"
-        [attr.aria-expanded]="channelsOpen()"
+        [attr.aria-expanded]="isChannelsOpen()"
         (click)="toggleChannels()"
       >
         <img
           class="workspace__caret"
-          [class.workspace__caret--closed]="!channelsOpen()"
+          [class.workspace__caret--closed]="!isChannelsOpen()"
           src="icons/arrow-drop-down.svg"
           alt=""
           aria-hidden="true"
@@ -38,7 +38,7 @@
       </button>
     </div>
 
-    <div class="workspace__collapsible" [class.workspace__collapsible--open]="channelsOpen()">
+    <div class="workspace__collapsible" [class.workspace__collapsible--open]="isChannelsOpen()">
       <ul class="workspace__list" id="workspace-channels">
         @for (channel of channels(); track channel.id) {
           <li>
@@ -80,12 +80,12 @@
         class="workspace__section-toggle"
         type="button"
         aria-controls="workspace-direct"
-        [attr.aria-expanded]="directOpen()"
+        [attr.aria-expanded]="isDirectOpen()"
         (click)="toggleDirect()"
       >
         <img
           class="workspace__caret"
-          [class.workspace__caret--closed]="!directOpen()"
+          [class.workspace__caret--closed]="!isDirectOpen()"
           src="icons/arrow-drop-down.svg"
           alt=""
           aria-hidden="true"
@@ -100,7 +100,7 @@
       </button>
     </div>
 
-    <div class="workspace__collapsible" [class.workspace__collapsible--open]="directOpen()">
+    <div class="workspace__collapsible" [class.workspace__collapsible--open]="isDirectOpen()">
       <ul class="workspace__list" id="workspace-direct">
         @if (self(); as selfEntry) {
           <li>
@@ -147,12 +147,12 @@
   </a>
 }
 
-@if (dialogOpen()) {
+@if (isDialogOpen()) {
   <app-channel-create-dialog (closed)="closeDialog()" />
 }
 
-@if (searchOpen()) {
-  <app-mobile-search-view (closed)="searchOpen.set(false)" (userSelected)="onSearchUser($event)" />
+@if (isSearchOpen()) {
+  <app-mobile-search-view (closed)="isSearchOpen.set(false)" (userSelected)="onSearchUser($event)" />
 }
 
 @if (profileUid(); as uid) {

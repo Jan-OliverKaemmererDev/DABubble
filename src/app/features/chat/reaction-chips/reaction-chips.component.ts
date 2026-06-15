@@ -52,7 +52,7 @@ export class ReactionChipsComponent {
 
   private readonly userService = inject(UserService);
 
-  protected readonly expanded = signal(false);
+  protected readonly isExpanded = signal(false);
 
   protected readonly assetFor = emojiAsset;
 
@@ -64,7 +64,7 @@ export class ReactionChipsComponent {
   );
 
   protected readonly visibleEntries = computed(() =>
-    this.expanded() ? this.entries() : this.entries().slice(0, this.limit()),
+    this.isExpanded() ? this.entries() : this.entries().slice(0, this.limit()),
   );
 
   protected readonly hiddenCount = computed(() =>

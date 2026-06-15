@@ -6,9 +6,9 @@
     <span class="message__time">{{ time() }} Uhr</span>
   </div>
 
-  @if (deleted()) {
+  @if (isDeleted()) {
     <p class="message__bubble message__bubble--deleted">Diese Nachricht wurde gelöscht</p>
-  } @else if (editing()) {
+  } @else if (isEditing()) {
     <div class="message__edit">
       <label class="sr-only" [for]="editFieldId">Nachricht bearbeiten</label>
       <textarea
@@ -70,7 +70,7 @@
     <p class="message__bubble">@for (part of parsedText(); track $index) {@if (part.isMention) {<span class="message__mention">{{ part.text }}</span>} @else {{{ part.text }}}}</p>
   }
 
-  @if (!deleted() && hasReactions()) {
+  @if (!isDeleted() && hasReactions()) {
     <app-reaction-chips
       class="message__chips"
       [reactions]="entry().reactions"
@@ -80,12 +80,12 @@
     />
   }
 
-  @if (threadable() && replyCount() > 0) {
+  @if (isThreadable() && replyCount() > 0) {
     <div class="message__thread">
       <button
         class="message__thread-link"
         type="button"
-        [attr.aria-expanded]="threadOpen()"
+        [attr.aria-expanded]="isThreadOpen()"
         (click)="openThread.emit()"
       >
         {{ replyLabel() }}
@@ -95,12 +95,12 @@
   }
 </div>
 
-@if (!deleted() && !editing() && messagePath()) {
+@if (!isDeleted() && !isEditing() && messagePath()) {
   <div class="message__actions-anchor">
     <app-message-actions
-      [own]="own()"
-      [threadable]="threadable()"
-      [threadOpen]="threadOpen()"
+      [isOwn]="isOwn()"
+      [isThreadable]="isThreadable()"
+      [isThreadOpen]="isThreadOpen()"
       [canEdit]="canEditNow()"
       (reacted)="react($event)"
       (pickerRequested)="reactionPickerOpen.set(true)"

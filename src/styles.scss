@@ -6,7 +6,6 @@
 @use 'styles/forms';
 
 // ─── CSS Custom Properties ────────────────────────────────────────────────────
-// Exposed so component-level SCSS can use var(--...) without @use.
 
 :root {
   --color-primary:         #{v.color('primary')};

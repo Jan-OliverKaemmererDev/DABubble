@@ -6,7 +6,7 @@
       class="shell__menu-toggle"
       type="button"
       aria-controls="shell-workspace"
-      [attr.aria-expanded]="workspaceOpen()"
+      [attr.aria-expanded]="isWorkspaceOpen()"
       (click)="toggleWorkspace()"
     >
       <img class="shell__menu-toggle-icon" [src]="toggleIcon()" alt="" aria-hidden="true" />
@@ -16,7 +16,7 @@
     <aside
       class="shell__workspace"
       id="shell-workspace"
-      [class.shell__workspace--closed]="!workspaceOpen()"
+      [class.shell__workspace--closed]="!isWorkspaceOpen()"
     >
       <app-workspace-menu />
     </aside>
@@ -25,8 +25,8 @@
       <router-outlet />
     </main>
 
-    <aside class="shell__thread" [class.shell__thread--open]="threadOpen()">
-      @if (threadOpen()) {
+    <aside class="shell__thread" [class.shell__thread--open]="isThreadOpen()">
+      @if (isThreadOpen()) {
         <app-thread-panel />
       }
     </aside>

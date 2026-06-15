@@ -59,7 +59,7 @@ export class ProfileDialogComponent {
 
   protected readonly selectedAvatar = signal(DEFAULT_AVATAR_PATH);
 
-  protected readonly pending = signal(false);
+  protected readonly isPending = signal(false);
 
   protected readonly user = computed(() =>
     this.userService.users().find(user => user.uid === this.uid()),
@@ -135,7 +135,7 @@ export class ProfileDialogComponent {
     if (!name) return false;
     const changed =
       name !== this.user()?.name || this.selectedAvatar() !== this.user()?.avatarPath;
-    return changed && !this.pending();
+    return changed && !this.isPending();
   }
 
 
@@ -146,14 +146,14 @@ export class ProfileDialogComponent {
   protected async save(): Promise<void> {
     if (!this.nameDraft().trim()) return this.nameError.set(NAME_REQUIRED_ERROR);
     if (!this.canSave()) return;
-    this.pending.set(true);
+    this.isPending.set(true);
     try {
       await this.userService.updateProfile(this.nameDraft(), this.selectedAvatar());
       this.mode.set('view');
     } catch {
       this.toastService.show(SAVE_ERROR);
     }
-    this.pending.set(false);
+    this.isPending.set(false);
   }
 
 

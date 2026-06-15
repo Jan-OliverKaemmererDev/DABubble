@@ -52,8 +52,6 @@
 }
 
 .composer__mention {
-  // Use text-shadow instead of font-weight to simulate bolding.
-  // Changing font-weight changes letter width, which desyncs the hidden textarea caret!
   text-shadow: 0.4px 0 0 v.color('primary'), -0.4px 0 0 v.color('primary');
   color: v.color('primary');
 }

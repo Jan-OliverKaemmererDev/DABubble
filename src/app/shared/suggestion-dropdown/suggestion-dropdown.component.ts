@@ -12,7 +12,7 @@ export interface Suggestion {
   /** Avatar asset URL for user rows. */
   readonly avatar?: string;
   /** Renders the channel hash icon instead of an avatar. */
-  readonly hash?: boolean;
+  readonly isHash?: boolean;
 }
 
 /**

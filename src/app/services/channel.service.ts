@@ -51,9 +51,9 @@ export class ChannelService {
 
   private readonly injector = inject(EnvironmentInjector);
 
-  private readonly loadedState = signal(false);
+  private readonly hasLoadedChannelsState = signal(false);
 
-  readonly channelsLoaded = this.loadedState.asReadonly();
+  readonly hasLoadedChannels = this.hasLoadedChannelsState.asReadonly();
 
   readonly channels = toSignal(this.streamChannels(), { initialValue: [] as Channel[] });
 
@@ -258,7 +258,7 @@ export class ChannelService {
   private streamChannels(): Observable<Channel[]> {
     return toObservable(this.authService.currentUser).pipe(
       switchMap(current => {
-        this.loadedState.set(false);
+        this.hasLoadedChannelsState.set(false);
         return current
           ? runInInjectionContext(this.injector, () => this.queryChannels(current.uid))
           : of([]);
@@ -280,7 +280,7 @@ export class ChannelService {
     );
     return (collectionData(channelsQuery, { idField: 'id' }) as Observable<Channel[]>).pipe(
       map(channels => [...channels].sort((a, b) => createdAtMillis(a) - createdAtMillis(b))),
-      tap(() => this.loadedState.set(true)),
+      tap(() => this.hasLoadedChannelsState.set(true)),
       catchError(() => this.reportLoadError()),
     );
   }

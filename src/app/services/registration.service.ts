@@ -6,7 +6,7 @@ import { Injectable, computed, signal } from '@angular/core';
 
 export const DEFAULT_AVATAR_PATH = 'avatars/profile.png';
 
-const REMOTE_AVATAR_PREFIX = 'http';
+export const REMOTE_AVATAR_PREFIX = 'http';
 
 /**
  * Resolves a stored avatar reference to a local asset path: local paths pass

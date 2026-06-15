@@ -230,7 +230,7 @@ export class NewMessageComponent implements AfterViewInit {
     const normalized = query.toLowerCase();
     return this.allChannels()
       .filter(channel => channel.name.toLowerCase().includes(normalized))
-      .map(channel => ({ id: `${CHANNEL_PREFIX}${channel.id}`, label: channel.name, hash: true }));
+      .map(channel => ({ id: `${CHANNEL_PREFIX}${channel.id}`, label: channel.name, isHash: true }));
   }
 
 

@@ -1,5 +1,5 @@
-@if (visible()) {
-  <div class="intro" [class.intro--moving]="moving()" aria-hidden="true">
+@if (isVisible()) {
+  <div class="intro" [class.intro--moving]="isMoving()" aria-hidden="true">
     <div #logo class="intro__logo-container" 
          [class.intro--step1]="step() >= 1" 
          [class.intro--step2]="step() >= 2">

@@ -13,21 +13,21 @@
         <button
           class="settings__icon-btn"
           type="button"
-          [attr.aria-label]="editingName() ? 'Channel-Name speichern' : 'Channel-Name bearbeiten'"
-          [disabled]="editingName() && pending()"
-          (click)="editingName() ? saveName() : startNameEdit()"
+          [attr.aria-label]="isEditingName() ? 'Channel-Name speichern' : 'Channel-Name bearbeiten'"
+          [disabled]="isEditingName() && isPending()"
+          (click)="isEditingName() ? saveName() : startNameEdit()"
         >
-          <img [src]="editingName() ? 'icons/check-circle.svg' : 'icons/edit.svg'" alt="" aria-hidden="true" />
+          <img [src]="isEditingName() ? 'icons/check-circle.svg' : 'icons/edit.svg'" alt="" aria-hidden="true" />
         </button>
-      } @else if (editingName()) {
-        <button class="settings__link" type="button" [disabled]="pending()" (click)="saveName()">
+      } @else if (isEditingName()) {
+        <button class="settings__link" type="button" [disabled]="isPending()" (click)="saveName()">
           Speichern
         </button>
       } @else {
         <button class="settings__link" type="button" (click)="startNameEdit()">Bearbeiten</button>
       }
     </div>
-    @if (editingName()) {
+    @if (isEditingName()) {
       <label class="sr-only" for="settings-name">Channel-Name</label>
       <div class="form-input-wrapper form-input-wrapper--leading">
         <img class="form-input-icon" src="icons/tag-grey.svg" alt="" aria-hidden="true" />
@@ -54,14 +54,14 @@
         <button
           class="settings__icon-btn"
           type="button"
-          [attr.aria-label]="editingDescription() ? 'Beschreibung speichern' : 'Beschreibung bearbeiten'"
-          [disabled]="editingDescription() && pending()"
-          (click)="editingDescription() ? saveDescription() : startDescriptionEdit()"
+          [attr.aria-label]="isEditingDescription() ? 'Beschreibung speichern' : 'Beschreibung bearbeiten'"
+          [disabled]="isEditingDescription() && isPending()"
+          (click)="isEditingDescription() ? saveDescription() : startDescriptionEdit()"
         >
-          <img [src]="editingDescription() ? 'icons/check-circle.svg' : 'icons/edit.svg'" alt="" aria-hidden="true" />
+          <img [src]="isEditingDescription() ? 'icons/check-circle.svg' : 'icons/edit.svg'" alt="" aria-hidden="true" />
         </button>
-      } @else if (editingDescription()) {
-        <button class="settings__link" type="button" [disabled]="pending()" (click)="saveDescription()">
+      } @else if (isEditingDescription()) {
+        <button class="settings__link" type="button" [disabled]="isPending()" (click)="saveDescription()">
           Speichern
         </button>
       } @else {
@@ -70,7 +70,7 @@
         </button>
       }
     </div>
-    @if (editingDescription()) {
+    @if (isEditingDescription()) {
       <label class="sr-only" for="settings-description">Beschreibung</label>
       <input
         id="settings-description"
@@ -118,7 +118,7 @@
   }
 
   <footer class="settings__actions">
-    <button class="btn btn-primary" type="button" [disabled]="pending()" (click)="leave()">
+    <button class="btn btn-primary" type="button" [disabled]="isPending()" (click)="leave()">
       Channel verlassen
     </button>
   </footer>

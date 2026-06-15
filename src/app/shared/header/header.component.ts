@@ -17,5 +17,5 @@ import { RouterLink } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
-  readonly showCta = input(true);
+  readonly shouldShowCta = input(true);
 }

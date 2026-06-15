@@ -69,9 +69,9 @@ export class ChannelSettingsDialogComponent {
 
   private readonly router = inject(Router);
 
-  protected readonly editingName = signal(false);
+  protected readonly isEditingName = signal(false);
 
-  protected readonly editingDescription = signal(false);
+  protected readonly isEditingDescription = signal(false);
 
   protected readonly nameDraft = signal('');
 
@@ -79,7 +79,7 @@ export class ChannelSettingsDialogComponent {
 
   protected readonly nameError = signal('');
 
-  protected readonly pending = signal(false);
+  protected readonly isPending = signal(false);
 
   protected readonly isMobile = this.layoutService.isMobile;
 
@@ -100,7 +100,7 @@ export class ChannelSettingsDialogComponent {
   protected startNameEdit(): void {
     this.nameDraft.set(this.channel().name);
     this.nameError.set('');
-    this.editingName.set(true);
+    this.isEditingName.set(true);
   }
 
 
@@ -109,7 +109,7 @@ export class ChannelSettingsDialogComponent {
    */
   protected startDescriptionEdit(): void {
     this.descriptionDraft.set(this.channel().description);
-    this.editingDescription.set(true);
+    this.isEditingDescription.set(true);
   }
 
 
@@ -132,13 +132,13 @@ export class ChannelSettingsDialogComponent {
   protected async saveName(): Promise<void> {
     const name = this.nameDraft().trim();
     if (!name) return this.nameError.set(NAME_REQUIRED_ERROR);
-    this.pending.set(true);
+    this.isPending.set(true);
     if (await this.channelService.isNameTaken(name, this.channel().id)) {
-      this.pending.set(false);
+      this.isPending.set(false);
       return this.nameError.set(NAME_DUPLICATE_ERROR);
     }
     await this.persist(() => this.channelService.renameChannel(this.channel().id, name));
-    this.editingName.set(false);
+    this.isEditingName.set(false);
   }
 
 
@@ -146,11 +146,11 @@ export class ChannelSettingsDialogComponent {
    * Saves the description; empty descriptions are allowed.
    */
   protected async saveDescription(): Promise<void> {
-    this.pending.set(true);
+    this.isPending.set(true);
     await this.persist(() =>
       this.channelService.updateDescription(this.channel().id, this.descriptionDraft()),
     );
-    this.editingDescription.set(false);
+    this.isEditingDescription.set(false);
   }
 
 
@@ -159,14 +159,14 @@ export class ChannelSettingsDialogComponent {
    * last member) and returns to the default channel route.
    */
   protected async leave(): Promise<void> {
-    this.pending.set(true);
+    this.isPending.set(true);
     try {
       await this.channelService.leaveChannel(this.channel());
       this.closed.emit();
       await this.router.navigate(['/app']);
     } catch {
       this.toastService.show(LEAVE_ERROR);
-      this.pending.set(false);
+      this.isPending.set(false);
     }
   }
 
@@ -200,6 +200,6 @@ export class ChannelSettingsDialogComponent {
     } catch {
       this.toastService.show(SAVE_ERROR);
     }
-    this.pending.set(false);
+    this.isPending.set(false);
   }
 }

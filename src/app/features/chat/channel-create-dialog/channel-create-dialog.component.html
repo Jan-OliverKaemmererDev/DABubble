@@ -157,7 +157,7 @@
         }
 
         <footer class="create-channel__actions">
-          <button class="btn btn-primary" type="submit" [disabled]="!canCreate() || pending()">
+          <button class="btn btn-primary" type="submit" [disabled]="!canCreate() || isPending()">
             Erstellen
           </button>
         </footer>

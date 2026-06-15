@@ -262,7 +262,7 @@ export class MessageInputComponent {
       return this.channelService
         .channels()
         .filter(channel => channel.name.toLowerCase().includes(query))
-        .map(channel => ({ id: channel.id, label: channel.name, hash: true }));
+        .map(channel => ({ id: channel.id, label: channel.name, isHash: true }));
     }
     return this.userService
       .users()

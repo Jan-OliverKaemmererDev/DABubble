@@ -80,9 +80,9 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     privacy: [false, Validators.requiredTrue],
   });
 
-  protected nameFocused = false;
-  protected emailFocused = false;
-  protected passwordFocused = false;
+  protected isNameFocused = false;
+  protected isEmailFocused = false;
+  protected isPasswordFocused = false;
 
 
   /**

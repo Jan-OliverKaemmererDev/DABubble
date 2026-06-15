@@ -52,15 +52,15 @@ export class WorkspaceMenuComponent {
 
   protected readonly channels = this.channelService.channels;
 
-  protected readonly channelsOpen = signal(true);
+  protected readonly isChannelsOpen = signal(true);
 
-  protected readonly directOpen = signal(true);
+  protected readonly isDirectOpen = signal(true);
 
-  protected readonly dialogOpen = signal(false);
+  protected readonly isDialogOpen = signal(false);
 
   protected readonly profileUid = signal<string | null>(null);
 
-  protected readonly searchOpen = signal(false);
+  protected readonly isSearchOpen = signal(false);
 
   protected readonly isMobile = inject(LayoutService).isMobile;
 
@@ -74,7 +74,7 @@ export class WorkspaceMenuComponent {
    * @param uid User id picked in the search results.
    */
   protected onSearchUser(uid: string): void {
-    this.searchOpen.set(false);
+    this.isSearchOpen.set(false);
     this.profileUid.set(uid);
   }
 
@@ -83,7 +83,7 @@ export class WorkspaceMenuComponent {
    * Toggles the channels section.
    */
   protected toggleChannels(): void {
-    this.channelsOpen.update(open => !open);
+    this.isChannelsOpen.update(open => !open);
   }
 
 
@@ -91,7 +91,7 @@ export class WorkspaceMenuComponent {
    * Toggles the direct-messages section.
    */
   protected toggleDirect(): void {
-    this.directOpen.update(open => !open);
+    this.isDirectOpen.update(open => !open);
   }
 
 
@@ -99,7 +99,7 @@ export class WorkspaceMenuComponent {
    * Opens the channel-creation dialog.
    */
   protected openDialog(): void {
-    this.dialogOpen.set(true);
+    this.isDialogOpen.set(true);
   }
 
 
@@ -107,7 +107,7 @@ export class WorkspaceMenuComponent {
    * Closes the channel-creation dialog.
    */
   protected closeDialog(): void {
-    this.dialogOpen.set(false);
+    this.isDialogOpen.set(false);
   }
 
 

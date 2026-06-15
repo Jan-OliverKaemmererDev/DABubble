@@ -37,7 +37,7 @@
     <button
       class="btn btn-primary"
       type="button"
-      [disabled]="pending() || success()"
+      [disabled]="isPending() || isSuccess()"
       (click)="submit()"
     >
       Weiter

@@ -33,17 +33,17 @@ type MenuState = 'closed' | 'menu' | 'confirm';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class.actions--open]': "menuState() !== 'closed'",
-    '[class.actions--own]': 'own()',
+    '[class.actions--own]': 'isOwn()',
     '(document:click)': 'onDocumentClick($event)',
     '(document:keydown.escape)': 'closeMenu()',
   },
 })
 export class MessageActionsComponent {
-  readonly own = input(false);
+  readonly isOwn = input(false);
 
-  readonly threadable = input(false);
+  readonly isThreadable = input(false);
 
-  readonly threadOpen = input(false);
+  readonly isThreadOpen = input(false);
 
   readonly canEdit = input(false);
 

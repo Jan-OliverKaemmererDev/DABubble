@@ -52,7 +52,7 @@ const DESKTOP_REACTION_LIMIT = 20;
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'message',
-    '[class.message--own]': 'own()',
+    '[class.message--own]': 'isOwn()',
     '[class.message--focus]': 'focusHighlight()',
     '[class.message--bar-open]': 'barOpen()',
     '[id]': '"message-" + entry().id',
@@ -67,9 +67,9 @@ export class MessageItemComponent {
 
   readonly entry = input.required<ChatEntry>();
 
-  readonly threadable = input(false);
+  readonly isThreadable = input(false);
 
-  readonly threadOpen = input(false);
+  readonly isThreadOpen = input(false);
 
   readonly messagePath = input<string | null>(null);
 
@@ -101,7 +101,7 @@ export class MessageItemComponent {
 
   protected readonly editFieldId = `message-edit-${MessageItemComponent.instanceCounter++}`;
 
-  protected readonly editing = signal(false);
+  protected readonly isEditing = signal(false);
 
   protected readonly editText = signal('');
 
@@ -109,7 +109,7 @@ export class MessageItemComponent {
 
   protected readonly editPickerOpen = signal(false);
 
-  protected readonly own = computed(
+  protected readonly isOwn = computed(
     () => this.entry().authorId === this.authService.currentUser()?.uid,
   );
 
@@ -117,7 +117,7 @@ export class MessageItemComponent {
     () => this.messageFocusService.target() === this.entry().id,
   );
 
-  protected readonly deleted = computed(() => Boolean(this.entry().deletedAt));
+  protected readonly isDeleted = computed(() => Boolean(this.entry().deletedAt));
 
   protected readonly author = computed(() =>
     this.userService.users().find(user => user.uid === this.entry().authorId),
@@ -194,7 +194,7 @@ export class MessageItemComponent {
    * window; evaluated per change detection because it is time-based.
    */
   protected canEditNow(): boolean {
-    if (!this.own() || this.deleted() || !this.messagePath()) return false;
+    if (!this.isOwn() || this.isDeleted() || !this.messagePath()) return false;
     const createdAt = resolveDate(this.entry().createdAt).getTime();
     return Date.now() - createdAt < EDIT_WINDOW_MS;
   }
@@ -207,7 +207,7 @@ export class MessageItemComponent {
    */
   protected async react(emoji: string): Promise<void> {
     const messagePath = this.messagePath();
-    if (!messagePath || this.deleted()) return;
+    if (!messagePath || this.isDeleted()) return;
     const uids = this.entry().reactions[emoji] ?? [];
     if (!uids.includes(this.authService.currentUser()?.uid ?? '')) {
       this.recentEmojiService.record(emoji);
@@ -233,7 +233,7 @@ export class MessageItemComponent {
   protected startEdit(): void {
     this.barOpen.set(false);
     this.editText.set(this.entry().text);
-    this.editing.set(true);
+    this.isEditing.set(true);
     requestAnimationFrame(() => this.editTextarea()?.nativeElement.focus());
   }
 
@@ -242,7 +242,7 @@ export class MessageItemComponent {
    * Leaves edit mode without saving.
    */
   protected cancelEdit(): void {
-    this.editing.set(false);
+    this.isEditing.set(false);
     this.editPickerOpen.set(false);
   }
 

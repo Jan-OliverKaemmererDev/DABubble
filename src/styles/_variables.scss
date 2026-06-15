@@ -2,7 +2,6 @@
 @use 'sass:math';
 
 // ─── Colors ──────────────────────────────────────────────────────────────────
-// Canonical Figma palette (design-system.md §1). Single source of truth.
 $colors: (
   'white':          #ffffff,
   'bg':             #eceefe,
@@ -25,7 +24,6 @@ $colors: (
 }
 
 // ─── Font Sizes ──────────────────────────────────────────────────────────────
-// Semantic type scale (design-system.md §2); base html { font-size: 112.5% }.
 $font-sizes: (
   display: 4.667rem,
   h1:   2.556rem,
@@ -72,8 +70,6 @@ $radius-pill: 999px;
 $radius-round: 50%;
 
 // ─── Spacing ─────────────────────────────────────────────────────────────────
-// 8px-based scale (design-system.md §7). sm-md (12px) and xl-xxl (40px) are
-// in-use Figma-screen steps documented as additions to the default scale.
 $space: (
   xs:     4px,
   sm:     8px,
@@ -95,8 +91,6 @@ $space: (
 }
 
 // ─── Fluid Spacing ───────────────────────────────────────────────────────────
-// Vertical rhythm interpolates linearly between two anchor viewport heights:
-// minimum token value at $viewport-fit-min, maximum at $viewport-fit-max.
 $viewport-fit-min: 750px;
 $viewport-fit-max: 1080px;
 
@@ -155,7 +149,6 @@ $z-tooltip: 600;
 $sidebar-width: 366px;
 $thread-panel-width: 480px;
 
-// Dialog widths measured in Figma (heights hug their content).
 $dialog-widths: (
   'default':     872px,
   'members':     415px,

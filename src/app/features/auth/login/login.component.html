@@ -9,7 +9,7 @@
     <div class="form-field">
       <label class="sr-only" for="login-email">E-Mail-Adresse</label>
       <div class="form-input-wrapper form-input-wrapper--leading">
-        <img class="form-input-icon" [src]="emailFocused ? 'icons/mail.svg' : 'icons/mail-grey.svg'" alt="" aria-hidden="true" />
+        <img class="form-input-icon" [src]="isEmailFocused ? 'icons/mail.svg' : 'icons/mail-grey.svg'" alt="" aria-hidden="true" />
         <input
           id="login-email"
           class="form-input"
@@ -19,8 +19,8 @@
           placeholder="beispielname&#64;email.com"
           aria-describedby="login-email-error"
           [attr.aria-invalid]="isInvalid('email')"
-          (focus)="emailFocused = true"
-          (blur)="emailFocused = false"
+          (focus)="isEmailFocused = true"
+          (blur)="isEmailFocused = false"
         />
       </div>
       <p class="form-error" id="login-email-error">{{ errorMessage('email') }}</p>
@@ -33,11 +33,11 @@
         formControlName="password"
         placeholder="Passwort"
         autocomplete="current-password"
-        [leadingIcon]="passwordFocused ? 'icons/lock.svg' : 'icons/lock-grey.svg'"
+        [leadingIcon]="isPasswordFocused ? 'icons/lock.svg' : 'icons/lock-grey.svg'"
         describedBy="login-password-error"
-        [invalid]="isInvalid('password')"
-        (focus)="passwordFocused = true"
-        (blur)="passwordFocused = false"
+        [isInvalid]="isInvalid('password')"
+        (focus)="isPasswordFocused = true"
+        (blur)="isPasswordFocused = false"
       />
       <p class="form-error" id="login-password-error">{{ errorMessage('password') }}</p>
     </div>
@@ -49,7 +49,7 @@
     <button
       class="btn login-card__google"
       type="button"
-      [disabled]="pending()"
+      [disabled]="isPending()"
       (click)="loginWithGoogle()"
     >
       <img class="login-card__google-icon" src="icons/google.svg" alt="" aria-hidden="true" />
@@ -61,10 +61,10 @@
     }
 
     <div class="login-card__actions">
-      <button class="btn btn-primary" type="submit" [disabled]="form.invalid || pending()">
+      <button class="btn btn-primary" type="submit" [disabled]="form.invalid || isPending()">
         Anmelden
       </button>
-      <button class="btn btn-secondary" type="button" [disabled]="pending()" (click)="loginAsGuest()">
+      <button class="btn btn-secondary" type="button" [disabled]="isPending()" (click)="loginAsGuest()">
         Gäste-Login
       </button>
     </div>

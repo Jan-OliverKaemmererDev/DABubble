@@ -81,7 +81,7 @@ export class ChannelCreateDialogComponent implements AfterViewInit, OnDestroy {
 
   protected readonly step = signal<DialogStep>('details');
 
-  protected readonly pending = signal(false);
+  protected readonly isPending = signal(false);
 
   protected readonly selectedUsers = signal<UserDoc[]>([]);
 
@@ -217,8 +217,8 @@ export class ChannelCreateDialogComponent implements AfterViewInit, OnDestroy {
    * Creates the channel, navigates to it and closes the dialog.
    */
   protected async create(): Promise<void> {
-    if (!this.canCreate() || this.pending()) return;
-    this.pending.set(true);
+    if (!this.canCreate() || this.isPending()) return;
+    this.isPending.set(true);
     const channelId = await this.persistChannel();
     if (channelId === null) return;
     await this.router.navigate(['/app/channel', channelId]);
@@ -307,7 +307,7 @@ export class ChannelCreateDialogComponent implements AfterViewInit, OnDestroy {
       return await this.channelService.createChannel(name, description, this.memberIds());
     } catch {
       this.toastService.show(CREATE_ERROR);
-      this.pending.set(false);
+      this.isPending.set(false);
       return null;
     }
   }

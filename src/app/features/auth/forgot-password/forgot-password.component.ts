@@ -48,7 +48,7 @@ export class ForgotPasswordComponent implements AfterViewInit {
 
   private readonly title = viewChild<ElementRef<HTMLHeadingElement>>('title');
 
-  protected readonly pending = signal(false);
+  protected readonly isPending = signal(false);
 
   protected readonly generalError = signal('');
 
@@ -56,7 +56,7 @@ export class ForgotPasswordComponent implements AfterViewInit {
     email: ['', [Validators.required, Validators.email]],
   });
 
-  protected emailFocused = false;
+  protected isEmailFocused = false;
 
 
   /**
@@ -92,8 +92,8 @@ export class ForgotPasswordComponent implements AfterViewInit {
    * deliberately treated like success.
    */
   protected async submit(): Promise<void> {
-    if (this.form.invalid || this.pending()) return;
-    this.pending.set(true);
+    if (this.form.invalid || this.isPending()) return;
+    this.isPending.set(true);
     this.generalError.set('');
     try {
       await this.authService.sendPasswordReset(this.form.getRawValue().email);
@@ -101,7 +101,7 @@ export class ForgotPasswordComponent implements AfterViewInit {
     } catch (error: unknown) {
       this.handleSendError(error);
     } finally {
-      this.pending.set(false);
+      this.isPending.set(false);
     }
   }
 

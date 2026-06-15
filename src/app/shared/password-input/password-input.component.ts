@@ -38,13 +38,13 @@ export class PasswordInputComponent implements ControlValueAccessor {
 
   readonly describedBy = input<string | null>(null);
 
-  readonly invalid = input(false);
+  readonly isInvalid = input(false);
 
-  protected readonly visible = signal(false);
+  protected readonly isVisible = signal(false);
 
   protected readonly value = signal('');
 
-  protected readonly disabled = signal(false);
+  protected readonly isDisabled = signal(false);
 
   private onChange: (value: string) => void = () => undefined;
 
@@ -83,7 +83,7 @@ export class PasswordInputComponent implements ControlValueAccessor {
    * @param disabled Whether the control is disabled.
    */
   setDisabledState(disabled: boolean): void {
-    this.disabled.set(disabled);
+    this.isDisabled.set(disabled);
   }
 
 
@@ -123,7 +123,7 @@ export class PasswordInputComponent implements ControlValueAccessor {
    * Switches between hidden and visible password text.
    */
   protected toggleVisibility(): void {
-    this.visible.update(visible => !visible);
+    this.isVisible.update(visible => !visible);
   }
 
 
@@ -140,7 +140,7 @@ export class PasswordInputComponent implements ControlValueAccessor {
    * Resolves the toggle button label for the current state.
    */
   protected toggleLabel(): string {
-    return this.visible() ? HIDE_LABEL : SHOW_LABEL;
+    return this.isVisible() ? HIDE_LABEL : SHOW_LABEL;
   }
 
 
@@ -148,6 +148,6 @@ export class PasswordInputComponent implements ControlValueAccessor {
    * Resolves the toggle button icon for the current state.
    */
   protected toggleIcon(): string {
-    return this.visible() ? HIDE_ICON : SHOW_ICON;
+    return this.isVisible() ? HIDE_ICON : SHOW_ICON;
   }
 }

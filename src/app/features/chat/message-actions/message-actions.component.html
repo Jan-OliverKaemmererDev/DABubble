@@ -23,19 +23,19 @@
     <img src="icons/add-reaction.svg" alt="" aria-hidden="true" />
   </button>
 
-  @if (threadable()) {
+  @if (isThreadable()) {
     <button
       class="actions__btn"
       type="button"
       aria-label="Thread starten"
-      [attr.aria-expanded]="threadOpen()"
+      [attr.aria-expanded]="isThreadOpen()"
       (click)="threadToggled.emit()"
     >
       <img src="icons/comment.svg" alt="" aria-hidden="true" />
     </button>
   }
 
-  @if (own()) {
+  @if (isOwn()) {
     <span class="actions__menu-wrap">
       <button
         #menuTrigger

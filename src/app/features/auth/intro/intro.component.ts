@@ -38,9 +38,9 @@ export class IntroComponent implements OnInit {
 
   private readonly logo = viewChild<ElementRef<HTMLDivElement>>('logo');
 
-  protected readonly visible = signal(false);
+  protected readonly isVisible = signal(false);
 
-  protected readonly moving = signal(false);
+  protected readonly isMoving = signal(false);
 
   protected readonly step = signal(0);
 
@@ -50,7 +50,7 @@ export class IntroComponent implements OnInit {
    */
   ngOnInit(): void {
     if (this.shouldSkip()) return;
-    this.visible.set(true);
+    this.isVisible.set(true);
     
     setTimeout(() => {
       this.step.set(1);
@@ -75,7 +75,7 @@ export class IntroComponent implements OnInit {
    */
   private startHandoff(): void {
     this.applyTargetTransform();
-    this.moving.set(true);
+    this.isMoving.set(true);
     const totalMs = Math.max(MOVE_DURATION_MS, FADE_DELAY_MS + FADE_DURATION_MS);
     setTimeout(() => this.finish(), totalMs);
   }
@@ -110,7 +110,7 @@ export class IntroComponent implements OnInit {
    * Removes the overlay and remembers that the splash ran this session.
    */
   private finish(): void {
-    this.visible.set(false);
+    this.isVisible.set(false);
     sessionStorage.setItem(INTRO_PLAYED_KEY, 'true');
   }
 }

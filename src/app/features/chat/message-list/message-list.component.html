@@ -8,8 +8,8 @@
         <li
           app-message-item
           [entry]="message"
-          [threadable]="true"
-          [threadOpen]="message.id === openThreadId()"
+          [isThreadable]="true"
+          [isThreadOpen]="message.id === openThreadId()"
           [messagePath]="messagePathFor(message)"
           [reactionLimit]="reactionLimit()"
           (openThread)="threadRequested.emit(message)"

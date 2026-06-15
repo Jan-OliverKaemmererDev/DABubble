@@ -31,7 +31,11 @@ import {
 } from '@angular/fire/firestore';
 
 import { UserDoc } from '../models/user.model';
-import { DEFAULT_AVATAR_PATH, RegistrationFormData } from './registration.service';
+import {
+  DEFAULT_AVATAR_PATH,
+  REMOTE_AVATAR_PREFIX,
+  RegistrationFormData,
+} from './registration.service';
 
 const GUEST_NAME = 'Gast';
 const GUEST_EMAIL = 'gast@dabubble.dev';
@@ -233,7 +237,7 @@ export class AuthService {
     snapshot: DocumentSnapshot,
   ): Promise<void> {
     const avatarPath = (snapshot.data() as UserDoc | undefined)?.avatarPath ?? '';
-    if (!avatarPath.startsWith('http')) return;
+    if (!avatarPath.startsWith(REMOTE_AVATAR_PREFIX)) return;
     await this.inContext(() => updateDoc(reference, { avatarPath: DEFAULT_AVATAR_PATH }));
   }
 

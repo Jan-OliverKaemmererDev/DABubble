@@ -41,7 +41,7 @@ export class ChannelRedirectComponent {
    */
   private redirectToFirstChannel(): void {
     if (this.layoutService.isMobile()) return;
-    if (!this.channelService.channelsLoaded()) return;
+    if (!this.channelService.hasLoadedChannels()) return;
     const first = [...this.channelService.channels()].sort((a, b) =>
       a.name.localeCompare(b.name, SORT_LOCALE),
     )[0];

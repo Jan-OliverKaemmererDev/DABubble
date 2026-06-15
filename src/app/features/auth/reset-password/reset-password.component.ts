@@ -87,7 +87,7 @@ export class ResetPasswordComponent implements OnInit, AfterViewInit {
 
   protected readonly codeError = signal(DEFAULT_INVALID_MESSAGE);
 
-  protected readonly pending = signal(false);
+  protected readonly isPending = signal(false);
 
   protected readonly generalError = signal('');
 
@@ -194,8 +194,8 @@ export class ResetPasswordComponent implements OnInit, AfterViewInit {
    */
   protected async submit(): Promise<void> {
     const code = this.oobCode();
-    if (this.form.invalid || this.pending() || !code) return;
-    this.pending.set(true);
+    if (this.form.invalid || this.isPending() || !code) return;
+    this.isPending.set(true);
     this.generalError.set('');
     try {
       await this.authService.completePasswordReset(code, this.form.getRawValue().password);
@@ -203,7 +203,7 @@ export class ResetPasswordComponent implements OnInit, AfterViewInit {
     } catch (error: unknown) {
       this.handleResetError(error);
     } finally {
-      this.pending.set(false);
+      this.isPending.set(false);
     }
   }
 

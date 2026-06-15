@@ -43,7 +43,7 @@ export class LoginComponent {
 
   private readonly router = inject(Router);
 
-  protected readonly pending = signal(false);
+  protected readonly isPending = signal(false);
 
   protected readonly generalError = signal('');
 
@@ -52,8 +52,8 @@ export class LoginComponent {
     password: ['', Validators.required],
   });
 
-  protected emailFocused = false;
-  protected passwordFocused = false;
+  protected isEmailFocused = false;
+  protected isPasswordFocused = false;
 
 
   /**
@@ -84,7 +84,7 @@ export class LoginComponent {
    * Signs in with the form credentials.
    */
   protected async submit(): Promise<void> {
-    if (this.form.invalid || this.pending()) return;
+    if (this.form.invalid || this.isPending()) return;
     const { email, password } = this.form.getRawValue();
     await this.runSignIn(() => this.authService.signIn(email, password));
   }
@@ -94,7 +94,7 @@ export class LoginComponent {
    * Signs in via the Google popup; a closed popup is not an error.
    */
   protected async loginWithGoogle(): Promise<void> {
-    if (this.pending()) return;
+    if (this.isPending()) return;
     await this.runSignIn(() => this.authService.signInWithGoogle());
   }
 
@@ -103,7 +103,7 @@ export class LoginComponent {
    * Signs in anonymously as guest.
    */
   protected async loginAsGuest(): Promise<void> {
-    if (this.pending()) return;
+    if (this.isPending()) return;
     await this.runSignIn(() => this.authService.signInAsGuest());
   }
 
@@ -113,7 +113,7 @@ export class LoginComponent {
    * @param signIn Sign-in operation to execute.
    */
   private async runSignIn(signIn: () => Promise<void>): Promise<void> {
-    this.pending.set(true);
+    this.isPending.set(true);
     this.generalError.set('');
     try {
       await signIn();
@@ -121,7 +121,7 @@ export class LoginComponent {
     } catch (error: unknown) {
       this.handleSignInError(error);
     } finally {
-      this.pending.set(false);
+      this.isPending.set(false);
     }
   }
 

@@ -25,7 +25,7 @@ const LOGIN_URL_FRAGMENT = '/auth/login';
 export class AuthLayoutComponent {
   private readonly router = inject(Router);
 
-  protected readonly showCta = toSignal(
+  protected readonly shouldShowCta = toSignal(
     this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd),
       map(event => event.urlAfterRedirects.includes(LOGIN_URL_FRAGMENT)),
