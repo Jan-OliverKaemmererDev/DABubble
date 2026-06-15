@@ -301,5 +301,5 @@ function detectMention(text: string, caret: number): MentionState | null {
  * @param path Avatar path stored on a user document.
  */
 function avatarUrl(path: string): string {
-  return path.startsWith('http') ? `/${DEFAULT_AVATAR_PATH}` : `/${path}`;
+  return path.startsWith('http') ? `${DEFAULT_AVATAR_PATH}` : `${path}`;
 }

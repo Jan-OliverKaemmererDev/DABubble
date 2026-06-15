@@ -164,7 +164,7 @@ export class SearchBarComponent {
    */
   protected avatarSrc(hit: UserHit): string {
     const path = hit.avatarPath;
-    return !path || path.startsWith('http') ? `/${DEFAULT_AVATAR_PATH}` : `/${path}`;
+    return !path || path.startsWith('http') ? `${DEFAULT_AVATAR_PATH}` : `${path}`;
   }
 
 

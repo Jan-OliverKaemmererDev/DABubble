@@ -121,8 +121,8 @@ export class DirectMessageViewComponent {
    */
   private resolvePartnerAvatar(): string {
     const path = this.userService.users().find(user => user.uid === this.uid())?.avatarPath;
-    if (!path || path.startsWith('http')) return `/${DEFAULT_AVATAR_PATH}`;
-    return `/${path}`;
+    if (!path || path.startsWith('http')) return `${DEFAULT_AVATAR_PATH}`;
+    return `${path}`;
   }
 
 

@@ -99,7 +99,7 @@
     background-color: v.color('bg');
 
     img[src*='close.svg'] {
-      content: url('/icons/close-hover.svg');
+      content: url('../../public/icons/close-hover.svg');
     }
   }
   

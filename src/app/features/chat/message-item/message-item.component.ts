@@ -345,8 +345,8 @@ export class MessageItemComponent {
    */
   private resolveAvatar(): string {
     const path = this.author()?.avatarPath;
-    if (!path || path.startsWith('http')) return `/${DEFAULT_AVATAR_PATH}`;
-    return `/${path}`;
+    if (!path || path.startsWith('http')) return `${DEFAULT_AVATAR_PATH}`;
+    return `${path}`;
   }
 
 

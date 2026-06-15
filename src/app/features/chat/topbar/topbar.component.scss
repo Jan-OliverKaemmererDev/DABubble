@@ -56,7 +56,7 @@
     }
 
     .topbar__chevron {
-      content: url('/icons/arrow-down-hover.svg');
+      content: url('../../../../../public/icons/arrow-down-hover.svg');
     }
   }
 }
@@ -89,12 +89,12 @@
   }
 
   &--profile:hover img {
-    content: url('/icons/account-circle-hover.svg');
+    content: url('../../../../../public/icons/account-circle-hover.svg');
     transform: scale(1.03);
   }
 
   &--logout:hover img {
-    content: url('/icons/logout-hover.svg');
+    content: url('../../../../../public/icons/logout-hover.svg');
   }
 
   img {

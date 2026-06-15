@@ -106,7 +106,7 @@ export class AppShellComponent implements OnDestroy {
   );
 
   protected readonly toggleIcon = computed(() =>
-    this.workspaceOpen() ? '/icons/group-left.svg' : '/icons/group-right.svg',
+    this.workspaceOpen() ? 'icons/group-left.svg' : 'icons/group-right.svg',
   );
 
 

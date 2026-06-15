@@ -151,8 +151,8 @@ export class TopbarComponent {
    */
   private resolveAvatar(): string {
     const path = this.userDoc()?.avatarPath ?? this.authService.currentUser()?.photoURL;
-    if (!path || path.startsWith('http')) return `/${DEFAULT_AVATAR_PATH}`;
-    return `/${path}`;
+    if (!path || path.startsWith('http')) return `${DEFAULT_AVATAR_PATH}`;
+    return `${path}`;
   }
 
 
@@ -163,6 +163,6 @@ export class TopbarComponent {
   protected useAvatarFallback(event: Event): void {
     const image = event.target as HTMLImageElement;
     if (image.src.endsWith(DEFAULT_AVATAR_PATH)) return;
-    image.src = `/${DEFAULT_AVATAR_PATH}`;
+    image.src = `${DEFAULT_AVATAR_PATH}`;
   }
 }

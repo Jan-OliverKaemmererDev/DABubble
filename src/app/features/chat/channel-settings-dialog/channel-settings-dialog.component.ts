@@ -185,8 +185,8 @@ export class ChannelSettingsDialogComponent {
         uid: user.uid,
         name: user.uid === selfUid ? `${user.name}${SELF_SUFFIX}` : user.name,
         avatar: user.avatarPath.startsWith('http')
-          ? `/${DEFAULT_AVATAR_PATH}`
-          : `/${user.avatarPath}`,
+          ? `${DEFAULT_AVATAR_PATH}`
+          : `${user.avatarPath}`,
       }));
     return rows.sort((a, b) => Number(b.uid === selfUid) - Number(a.uid === selfUid));
   }

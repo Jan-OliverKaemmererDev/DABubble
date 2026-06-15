@@ -79,5 +79,5 @@ export class ChannelMembersDialogComponent {
  * @param path Avatar path stored on a user document.
  */
 function avatarSrc(path: string): string {
-  return path.startsWith('http') ? `/${DEFAULT_AVATAR_PATH}` : `/${path}`;
+  return path.startsWith('http') ? `${DEFAULT_AVATAR_PATH}` : `${path}`;
 }

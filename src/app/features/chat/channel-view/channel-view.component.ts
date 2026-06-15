@@ -146,8 +146,8 @@ export class ChannelViewComponent {
    * @param path Avatar path stored on a user document.
    */
   protected avatarSrc(path: string | undefined): string {
-    if (!path || path.startsWith('http')) return `/${DEFAULT_AVATAR_PATH}`;
-    return `/${path}`;
+    if (!path || path.startsWith('http')) return `${DEFAULT_AVATAR_PATH}`;
+    return `${path}`;
   }
 
 

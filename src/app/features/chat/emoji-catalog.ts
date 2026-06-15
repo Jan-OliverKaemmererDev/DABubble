@@ -42,5 +42,5 @@ export const EMOJI_SET: readonly string[] = Object.keys(EMOJI_ASSETS);
  */
 export function emojiAsset(emoji: string): string | null {
   const asset = EMOJI_ASSETS[emoji];
-  return asset ? `/${asset}` : null;
+  return asset ? `${asset}` : null;
 }

@@ -2,7 +2,7 @@
   <header class="settings__head">
     <h2 class="settings__title" id="channel-settings-title"># {{ channel().name }}</h2>
     <button class="btn btn-icon btn-sm" type="button" aria-label="Dialog schließen" (click)="closed.emit()">
-      <img src="/icons/close.svg" alt="" aria-hidden="true" />
+      <img src="icons/close.svg" alt="" aria-hidden="true" />
     </button>
   </header>
 
@@ -17,7 +17,7 @@
           [disabled]="editingName() && pending()"
           (click)="editingName() ? saveName() : startNameEdit()"
         >
-          <img [src]="editingName() ? '/icons/check-circle.svg' : '/icons/edit.svg'" alt="" aria-hidden="true" />
+          <img [src]="editingName() ? 'icons/check-circle.svg' : 'icons/edit.svg'" alt="" aria-hidden="true" />
         </button>
       } @else if (editingName()) {
         <button class="settings__link" type="button" [disabled]="pending()" (click)="saveName()">
@@ -30,7 +30,7 @@
     @if (editingName()) {
       <label class="sr-only" for="settings-name">Channel-Name</label>
       <div class="form-input-wrapper form-input-wrapper--leading">
-        <img class="form-input-icon" src="/icons/tag-grey.svg" alt="" aria-hidden="true" />
+        <img class="form-input-icon" src="icons/tag-grey.svg" alt="" aria-hidden="true" />
         <input
           id="settings-name"
           class="form-input form-input--outlined"
@@ -58,7 +58,7 @@
           [disabled]="editingDescription() && pending()"
           (click)="editingDescription() ? saveDescription() : startDescriptionEdit()"
         >
-          <img [src]="editingDescription() ? '/icons/check-circle.svg' : '/icons/edit.svg'" alt="" aria-hidden="true" />
+          <img [src]="editingDescription() ? 'icons/check-circle.svg' : 'icons/edit.svg'" alt="" aria-hidden="true" />
         </button>
       } @else if (editingDescription()) {
         <button class="settings__link" type="button" [disabled]="pending()" (click)="saveDescription()">
@@ -111,7 +111,7 @@
         }
       </ul>
       <button class="settings__member settings__member--add" type="button" (click)="addMembersRequested.emit()">
-        <img class="settings__member-add-icon" src="/icons/add-person.svg" alt="" aria-hidden="true" />
+        <img class="settings__member-add-icon" src="icons/add-person.svg" alt="" aria-hidden="true" />
         Mitglieder hinzufügen
       </button>
     </section>

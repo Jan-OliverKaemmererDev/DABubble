@@ -209,7 +209,7 @@ export class ChannelCreateDialogComponent implements AfterViewInit, OnDestroy {
    * @param path Avatar path stored on the user document.
    */
   protected avatarSrc(path: string): string {
-    return path.startsWith('http') ? `/${DEFAULT_AVATAR_PATH}` : `/${path}`;
+    return path.startsWith('http') ? `${DEFAULT_AVATAR_PATH}` : `${path}`;
   }
 
 
