@@ -30,13 +30,12 @@
 }
 
 .intro__text {
-  padding-left: 24px;
-  font-family: v.$font-heading;
-  font-size: 84px;
-  font-weight: 700;
+  padding-left: v.space('lg');
+  font-family: v.$font-base;
+  font-size: v.font-size('display');
+  font-weight: v.$font-weight-bold;
   color: v.color('white');
   white-space: nowrap;
-  
   clip-path: inset(0 100% 0 0);
   transition: clip-path 500ms ease-in-out;
 }
@@ -52,5 +51,15 @@
   .intro__logo-container {
     transform: translate(var(--intro-dx), var(--intro-dy)) scale(var(--intro-scale));
     transition: transform var(--intro-move-ms) ease-out;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro,
+  .intro__logo-container,
+  .intro__text,
+  .intro--moving,
+  .intro--moving .intro__logo-container {
+    transition: none;
   }
 }

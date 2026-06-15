@@ -9,7 +9,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Channel } from '../../../models/channel.model';
 import { UserDoc } from '../../../models/user.model';
 import { ChannelService } from '../../../services/channel.service';
-import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
+import { resolveAvatarPath } from '../../../services/registration.service';
 import { ToastService } from '../../../services/toast.service';
 import { UserService } from '../../../services/user.service';
 import {
@@ -84,7 +84,7 @@ export class ChannelAddMembersDialogComponent {
    * @param path Avatar path stored on a user document.
    */
   protected avatarSrc(path: string): string {
-    return path.startsWith('http') ? `${DEFAULT_AVATAR_PATH}` : `${path}`;
+    return resolveAvatarPath(path);
   }
 
 

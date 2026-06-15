@@ -27,7 +27,7 @@ const PASSWORD_MIN_LENGTH = 6;
 const ERROR_MESSAGES: Record<string, Record<string, string>> = {
   name: {
     required: 'Bitte gib deinen Namen ein',
-    minlength: 'Dein Name muss mindestens 2 Zeichen lang sein',
+    minlength: `Dein Name muss mindestens ${NAME_MIN_LENGTH} Zeichen lang sein`,
   },
   email: {
     required: 'Bitte gib deine E-Mail-Adresse ein',
@@ -35,7 +35,7 @@ const ERROR_MESSAGES: Record<string, Record<string, string>> = {
   },
   password: {
     required: 'Bitte gib ein Passwort ein',
-    minlength: 'Dein Passwort muss mindestens 6 Zeichen lang sein',
+    minlength: `Dein Passwort muss mindestens ${PASSWORD_MIN_LENGTH} Zeichen lang sein`,
   },
   privacy: {
     required: 'Bitte stimme der Datenschutzerklärung zu',

@@ -6,7 +6,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, output, si
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../../services/auth.service';
-import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
+import { DEFAULT_AVATAR_PATH, resolveAvatarPath } from '../../../services/registration.service';
 import { ToastService } from '../../../services/toast.service';
 import { UserService } from '../../../services/user.service';
 import { AVATAR_OPTIONS } from '../../../shared/avatar-options';
@@ -173,6 +173,5 @@ export class ProfileDialogComponent {
  * @param path Avatar path stored on a user document.
  */
 function assetUrl(path: string | undefined): string {
-  if (!path || path.startsWith('http')) return `${DEFAULT_AVATAR_PATH}`;
-  return `${path}`;
+  return resolveAvatarPath(path);
 }

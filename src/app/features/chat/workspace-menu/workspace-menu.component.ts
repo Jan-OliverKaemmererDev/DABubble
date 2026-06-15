@@ -8,13 +8,14 @@ import { UserDoc } from '../../../models/user.model';
 import { AuthService } from '../../../services/auth.service';
 import { ChannelService } from '../../../services/channel.service';
 import { LayoutService } from '../../../services/layout.service';
-import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
+import { DEFAULT_AVATAR_PATH, resolveAvatarPath } from '../../../services/registration.service';
 import { UserService } from '../../../services/user.service';
 import { ProfileDialogComponent } from '../../profile/profile-dialog/profile-dialog.component';
 import { MobileSearchViewComponent } from '../../search/mobile-search-view/mobile-search-view.component';
 import { ChannelCreateDialogComponent } from '../channel-create-dialog/channel-create-dialog.component';
 
 const GUEST_NAME = 'Gast';
+const SORT_LOCALE = 'de';
 
 /** Direct-message list entry of the signed-in user. */
 interface SelfEntry {
@@ -116,7 +117,7 @@ export class WorkspaceMenuComponent {
    * @param path Avatar path stored on the user document.
    */
   protected avatarSrc(path: string): string {
-    return path.startsWith('http') ? `${DEFAULT_AVATAR_PATH}` : `${path}`;
+    return resolveAvatarPath(path);
   }
 
 
@@ -142,6 +143,6 @@ export class WorkspaceMenuComponent {
     return this.userService
       .users()
       .filter(user => user.uid !== selfUid)
-      .sort((a, b) => a.name.localeCompare(b.name, 'de'));
+      .sort((a, b) => a.name.localeCompare(b.name, SORT_LOCALE));
   }
 }

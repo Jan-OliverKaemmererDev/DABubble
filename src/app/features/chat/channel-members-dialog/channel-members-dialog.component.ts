@@ -7,7 +7,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, output } f
 import { Channel } from '../../../models/channel.model';
 import { UserDoc } from '../../../models/user.model';
 import { AuthService } from '../../../services/auth.service';
-import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
+import { resolveAvatarPath } from '../../../services/registration.service';
 import { UserService } from '../../../services/user.service';
 import {
   DialogAnchor,
@@ -79,5 +79,5 @@ export class ChannelMembersDialogComponent {
  * @param path Avatar path stored on a user document.
  */
 function avatarSrc(path: string): string {
-  return path.startsWith('http') ? `${DEFAULT_AVATAR_PATH}` : `${path}`;
+  return resolveAvatarPath(path);
 }

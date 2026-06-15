@@ -22,8 +22,9 @@ import { AVATAR_OPTIONS } from '../../../shared/avatar-options';
 const SUCCESS_REDIRECT_DELAY_MS = 1500;
 const SUCCESS_TOAST_MESSAGE = 'Konto erfolgreich erstellt!';
 
+const PASSWORD_MIN_LENGTH = 6;
 const EMAIL_IN_USE_MESSAGE = 'Diese E-Mail-Adresse wird bereits verwendet';
-const WEAK_PASSWORD_MESSAGE = 'Dein Passwort muss mindestens 6 Zeichen lang sein';
+const WEAK_PASSWORD_MESSAGE = `Dein Passwort muss mindestens ${PASSWORD_MIN_LENGTH} Zeichen lang sein`;
 const GENERAL_ERROR_MESSAGE = 'Das hat leider nicht geklappt. Bitte versuche es später erneut.';
 
 /**

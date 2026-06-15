@@ -28,7 +28,7 @@ import { catchError, map, of, switchMap, timer } from 'rxjs';
 import { UserDoc } from '../../../models/user.model';
 import { AuthService } from '../../../services/auth.service';
 import { ChannelService } from '../../../services/channel.service';
-import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
+import { resolveAvatarPath } from '../../../services/registration.service';
 import { ToastService } from '../../../services/toast.service';
 import { UserService } from '../../../services/user.service';
 
@@ -209,7 +209,7 @@ export class ChannelCreateDialogComponent implements AfterViewInit, OnDestroy {
    * @param path Avatar path stored on the user document.
    */
   protected avatarSrc(path: string): string {
-    return path.startsWith('http') ? `${DEFAULT_AVATAR_PATH}` : `${path}`;
+    return resolveAvatarPath(path);
   }
 
 

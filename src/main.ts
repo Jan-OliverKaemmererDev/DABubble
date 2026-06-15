@@ -1,3 +1,7 @@
+/**
+ * @file Application entry point: bootstraps the standalone root component
+ * with the app-wide provider configuration.
+ */
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { App } from './app/app';

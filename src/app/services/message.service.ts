@@ -27,6 +27,7 @@ import { AuthService } from './auth.service';
 import { ToastService } from './toast.service';
 
 const MESSAGES_LOAD_ERROR = 'Nachrichten konnten nicht geladen werden.';
+const NOTIFICATION_SOUND_PATH = 'sounds/chat-notification.mp3';
 
 /**
  * Builds the messages subcollection path of a channel.
@@ -61,7 +62,7 @@ export class MessageService {
 
   private readonly injector = inject(EnvironmentInjector);
 
-  private readonly notificationSound = new Audio('sounds/chat-notification.mp3');
+  private readonly notificationSound = new Audio(NOTIFICATION_SOUND_PATH);
 
 
   /**

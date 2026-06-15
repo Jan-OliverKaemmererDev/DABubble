@@ -21,7 +21,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { LayoutService } from '../../../services/layout.service';
 import { MessageFocusService } from '../../../services/message-focus.service';
-import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
+import { resolveAvatarPath } from '../../../services/registration.service';
 import {
   ChannelHit,
   MessageHit,
@@ -129,11 +129,15 @@ export class SearchBarComponent {
   }
 
 
+  /**
+   * Handles a chosen search hit: clears the field, then routes to the new
+   * message composer (prefix scopes) or directly to the channel/DM/message.
+   * @param hit Selected search result.
+   */
   protected pick(hit: SearchHit): void {
     this.results.set(null);
     const rawTerm = this.term().trim();
     const isSpecialPrefix = rawTerm.startsWith('#') || rawTerm.startsWith('@');
-    
     this.searchControl.setValue('');
 
     if (isSpecialPrefix && (hit.kind === 'channel' || hit.kind === 'user')) {
@@ -164,7 +168,7 @@ export class SearchBarComponent {
    */
   protected avatarSrc(hit: UserHit): string {
     const path = hit.avatarPath;
-    return !path || path.startsWith('http') ? `${DEFAULT_AVATAR_PATH}` : `${path}`;
+    return resolveAvatarPath(path);
   }
 
 

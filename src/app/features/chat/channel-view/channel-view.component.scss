@@ -26,12 +26,12 @@
   display: flex;
   align-items: center;
   gap: v.space('sm-md');
-  padding: v.space('xs') 12px;
+  padding: v.space('xs') v.space('sm-md');
   border: none;
   border-radius: v.$radius-pill;
   background: none;
   cursor: pointer;
-  font-family: v.$font-heading;
+  font-family: v.$font-base;
   font-size: v.font-size('h5');
   font-weight: v.$font-weight-bold;
   color: v.color('black');
@@ -81,7 +81,7 @@
     background-color: v.color('bg');
 
     .channel__member-count {
-      color: #444df2;
+      color: v.color('primary');
     }
   }
 }

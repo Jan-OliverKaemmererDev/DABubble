@@ -19,8 +19,9 @@ import { Channel } from '../../../models/channel.model';
 import { Message } from '../../../models/message.model';
 import { UserDoc } from '../../../models/user.model';
 import { ChannelService } from '../../../services/channel.service';
+import { LayoutService } from '../../../services/layout.service';
 import { MessageService, channelMessagesPath } from '../../../services/message.service';
-import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
+import { resolveAvatarPath } from '../../../services/registration.service';
 import { ThreadService } from '../../../services/thread.service';
 import { ToastService } from '../../../services/toast.service';
 import { UserService } from '../../../services/user.service';
@@ -68,6 +69,8 @@ export class ChannelViewComponent {
   private readonly toastService = inject(ToastService);
 
   private readonly threadService = inject(ThreadService);
+
+  private readonly layout = inject(LayoutService);
 
   private readonly composer = viewChild(MessageInputComponent);
 
@@ -146,8 +149,7 @@ export class ChannelViewComponent {
    * @param path Avatar path stored on a user document.
    */
   protected avatarSrc(path: string | undefined): string {
-    if (!path || path.startsWith('http')) return `${DEFAULT_AVATAR_PATH}`;
-    return `${path}`;
+    return resolveAvatarPath(path);
   }
 
 
@@ -160,7 +162,7 @@ export class ChannelViewComponent {
    * @param event Click event of the header trigger.
    */
   protected openDialog(kind: ChannelDialog, event: Event): void {
-    if (kind === 'add' && window.innerWidth <= 768) {
+    if (kind === 'add' && this.layout.isMobile()) {
       kind = 'members';
     }
     this.dialogAnchor.set(this.anchorFor(kind, event));

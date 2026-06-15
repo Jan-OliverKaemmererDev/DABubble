@@ -18,7 +18,7 @@ import { switchMap } from 'rxjs';
 import { Message } from '../../../models/message.model';
 import { AuthService } from '../../../services/auth.service';
 import { DirectMessageService } from '../../../services/direct-message.service';
-import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
+import { resolveAvatarPath } from '../../../services/registration.service';
 import { ThreadService } from '../../../services/thread.service';
 import { ToastService } from '../../../services/toast.service';
 import { UserService } from '../../../services/user.service';
@@ -121,8 +121,7 @@ export class DirectMessageViewComponent {
    */
   private resolvePartnerAvatar(): string {
     const path = this.userService.users().find(user => user.uid === this.uid())?.avatarPath;
-    if (!path || path.startsWith('http')) return `${DEFAULT_AVATAR_PATH}`;
-    return `${path}`;
+    return resolveAvatarPath(path);
   }
 
 

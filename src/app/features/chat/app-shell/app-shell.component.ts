@@ -25,6 +25,8 @@ const OPEN_MENU_LABEL = 'Workspace-Menü öffnen';
 const CLOSE_MENU_LABEL = 'Workspace-Menü schließen';
 const WORKSPACE_OPEN_STORAGE_KEY = 'dabubble:workspace-open';
 const WORKSPACE_TITLE_ID = 'workspace-title';
+const MENU_TOGGLE_OPEN_ICON = 'icons/group-left.svg';
+const MENU_TOGGLE_CLOSED_ICON = 'icons/group-right.svg';
 
 type MobileView = 'menu' | 'chat' | 'thread';
 
@@ -106,7 +108,7 @@ export class AppShellComponent implements OnDestroy {
   );
 
   protected readonly toggleIcon = computed(() =>
-    this.workspaceOpen() ? 'icons/group-left.svg' : 'icons/group-right.svg',
+    this.workspaceOpen() ? MENU_TOGGLE_OPEN_ICON : MENU_TOGGLE_CLOSED_ICON,
   );
 
 

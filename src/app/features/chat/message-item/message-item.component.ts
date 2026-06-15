@@ -22,9 +22,10 @@ import { AuthService } from '../../../services/auth.service';
 import { MessageFocusService } from '../../../services/message-focus.service';
 import { MessageService } from '../../../services/message.service';
 import { RecentEmojiService } from '../../../services/recent-emoji.service';
-import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
+import { resolveAvatarPath } from '../../../services/registration.service';
 import { ToastService } from '../../../services/toast.service';
 import { UserService } from '../../../services/user.service';
+import { parseMentions } from '../mention-parser';
 import { EmojiPickerComponent } from '../emoji-picker/emoji-picker.component';
 import { MessageActionsComponent } from '../message-actions/message-actions.component';
 import { ReactionChipsComponent } from '../reaction-chips/reaction-chips.component';
@@ -34,6 +35,7 @@ const UNKNOWN_AUTHOR = 'Unbekannt';
 const ACTION_ERROR = 'Die Aktion konnte nicht ausgeführt werden.';
 const EDIT_WINDOW_MS = 15 * 60 * 1000;
 const LONG_PRESS_MS = 500;
+const DESKTOP_REACTION_LIMIT = 20;
 
 /**
  * One message row per the Figma chat frames: avatar, author meta, bubble,
@@ -71,7 +73,7 @@ export class MessageItemComponent {
 
   readonly messagePath = input<string | null>(null);
 
-  readonly reactionLimit = input(20);
+  readonly reactionLimit = input(DESKTOP_REACTION_LIMIT);
 
   readonly openThread = output<void>();
 
@@ -144,25 +146,9 @@ export class MessageItemComponent {
     Object.values(this.entry().reactions).some(uids => uids.length > 0),
   );
 
-  protected readonly parsedText = computed(() => {
-    const text = this.entry().text;
-    const users = this.userService.users();
-    const names = users.map(u => u.name).filter(n => n.trim().length > 0);
-
-    if (names.length === 0) {
-      return [{ text, isMention: false }];
-    }
-
-    const escapeRegExp = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const sortedNames = names.sort((a, b) => b.length - a.length);
-    const patternStr = sortedNames.map(escapeRegExp).join('|');
-    const regex = new RegExp(`(@(?:${patternStr}))`, 'g');
-
-    return text.split(regex).filter(p => p.length > 0).map(part => ({
-      text: part,
-      isMention: part.startsWith('@') && sortedNames.includes(part.substring(1))
-    }));
-  });
+  protected readonly parsedText = computed(() =>
+    parseMentions(this.entry().text, this.userService.users().map(user => user.name)),
+  );
 
 
   /**
@@ -345,8 +331,7 @@ export class MessageItemComponent {
    */
   private resolveAvatar(): string {
     const path = this.author()?.avatarPath;
-    if (!path || path.startsWith('http')) return `${DEFAULT_AVATAR_PATH}`;
-    return `${path}`;
+    return resolveAvatarPath(path);
   }
 
 

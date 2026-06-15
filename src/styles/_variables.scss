@@ -27,6 +27,7 @@ $colors: (
 // ─── Font Sizes ──────────────────────────────────────────────────────────────
 // Semantic type scale (design-system.md §2); base html { font-size: 112.5% }.
 $font-sizes: (
+  display: 4.667rem,
   h1:   2.556rem,
   h2:   2.111rem,
   h3:   1.778rem,
@@ -78,6 +79,7 @@ $space: (
   sm:     8px,
   sm-md:  12px,
   md:     16px,
+  md-lg:  20px,
   lg:     24px,
   xl:     32px,
   xl-xxl: 40px,
@@ -132,6 +134,7 @@ $shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.08);
 $shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
 $shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
 $shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.20);
+$shadow-strong: 0 4px 12px rgba(0, 0, 0, 0.5);
 $shadow-inset: inset 0 1px 3px rgba(0, 0, 0, 0.08);
 $shadow-focus: 0 0 0 3px rgba(color('primary'), 0.2);
 $shadow-focus-error: 0 0 0 3px rgba(color('error'), 0.2);

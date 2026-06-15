@@ -10,7 +10,7 @@ import { UserDoc } from '../../../models/user.model';
 import { AuthService } from '../../../services/auth.service';
 import { ChannelService } from '../../../services/channel.service';
 import { LayoutService } from '../../../services/layout.service';
-import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
+import { resolveAvatarPath } from '../../../services/registration.service';
 import { ToastService } from '../../../services/toast.service';
 import { UserService } from '../../../services/user.service';
 import {
@@ -184,9 +184,7 @@ export class ChannelSettingsDialogComponent {
       .map(user => ({
         uid: user.uid,
         name: user.uid === selfUid ? `${user.name}${SELF_SUFFIX}` : user.name,
-        avatar: user.avatarPath.startsWith('http')
-          ? `${DEFAULT_AVATAR_PATH}`
-          : `${user.avatarPath}`,
+        avatar: resolveAvatarPath(user.avatarPath),
       }));
     return rows.sort((a, b) => Number(b.uid === selfUid) - Number(a.uid === selfUid));
   }

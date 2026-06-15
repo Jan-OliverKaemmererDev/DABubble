@@ -21,6 +21,7 @@ import { UserService } from './user.service';
 const MAX_GROUP_RESULTS = 5;
 const MAX_MESSAGE_RESULTS = 10;
 const SNIPPET_LENGTH = 80;
+const UNKNOWN_USER = 'Unbekannt';
 
 /** Channel search hit. */
 export interface ChannelHit {
@@ -74,33 +75,46 @@ export class SearchService {
 
 
   /**
-   * Runs the grouped search for a term.
+   * Runs the grouped search for a term, dispatching by the scope prefix
+   * ("#" channels, "@" users, otherwise everything).
    * @param term Raw search term (min length enforced by the caller).
    */
   async search(term: string): Promise<SearchResults> {
     const raw = term.trim();
     const normalized = raw.toLowerCase();
+    if (raw.startsWith('#')) return this.channelScope(normalized.slice(1).trim());
+    if (raw.startsWith('@')) return this.userScope(normalized.slice(1).trim());
+    return this.fullScope(normalized);
+  }
 
-    if (raw.startsWith('#')) {
-      return {
-        channels: this.searchChannels(normalized.slice(1).trim()),
-        users: [],
-        messages: [],
-      };
-    }
 
-    if (raw.startsWith('@')) {
-      return {
-        channels: [],
-        users: this.searchUsers(normalized.slice(1).trim()),
-        messages: [],
-      };
-    }
+  /**
+   * Channel-only results for a "#"-scoped query.
+   * @param query Normalized query without the prefix.
+   */
+  private channelScope(query: string): SearchResults {
+    return { channels: this.searchChannels(query), users: [], messages: [] };
+  }
 
+
+  /**
+   * User-only results for an "@"-scoped query.
+   * @param query Normalized query without the prefix.
+   */
+  private userScope(query: string): SearchResults {
+    return { channels: [], users: this.searchUsers(query), messages: [] };
+  }
+
+
+  /**
+   * Combined channel, user and message results for an unscoped query.
+   * @param query Normalized query.
+   */
+  private async fullScope(query: string): Promise<SearchResults> {
     return {
-      channels: this.searchChannels(normalized),
-      users: this.searchUsers(normalized),
-      messages: await this.searchMessages(normalized),
+      channels: this.searchChannels(query),
+      users: this.searchUsers(query),
+      messages: await this.searchMessages(query),
     };
   }
 
@@ -211,7 +225,7 @@ export class SearchService {
    * @param uid Uid to resolve.
    */
   private userName(uid: string): string {
-    return this.userService.users().find(user => user.uid === uid)?.name ?? 'Unbekannt';
+    return this.userService.users().find(user => user.uid === uid)?.name ?? UNKNOWN_USER;
   }
 
 

@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { ChannelService } from '../../../services/channel.service';
 import { LayoutService } from '../../../services/layout.service';
 
+const SORT_LOCALE = 'de';
+
 /**
  * Rendered at /app while no channel is selected. On desktop it redirects
  * to the alphabetically first channel once the stream has loaded; users
@@ -41,7 +43,7 @@ export class ChannelRedirectComponent {
     if (this.layoutService.isMobile()) return;
     if (!this.channelService.channelsLoaded()) return;
     const first = [...this.channelService.channels()].sort((a, b) =>
-      a.name.localeCompare(b.name, 'de'),
+      a.name.localeCompare(b.name, SORT_LOCALE),
     )[0];
     if (!first) return;
     this.router.navigate(['/app/channel', first.id], { replaceUrl: true });

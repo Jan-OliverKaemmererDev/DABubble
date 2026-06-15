@@ -6,6 +6,18 @@ import { Injectable, computed, signal } from '@angular/core';
 
 export const DEFAULT_AVATAR_PATH = 'avatars/profile.png';
 
+const REMOTE_AVATAR_PREFIX = 'http';
+
+/**
+ * Resolves a stored avatar reference to a local asset path: local paths pass
+ * through, missing or remote (e.g. Google photoURL) values fall back to the
+ * neutral placeholder.
+ * @param path Stored avatarPath (local asset path), or null/undefined.
+ */
+export function resolveAvatarPath(path?: string | null): string {
+  return path && !path.startsWith(REMOTE_AVATAR_PREFIX) ? path : DEFAULT_AVATAR_PATH;
+}
+
 /** Values collected by the registration form step. */
 export interface RegistrationFormData {
   readonly name: string;

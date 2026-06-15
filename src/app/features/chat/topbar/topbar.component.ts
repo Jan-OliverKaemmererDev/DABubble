@@ -10,7 +10,7 @@ import { filter, map } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { LayoutService } from '../../../services/layout.service';
 import { ThreadService } from '../../../services/thread.service';
-import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
+import { DEFAULT_AVATAR_PATH, resolveAvatarPath } from '../../../services/registration.service';
 import { UserService } from '../../../services/user.service';
 import { ProfileDialogComponent } from '../../profile/profile-dialog/profile-dialog.component';
 import { SearchBarComponent } from '../../search/search-bar/search-bar.component';
@@ -151,8 +151,7 @@ export class TopbarComponent {
    */
   private resolveAvatar(): string {
     const path = this.userDoc()?.avatarPath ?? this.authService.currentUser()?.photoURL;
-    if (!path || path.startsWith('http')) return `${DEFAULT_AVATAR_PATH}`;
-    return `${path}`;
+    return resolveAvatarPath(path);
   }
 
 

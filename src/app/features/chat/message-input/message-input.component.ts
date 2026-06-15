@@ -15,8 +15,9 @@ import {
 } from '@angular/core';
 
 import { ChannelService } from '../../../services/channel.service';
-import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
+import { resolveAvatarPath } from '../../../services/registration.service';
 import { UserService } from '../../../services/user.service';
+import { parseMentions } from '../mention-parser';
 import {
   Suggestion,
   SuggestionDropdownComponent,
@@ -82,25 +83,9 @@ export class MessageInputComponent {
 
   protected readonly suggestions = computed(() => this.buildSuggestions());
 
-  protected readonly parsedText = computed(() => {
-    const currentText = this.text();
-    const users = this.userService.users();
-    const names = users.map(u => u.name).filter(n => n.trim().length > 0);
-
-    if (names.length === 0) {
-      return [{ text: currentText, isMention: false }];
-    }
-
-    const escapeRegExp = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const sortedNames = names.sort((a, b) => b.length - a.length);
-    const patternStr = sortedNames.map(escapeRegExp).join('|');
-    const regex = new RegExp(`(@(?:${patternStr}))`, 'g');
-
-    return currentText.split(regex).filter(p => p.length > 0).map(part => ({
-      text: part,
-      isMention: part.startsWith('@') && sortedNames.includes(part.substring(1))
-    }));
-  });
+  protected readonly parsedText = computed(() =>
+    parseMentions(this.text(), this.userService.users().map(user => user.name)),
+  );
 
   /**
    * Focuses the textarea; called by the parent on channel switches.
@@ -224,14 +209,8 @@ export class MessageInputComponent {
    * @returns True when the key was consumed by the dropdown.
    */
   private handleMentionKey(event: KeyboardEvent): boolean {
-    const count = this.suggestions().length;
-    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-      event.preventDefault();
-      const delta = event.key === 'ArrowDown' ? 1 : -1;
-      this.activeIndex.set((this.activeIndex() + delta + count) % Math.max(count, 1));
-      return true;
-    }
-    if (event.key === 'Enter' && count > 0) {
+    if (this.moveActiveSuggestion(event)) return true;
+    if (event.key === 'Enter' && this.suggestions().length > 0) {
       event.preventDefault();
       this.pickSuggestion(this.suggestions()[this.activeIndex()]);
       return true;
@@ -242,6 +221,21 @@ export class MessageInputComponent {
       return true;
     }
     return false;
+  }
+
+
+  /**
+   * Moves the active suggestion with the arrow keys, wrapping around.
+   * @param event Keydown event while the dropdown is open.
+   * @returns True when an arrow key was handled.
+   */
+  private moveActiveSuggestion(event: KeyboardEvent): boolean {
+    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return false;
+    event.preventDefault();
+    const count = this.suggestions().length;
+    const delta = event.key === 'ArrowDown' ? 1 : -1;
+    this.activeIndex.set((this.activeIndex() + delta + count) % Math.max(count, 1));
+    return true;
   }
 
 
@@ -301,5 +295,5 @@ function detectMention(text: string, caret: number): MentionState | null {
  * @param path Avatar path stored on a user document.
  */
 function avatarUrl(path: string): string {
-  return path.startsWith('http') ? `${DEFAULT_AVATAR_PATH}` : `${path}`;
+  return resolveAvatarPath(path);
 }

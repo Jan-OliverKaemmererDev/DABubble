@@ -39,7 +39,7 @@ const CODE_ERROR_MESSAGES: Record<string, string> = {
 
 const PASSWORD_ERROR_MESSAGES: Record<string, string> = {
   required: 'Bitte gib ein Passwort ein',
-  minlength: 'Dein Passwort muss mindestens 6 Zeichen lang sein',
+  minlength: `Dein Passwort muss mindestens ${PASSWORD_MIN_LENGTH} Zeichen lang sein`,
 };
 
 /** Validity state of the reset code from the e-mail link. */

@@ -76,7 +76,7 @@
   }
 
   @include m.respond-md {
-    margin-top: 8px;
+    margin-top: v.space('sm');
   }
 }
 
@@ -92,6 +92,6 @@
   flex-wrap: wrap;
 
   @include m.respond-md {
-    margin-top: 8px;
+    margin-top: v.space('sm');
   }
 }

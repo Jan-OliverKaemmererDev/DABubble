@@ -28,7 +28,7 @@
 
 .workspace__title {
   flex: 1;
-  font-family: v.$font-heading;
+  font-family: v.$font-base;
   font-size: v.font-size('h4');
   font-weight: v.$font-weight-bold;
   color: v.color('black');
@@ -92,14 +92,14 @@
 }
 
 .workspace__section-icon {
-  margin-left: 20px;
-  width: 20px;
-  height: 20px;
+  margin-left: v.space('md-lg');
+  width: v.$icon-sm;
+  height: v.$icon-sm;
 }
 
 .workspace__section-title {
   flex: 1;
-  font-family: v.$font-heading;
+  font-family: v.$font-base;
   text-align: left;
 }
 
@@ -133,7 +133,7 @@
   background: none;
   border-radius: v.$radius-pill;
   cursor: pointer;
-  font-family: v.$font-heading;
+  font-family: v.$font-base;
   font-size: v.font-size('body');
   color: v.color('black');
   text-align: left;
@@ -275,6 +275,6 @@
   }
 
   .workspace__search-trigger {
-    border: 1px solid #ADB0D9;
+    border: 1px solid v.color('lines');
   }
 }

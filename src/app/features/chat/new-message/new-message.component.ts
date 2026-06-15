@@ -21,7 +21,8 @@ import { DirectMessageService } from '../../../services/direct-message.service';
 import { Channel } from '../../../models/channel.model';
 import { ChannelService } from '../../../services/channel.service';
 import { MessageService } from '../../../services/message.service';
-import { DEFAULT_AVATAR_PATH } from '../../../services/registration.service';
+import { resolveAvatarPath } from '../../../services/registration.service';
+import { ChannelHit, UserHit } from '../../../services/search.service';
 import { ToastService } from '../../../services/toast.service';
 import { UserService } from '../../../services/user.service';
 import {
@@ -34,6 +35,11 @@ const ADDRESS_ERROR = 'Kein Channel oder Mitglied gefunden.';
 const SEND_ERROR = 'Die Nachricht konnte nicht gesendet werden.';
 const CHANNEL_PREFIX = 'channel:';
 const USER_PREFIX = 'user:';
+
+/** Router history state when navigating in from the global search. */
+interface NewMessageNavState {
+  recipientHit?: ChannelHit | UserHit;
+}
 
 /** Locked recipient of the new message. */
 interface Recipient {
@@ -98,14 +104,12 @@ export class NewMessageComponent implements AfterViewInit {
    * global search bar.
    */
   constructor() {
-    const state = inject(Location).getState() as Record<string, any>;
-    if (state['recipientHit']) {
-      const hit = state['recipientHit'];
-      if (hit.kind === 'channel') {
-        this.recipient.set({ kind: 'channel', id: hit.id, label: hit.name });
-      } else if (hit.kind === 'user') {
-        this.recipient.set({ kind: 'user', id: hit.uid, label: hit.name, avatar: avatarUrl(hit.avatarPath) });
-      }
+    const hit = (inject(Location).getState() as NewMessageNavState).recipientHit;
+    if (!hit) return;
+    if (hit.kind === 'channel') {
+      this.recipient.set({ kind: 'channel', id: hit.id, label: hit.name });
+    } else {
+      this.recipient.set({ kind: 'user', id: hit.uid, label: hit.name, avatar: avatarUrl(hit.avatarPath) });
     }
   }
 
@@ -254,5 +258,5 @@ export class NewMessageComponent implements AfterViewInit {
  * @param path Avatar path stored on a user document.
  */
 function avatarUrl(path: string): string {
-  return path.startsWith('http') ? `${DEFAULT_AVATAR_PATH}` : `${path}`;
+  return resolveAvatarPath(path);
 }

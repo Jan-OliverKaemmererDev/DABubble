@@ -4,6 +4,8 @@
  */
 import { FieldValue, Timestamp } from '@angular/fire/firestore';
 
+const CONVERSATION_ID_SEPARATOR = '_';
+
 /**
  * Firestore document stored at directMessages/{conversationId}. Messages
  * (including thread replies) live in the messages subcollection using the
@@ -24,5 +26,5 @@ export interface DirectMessageDoc {
  * @param uidB Second participant uid.
  */
 export function buildConversationId(uidA: string, uidB: string): string {
-  return [uidA, uidB].sort().join('_');
+  return [uidA, uidB].sort().join(CONVERSATION_ID_SEPARATOR);
 }

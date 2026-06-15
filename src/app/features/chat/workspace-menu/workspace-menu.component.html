@@ -46,6 +46,8 @@
               class="workspace__item"
               [routerLink]="['/app/channel', channel.id]"
               routerLinkActive="workspace__item--active"
+              #channelLink="routerLinkActive"
+              [attr.aria-current]="channelLink.isActive ? 'page' : null"
             >
               <img class="workspace__item-icon" src="icons/tag.svg" alt="" aria-hidden="true" />
               {{ channel.name }}
@@ -106,6 +108,8 @@
               class="workspace__item"
               [routerLink]="['/app/dm', selfEntry.uid]"
               routerLinkActive="workspace__item--active"
+              #selfDmLink="routerLinkActive"
+              [attr.aria-current]="selfDmLink.isActive ? 'page' : null"
             >
               <span class="workspace__avatar-wrap">
                 <img class="workspace__avatar" [src]="selfEntry.avatar" alt="" aria-hidden="true" />
@@ -121,6 +125,8 @@
               class="workspace__item"
               [routerLink]="['/app/dm', user.uid]"
               routerLinkActive="workspace__item--active"
+              #userDmLink="routerLinkActive"
+              [attr.aria-current]="userDmLink.isActive ? 'page' : null"
             >
               <span class="workspace__avatar-wrap">
                 <img class="workspace__avatar" [src]="avatarSrc(user.avatarPath)" alt="" aria-hidden="true" />

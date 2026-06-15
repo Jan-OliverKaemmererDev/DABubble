@@ -18,6 +18,7 @@ import { emojiAsset } from '../emoji-catalog';
 
 const SELF_LABEL = 'Du';
 const UNKNOWN_REACTOR = 'Unbekannt';
+const DESKTOP_REACTION_LIMIT = 20;
 
 /** One reaction chip: emoji plus the reacting uids. */
 interface ReactionEntry {
@@ -41,7 +42,7 @@ interface ReactionEntry {
 export class ReactionChipsComponent {
   readonly reactions = input.required<ReactionMap>();
 
-  readonly limit = input(20);
+  readonly limit = input(DESKTOP_REACTION_LIMIT);
 
   readonly toggled = output<string>();
 
