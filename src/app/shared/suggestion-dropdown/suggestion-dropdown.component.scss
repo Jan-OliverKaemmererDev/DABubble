@@ -49,11 +49,27 @@ $dropdown-max-height: 320px;
   }
 }
 
+.suggestions__avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
 .suggestions__avatar {
   width: v.$avatar-md;
   height: v.$avatar-md;
   border-radius: v.$radius-round;
   object-fit: cover;
+}
+
+.suggestions__status {
+  @include m.status-dot;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+
+  &--offline {
+    background-color: v.color('text-gray');
+  }
 }
 
 .suggestions__hash {

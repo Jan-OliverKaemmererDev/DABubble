@@ -14,6 +14,7 @@ import {
   viewChild,
 } from '@angular/core';
 
+import { AuthService } from '../../../services/auth.service';
 import { ChannelService } from '../../../services/channel.service';
 import { resolveAvatarPath } from '../../../services/registration.service';
 import { UserService } from '../../../services/user.service';
@@ -60,6 +61,8 @@ export class MessageInputComponent {
   private readonly userService = inject(UserService);
 
   private readonly channelService = inject(ChannelService);
+
+  private readonly authService = inject(AuthService);
 
   private readonly textarea = viewChild.required<ElementRef<HTMLTextAreaElement>>('textarea');
 
@@ -258,16 +261,39 @@ export class MessageInputComponent {
     const mention = this.mention();
     if (!mention) return [];
     const query = mention.query.toLowerCase();
-    if (mention.type === '#') {
-      return this.channelService
-        .channels()
-        .filter(channel => channel.name.toLowerCase().includes(query))
-        .map(channel => ({ id: channel.id, label: channel.name, isHash: true }));
-    }
+    if (mention.type === '#') return this.channelSuggestions(query);
+    return this.userSuggestions(query);
+  }
+
+
+  /**
+   * Builds the "#" channel suggestions matching the typed query.
+   * @param query Lowercased text typed after the trigger.
+   */
+  private channelSuggestions(query: string): Suggestion[] {
+    return this.channelService
+      .channels()
+      .filter(channel => channel.name.toLowerCase().includes(query))
+      .map(channel => ({ id: channel.id, label: channel.name, isHash: true }));
+  }
+
+
+  /**
+   * Builds the "@" member suggestions; the signed-in user is shown online and
+   * everyone else offline, matching the presence convention of the member list.
+   * @param query Lowercased text typed after the trigger.
+   */
+  private userSuggestions(query: string): Suggestion[] {
+    const currentUid = this.authService.currentUser()?.uid;
     return this.userService
       .users()
       .filter(user => user.name.toLowerCase().includes(query))
-      .map(user => ({ id: user.uid, label: user.name, avatar: avatarUrl(user.avatarPath) }));
+      .map(user => ({
+        id: user.uid,
+        label: user.name,
+        avatar: avatarUrl(user.avatarPath),
+        online: user.uid === currentUid,
+      }));
   }
 }
 

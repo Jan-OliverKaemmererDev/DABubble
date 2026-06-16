@@ -13,6 +13,8 @@ export interface Suggestion {
   readonly avatar?: string;
   /** Renders the channel hash icon instead of an avatar. */
   readonly isHash?: boolean;
+  /** Online presence of a user row; omitted for channel rows. */
+  readonly online?: boolean;
 }
 
 /**
