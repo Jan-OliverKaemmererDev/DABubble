@@ -54,6 +54,29 @@ standards, so they are not mistaken for defects in a future audit.
   permissions, public-by-design exactly like the Firebase web `apiKey` in the
   client config. It is not a real secret.
 
+## UI fixes (2026-06-16)
+- **Channel intro empty-state built from scratch (no pre-existing component).** The
+  brief assumed a desktop empty-state existed and was only missing on mobile; in
+  fact **no empty-state intro (component or copy) existed anywhere** — desktop was
+  blank too. It is now rendered once in `channel-view` (shared by both layouts) for
+  the documented condition *no messages AND `createdBy === current uid`*, so it
+  shows on all breakpoints. The intro `#<name>` is **styled text** (`color('primary')`),
+  not a functional anchor — it references the channel the user is already in.
+- **`@`-mention presence follows the app's binary convention, not real presence.**
+  There is no presence service; the member list, DM header and search results all
+  render the signed-in user as online and everyone else as offline. The mention
+  dropdown reuses that source (`uid === current uid` → `color('online')`, else
+  `color('text-gray')`); **`abwesend`/away is not used** (the source is binary). The
+  dot is **opt-in** (rendered only when a row provides `online`), so the
+  `new-message` address picker is intentionally left unchanged.
+- **Mobile splash logo size (no exact Figma mobile spec).** Below `$breakpoint-sm`
+  (576px) the splash logo is reduced from 187×184px to **120×118px** (named
+  variables `$logo-width-mobile` / `$logo-height-mobile`) and the wordmark to
+  `font-size('h2')`, so the centered logo + "DABubble" fits within 320px with no
+  horizontal scroll. The handoff scale is measured at runtime, so it adapts
+  automatically; reduced motion still skips the splash entirely. Confirm the 120px
+  size against Figma when revisiting.
+
 ## Known minor deviation (optional later cleanup)
 - **~39 boolean fields/signals** use a consistent project convention
   (`pending`, `*Open`, `*Focused`, `editing`, `own`, `deleted`, …) rather than the
