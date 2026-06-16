@@ -51,6 +51,18 @@
       [collectionPath]="messagesCollectionPath()"
       (threadRequested)="toggleThread($event)"
     />
+    @if (showIntro()) {
+      <div class="channel__intro">
+        <h2 class="channel__intro-title">
+          <img class="channel__intro-hash" src="icons/tag.svg" alt="" aria-hidden="true" />
+          {{ channel()?.name }}
+        </h2>
+        <p class="channel__intro-text">
+          Du hast diesen Channel heute erstellt. Das ist der Anfang des Channels
+          <span class="channel__intro-link">#{{ channel()?.name }}</span>.
+        </p>
+      </div>
+    }
   </div>
 
   <div class="channel__composer">

@@ -18,6 +18,7 @@ import { switchMap } from 'rxjs';
 import { Channel } from '../../../models/channel.model';
 import { Message } from '../../../models/message.model';
 import { UserDoc } from '../../../models/user.model';
+import { AuthService } from '../../../services/auth.service';
 import { ChannelService } from '../../../services/channel.service';
 import { LayoutService } from '../../../services/layout.service';
 import { MessageService, channelMessagesPath } from '../../../services/message.service';
@@ -66,6 +67,8 @@ export class ChannelViewComponent {
 
   private readonly userService = inject(UserService);
 
+  private readonly authService = inject(AuthService);
+
   private readonly toastService = inject(ToastService);
 
   private readonly threadService = inject(ThreadService);
@@ -108,6 +111,10 @@ export class ChannelViewComponent {
   protected readonly headMembers = computed(() => this.resolveHeadMembers());
 
   protected readonly memberCount = computed(() => this.channel()?.memberIds.length ?? 0);
+
+  protected readonly showIntro = computed(
+    () => this.messages().length === 0 && this.channel()?.createdBy === this.authService.currentUser()?.uid,
+  );
 
   protected readonly composerPlaceholder = computed(
     () => `Nachricht an #${this.channel()?.name ?? ''}`,
