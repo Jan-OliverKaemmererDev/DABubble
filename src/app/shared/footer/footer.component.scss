@@ -10,3 +10,17 @@
   display: flex;
   gap: v.space('xl');
 }
+
+.footer__nav a {
+  display: inline-flex;
+  flex-direction: column;
+
+  &::after {
+    content: attr(data-label);
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    font-weight: v.$font-weight-medium;
+    pointer-events: none;
+  }
+}
