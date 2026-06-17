@@ -85,7 +85,7 @@ p {
 }
 
 small {
-  font-size: v.font-size('xs');
+  font-size: v.font-size('min');
   line-height: v.$line-height-snug;
 }
 
@@ -111,13 +111,13 @@ a:not(.btn) {
 .text-muted     { color: v.color('text-gray'); }
 .text-subtle    { color: v.color('text-gray'); }
 .text-inverse   { color: v.color('white'); }
-.text-error     { color: v.color('error'); }
+.text-error     { color: v.color('error-text'); }
 .text-success   { color: v.color('online'); }
 
 // ─── Utility Classes — Size (legacy aliases kept for compatibility) ───────────
 
-.text-xs  { font-size: v.font-size('xs'); }
-.text-sm  { font-size: v.font-size('sm'); }
+.text-xs  { font-size: v.font-size('min'); }
+.text-sm  { font-size: v.font-size('min'); }
 .text-md  { font-size: v.font-size('body'); }
 .text-lg  { font-size: v.font-size('h5'); }
 .text-xl  { font-size: v.font-size('h4'); }
@@ -168,14 +168,14 @@ a:not(.btn) {
 
 .text-15 {
   font-family: v.$font-base;
-  font-size: v.font-size('sm');
+  font-size: v.font-size('min');
   line-height: 1.5;
   font-weight: v.$font-weight-regular;
 }
 
 .text-12 {
   font-family: v.$font-base;
-  font-size: v.font-size('xs');
+  font-size: v.font-size('min');
   line-height: 1.5;
   font-weight: v.$font-weight-regular;
 }

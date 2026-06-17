@@ -20,7 +20,7 @@
   border-radius: v.$radius-pill;
   background-color: v.color('white');
   cursor: pointer;
-  font-size: v.font-size('sm');
+  font-size: v.font-size('min');
   color: v.color('black');
   transition: border-color v.$transition-fast, background-color v.$transition-fast;
 
@@ -39,7 +39,7 @@
 }
 
 .chips__count {
-  font-size: v.font-size('sm');
+  font-size: v.font-size('min');
 }
 
 .chips__emoji {
@@ -68,7 +68,7 @@
   border-radius: v.$radius-sm;
   background-color: v.color('white');
   box-shadow: v.$shadow-md;
-  font-size: v.font-size('xs');
+  font-size: v.font-size('min');
   color: v.color('black');
   white-space: nowrap;
   pointer-events: none;

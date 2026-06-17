@@ -59,7 +59,7 @@ $dropdown-max-height: 480px;
 
 .search-bar__group {
   padding: v.space('xs') v.space('md');
-  font-size: v.font-size('sm');
+  font-size: v.font-size('min');
   font-weight: v.$font-weight-bold;
   color: v.color('text-gray');
 }
@@ -129,7 +129,7 @@ $dropdown-max-height: 480px;
 }
 
 .search-bar__meta {
-  font-size: v.font-size('sm');
+  font-size: v.font-size('min');
   color: v.color('text-gray');
 }
 

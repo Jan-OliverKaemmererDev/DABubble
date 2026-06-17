@@ -7,11 +7,12 @@
   justify-content: space-between;
   gap: v.space('md');
   flex-wrap: wrap;
-  padding: v.space-fluid('sm-md', 'xl-xxl') v.$header-inset;
+  min-height: v.$header-height;
+  padding: v.space('md') calc(v.space('lg') * 2);
 
   @include m.respond-md {
-    justify-content: center;
-    padding: v.space-fluid('sm-md', 'xl-xxl') v.space('md');
+    min-height: v.$header-height-mobile;
+    padding: v.space('sm-md') v.space('md');
   }
 }
 
@@ -30,6 +31,10 @@
 .header__logo {
   height: v.$header-logo-size;
   width: auto;
+
+  @include m.respond-md {
+    height: v.$btn-height-sm;
+  }
 }
 
 .header__cta {

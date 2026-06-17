@@ -36,7 +36,7 @@
 }
 
 .thread__context {
-  font-size: v.font-size('sm');
+  font-size: v.font-size('min');
   color: v.color('primary');
   @include m.text-ellipsis;
 }
@@ -70,7 +70,7 @@
 }
 
 .thread__divider-label {
-  font-size: v.font-size('sm');
+  font-size: v.font-size('min');
   color: v.color('lines');
   white-space: nowrap;
 }

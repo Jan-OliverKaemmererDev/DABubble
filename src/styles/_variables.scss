@@ -13,6 +13,7 @@ $colors: (
   'primary-active': #535af1,
   'online':         #92c83e,
   'error':          #ed1e79,
+  'error-text':     #c4185f,
 );
 
 @function color($key) {
@@ -32,8 +33,7 @@ $font-sizes: (
   h4:   1.444rem,
   h5:   1.222rem,
   body: 1rem,
-  sm:   0.833rem,
-  xs:   0.667rem,
+  min:  0.889rem,
 );
 
 @function font-size($key) {
@@ -168,8 +168,9 @@ $auth-card-width: 600px;
 $auth-card-width-wide: 700px;
 $content-max-width: 800px;
 $content-max-width-wide: 1310px;
-$header-inset: 75px;
 $header-logo-size: 56px;
+$header-height: 110px;
+$header-height-mobile: 80px;
 $workspace-logo-size: 60px;
 
 // ─── Responsive Breakpoints ───────────────────────────────────────────────────

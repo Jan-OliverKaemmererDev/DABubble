@@ -40,7 +40,7 @@
   border: none;
   background: none;
   cursor: pointer;
-  font-size: v.font-size('sm');
+  font-size: v.font-size('min');
   color: v.color('primary');
 
   &:hover {

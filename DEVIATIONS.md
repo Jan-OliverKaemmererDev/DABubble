@@ -77,6 +77,43 @@ standards, so they are not mistaken for defects in a future audit.
   automatically; reduced motion still skips the splash entirely. Confirm the 120px
   size against Figma when revisiting.
 
+## Auth-area polish + accessibility (2026-06-17)
+- **Project-wide minimum font size ≥16px (global, intentional).** The sub-16px type
+  tokens `sm` (0.833rem/15px) and `xs` (0.667rem/12px) were **removed** and replaced
+  by a single `min` token (`0.889rem` = 16px at the 18px base, kept in `rem` so it
+  respects user zoom). Every `font-size('sm')`/`font-size('xs')` usage now resolves
+  to `font-size('min')`. Rationale: SEO/readability/accessibility — no body text below
+  16px. This is a deliberate deviation from Figma's smaller caption/timestamp sizes.
+  Verified at 320px (login, register, forgot-password, imprint, privacy, chat view):
+  no horizontal scroll; reaction chips wrap (`flex-wrap`+`max-width:100%`) and message
+  bubbles wrap (`overflow-wrap:anywhere`), so the bump introduces no overflow. The
+  unused legacy aliases `.text-xs/.text-sm/.text-12/.text-15` now also map to `min`.
+- **Accessible error-text color (intentional Figma deviation).** Figma's
+  `color('error')` `#ed1e79` fails WCAG AA for normal text (4.15:1 on white, 3.60:1 on
+  the `#eceefe` input bg). A new `color('error-text')` `#c4185f` (**5.76:1 on white,
+  5.00:1 on `#eceefe`** — both ≥4.5:1 AA) is used for all error **text** (`.text-error`,
+  `.form-error`). The original `#ed1e79` is retained for non-text/decorative use
+  (invalid-input border, error focus ring).
+- **Unified header position across auth + logged-in (single source of truth).** The
+  auth-area header (`app-header`: login, register, password-reset, Impressum,
+  Datenschutz) now matches the logged-in `topbar` logo position **pixel-for-pixel**
+  (verified: desktop left 48 / h 56 / center-y 55; mobile left 16 / h 40 / center-y 40).
+  This required matching the topbar's height via new `$header-height` (110px) /
+  `$header-height-mobile` (80px) tokens and shrinking the **mobile** auth logo from
+  56px to `$btn-height-sm` (40px) to equal the topbar's mobile brand logo. The auth
+  header is no longer centered on mobile (left-aligned like the topbar), and the old
+  `$header-inset` (75px) magic value was removed. Any separate Figma auth-header frame
+  is intentionally overridden in favour of one consistent header.
+- **Field-error slots reserve a fixed two-line height (no-reflow requirement).** Because
+  validation messages are now `font-size('min')` (16px) and the longest one wraps to two
+  lines at 320px, every `.form-field .form-error` permanently reserves
+  `$form-error-reserved-height` (`font-size('min') × $line-height-base ×
+  $form-error-reserved-lines` = 2.667rem / 48px), top-aligned, whether empty or filled.
+  This trades a little extra vertical space under each field for **zero layout shift** when
+  an error appears/clears (measured identical at desktop and 320px) — a deliberate
+  deviation from Figma's tighter field spacing. Form-level `role="alert"` messages keep
+  the original small reserve and are out of scope.
+
 ## Known minor deviation (optional later cleanup)
 - **~39 boolean fields/signals** use a consistent project convention
   (`pending`, `*Open`, `*Focused`, `editing`, `own`, `deleted`, …) rather than the

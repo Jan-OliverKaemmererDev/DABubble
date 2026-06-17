@@ -23,7 +23,7 @@
           (blur)="isEmailFocused = false"
         />
       </div>
-      <p class="form-error" id="login-email-error">{{ errorMessage('email') }}</p>
+      <p class="form-error" id="login-email-error" aria-live="polite">{{ errorMessage('email') }}</p>
     </div>
 
     <div class="form-field">
@@ -39,7 +39,7 @@
         (focus)="isPasswordFocused = true"
         (blur)="isPasswordFocused = false"
       />
-      <p class="form-error" id="login-password-error">{{ errorMessage('password') }}</p>
+      <p class="form-error" id="login-password-error" aria-live="polite">{{ errorMessage('password') }}</p>
     </div>
 
     <a class="login-card__forgot" routerLink="/auth/forgot-password">Passwort vergessen?</a>

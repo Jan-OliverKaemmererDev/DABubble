@@ -102,7 +102,7 @@ $results-max-height: 240px;
   padding: v.space('xs') v.space('sm-md');
   border-radius: v.$radius-pill;
   background-color: v.color('bg');
-  font-size: v.font-size('sm');
+  font-size: v.font-size('min');
   color: v.color('black');
 }
 
