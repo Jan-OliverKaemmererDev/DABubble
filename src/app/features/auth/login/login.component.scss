@@ -23,7 +23,7 @@
 .login-card__form {
   display: flex;
   flex-direction: column;
-  gap: v.space-fluid('md', 'xl');
+  gap: v.space-fluid('md', 'lg');
 
   @include m.respond-md {
     gap: v.space('sm');

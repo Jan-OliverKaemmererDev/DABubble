@@ -1,6 +1,9 @@
 @use 'variables' as v;
 @use 'mixins' as m;
 
+$form-error-reserved-lines: 2;
+$form-error-reserved-height: v.font-size('min') * v.$line-height-base * $form-error-reserved-lines;
+
 // ─── Field Wrapper ────────────────────────────────────────────────────────────
 
 .form-field {
@@ -12,7 +15,7 @@
 // ─── Label ───────────────────────────────────────────────────────────────────
 
 .form-label {
-  font-size: v.font-size('sm');
+  font-size: v.font-size('min');
   font-weight: v.$font-weight-semibold;
   color: v.color('black');
 }
@@ -144,21 +147,27 @@
   display: flex;
   align-items: center;
   gap: v.space('xs');
-  font-size: v.font-size('xs');
+  font-size: v.font-size('min');
   font-weight: v.$font-weight-medium;
-  color: v.color('error');
+  color: v.color('error-text');
   min-height: 18px;
 }
 
+.form-field .form-error {
+  align-items: flex-start;
+  min-height: 1.778rem;
+  line-height: v.$line-height-base;
+}
+
 .form-success {
-  font-size: v.font-size('xs');
+  font-size: v.font-size('min');
   font-weight: v.$font-weight-medium;
   color: v.color('online');
   min-height: 18px;
 }
 
 .form-hint {
-  font-size: v.font-size('xs');
+  font-size: v.font-size('min');
   color: v.color('text-gray');
 }
 
@@ -170,7 +179,7 @@
   gap: v.space('sm');
   cursor: pointer;
   user-select: none;
-  font-size: v.font-size('sm');
+  font-size: v.font-size('min');
   color: v.color('black');
 }
 
