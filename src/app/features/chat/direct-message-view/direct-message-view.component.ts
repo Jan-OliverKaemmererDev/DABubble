@@ -18,6 +18,7 @@ import { switchMap } from 'rxjs';
 import { Message } from '../../../models/message.model';
 import { AuthService } from '../../../services/auth.service';
 import { DirectMessageService } from '../../../services/direct-message.service';
+import { PresenceService } from '../../../services/presence.service';
 import { resolveAvatarPath } from '../../../services/registration.service';
 import { ThreadService } from '../../../services/thread.service';
 import { ToastService } from '../../../services/toast.service';
@@ -51,6 +52,8 @@ export class DirectMessageViewComponent {
   private readonly userService = inject(UserService);
 
   private readonly authService = inject(AuthService);
+
+  protected readonly presenceService = inject(PresenceService);
 
   private readonly toastService = inject(ToastService);
 

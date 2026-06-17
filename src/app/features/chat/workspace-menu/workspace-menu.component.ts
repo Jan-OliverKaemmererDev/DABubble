@@ -8,6 +8,7 @@ import { UserDoc } from '../../../models/user.model';
 import { AuthService } from '../../../services/auth.service';
 import { ChannelService } from '../../../services/channel.service';
 import { LayoutService } from '../../../services/layout.service';
+import { PresenceService } from '../../../services/presence.service';
 import { DEFAULT_AVATAR_PATH, resolveAvatarPath } from '../../../services/registration.service';
 import { UserService } from '../../../services/user.service';
 import { ProfileDialogComponent } from '../../profile/profile-dialog/profile-dialog.component';
@@ -63,6 +64,8 @@ export class WorkspaceMenuComponent {
   protected readonly isSearchOpen = signal(false);
 
   protected readonly isMobile = inject(LayoutService).isMobile;
+
+  protected readonly presenceService = inject(PresenceService);
 
   protected readonly self = computed(() => this.buildSelfEntry());
 

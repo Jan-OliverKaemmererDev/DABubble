@@ -18,4 +18,6 @@ export interface UserDoc {
   avatarPath: string;
   /** Creation time; serverTimestamp() sentinel on write, Timestamp on read. */
   createdAt: Timestamp | FieldValue;
+  /** Last presence heartbeat; serverTimestamp() on write, Timestamp on read. */
+  lastActive?: Timestamp | FieldValue;
 }

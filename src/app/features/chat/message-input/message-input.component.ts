@@ -14,8 +14,8 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { AuthService } from '../../../services/auth.service';
 import { ChannelService } from '../../../services/channel.service';
+import { PresenceService } from '../../../services/presence.service';
 import { resolveAvatarPath } from '../../../services/registration.service';
 import { UserService } from '../../../services/user.service';
 import { parseMentions } from '../mention-parser';
@@ -62,7 +62,7 @@ export class MessageInputComponent {
 
   private readonly channelService = inject(ChannelService);
 
-  private readonly authService = inject(AuthService);
+  private readonly presenceService = inject(PresenceService);
 
   private readonly textarea = viewChild.required<ElementRef<HTMLTextAreaElement>>('textarea');
 
@@ -279,12 +279,10 @@ export class MessageInputComponent {
 
 
   /**
-   * Builds the "@" member suggestions; the signed-in user is shown online and
-   * everyone else offline, matching the presence convention of the member list.
+   * Builds the "@" member suggestions, tagging each row with live presence.
    * @param query Lowercased text typed after the trigger.
    */
   private userSuggestions(query: string): Suggestion[] {
-    const currentUid = this.authService.currentUser()?.uid;
     return this.userService
       .users()
       .filter(user => user.name.toLowerCase().includes(query))
@@ -292,7 +290,7 @@ export class MessageInputComponent {
         id: user.uid,
         label: user.name,
         avatar: avatarUrl(user.avatarPath),
-        online: user.uid === currentUid,
+        online: this.presenceService.isOnline(user.uid),
       }));
   }
 }

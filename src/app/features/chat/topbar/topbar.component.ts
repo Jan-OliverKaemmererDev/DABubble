@@ -9,6 +9,7 @@ import { filter, map } from 'rxjs';
 
 import { AuthService } from '../../../services/auth.service';
 import { LayoutService } from '../../../services/layout.service';
+import { PresenceService } from '../../../services/presence.service';
 import { ThreadService } from '../../../services/thread.service';
 import { DEFAULT_AVATAR_PATH, resolveAvatarPath } from '../../../services/registration.service';
 import { UserService } from '../../../services/user.service';
@@ -46,6 +47,8 @@ export class TopbarComponent {
   private readonly router = inject(Router);
 
   private readonly layoutService = inject(LayoutService);
+
+  private readonly presenceService = inject(PresenceService);
 
   private readonly threadService = inject(ThreadService);
 
@@ -140,6 +143,7 @@ export class TopbarComponent {
    */
   protected async logout(): Promise<void> {
     this.state.set('closed');
+    await this.presenceService.markOffline();
     await this.authService.logout();
     this.router.navigate(['/auth/login']);
   }

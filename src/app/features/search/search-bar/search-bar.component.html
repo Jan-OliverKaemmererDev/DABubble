@@ -56,7 +56,7 @@
                 <img class="search-bar__avatar" [src]="avatarSrc(hit)" alt="" aria-hidden="true" />
                 <span
                   class="search-bar__status"
-                  [class.search-bar__status--offline]="hit.uid !== currentUid()"
+                  [class.search-bar__status--offline]="!presenceService.isOnline(hit.uid)"
                   aria-hidden="true"
                 ></span>
               </span>

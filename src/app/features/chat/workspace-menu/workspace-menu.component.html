@@ -113,7 +113,11 @@
             >
               <span class="workspace__avatar-wrap">
                 <img class="workspace__avatar" [src]="selfEntry.avatar" alt="" aria-hidden="true" />
-                <span class="workspace__status" aria-hidden="true"></span>
+                <span
+                  class="workspace__status"
+                  [class.workspace__status--offline]="!presenceService.isOnline(selfEntry.uid)"
+                  aria-hidden="true"
+                ></span>
               </span>
               {{ selfEntry.name }}
             </a>
@@ -130,7 +134,11 @@
             >
               <span class="workspace__avatar-wrap">
                 <img class="workspace__avatar" [src]="avatarSrc(user.avatarPath)" alt="" aria-hidden="true" />
-                <span class="workspace__status workspace__status--offline" aria-hidden="true"></span>
+                <span
+                  class="workspace__status"
+                  [class.workspace__status--offline]="!presenceService.isOnline(user.uid)"
+                  aria-hidden="true"
+                ></span>
               </span>
               {{ user.name }}
             </a>

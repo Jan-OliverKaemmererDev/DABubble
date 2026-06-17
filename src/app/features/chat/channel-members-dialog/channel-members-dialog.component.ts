@@ -7,6 +7,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, output } f
 import { Channel } from '../../../models/channel.model';
 import { UserDoc } from '../../../models/user.model';
 import { AuthService } from '../../../services/auth.service';
+import { PresenceService } from '../../../services/presence.service';
 import { resolveAvatarPath } from '../../../services/registration.service';
 import { UserService } from '../../../services/user.service';
 import {
@@ -50,6 +51,8 @@ export class ChannelMembersDialogComponent {
   private readonly userService = inject(UserService);
 
   private readonly authService = inject(AuthService);
+
+  protected readonly presenceService = inject(PresenceService);
 
   protected readonly members = computed(() => this.resolveMembers());
 

@@ -10,6 +10,7 @@ import { UserDoc } from '../../../models/user.model';
 import { AuthService } from '../../../services/auth.service';
 import { ChannelService } from '../../../services/channel.service';
 import { LayoutService } from '../../../services/layout.service';
+import { PresenceService } from '../../../services/presence.service';
 import { resolveAvatarPath } from '../../../services/registration.service';
 import { ToastService } from '../../../services/toast.service';
 import { UserService } from '../../../services/user.service';
@@ -62,6 +63,8 @@ export class ChannelSettingsDialogComponent {
   private readonly userService = inject(UserService);
 
   private readonly authService = inject(AuthService);
+
+  protected readonly presenceService = inject(PresenceService);
 
   private readonly layoutService = inject(LayoutService);
 

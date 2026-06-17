@@ -104,8 +104,16 @@
               [attr.aria-label]="'Profil von ' + member.name + ' anzeigen'"
               (click)="memberSelected.emit(member.uid)"
             >
-              <img class="settings__member-avatar" [src]="member.avatar" alt="" aria-hidden="true" />
+              <span class="settings__member-avatar-wrap">
+                <img class="settings__member-avatar" [src]="member.avatar" alt="" aria-hidden="true" />
+                <span
+                  class="settings__member-status"
+                  [class.settings__member-status--offline]="!presenceService.isOnline(member.uid)"
+                  aria-hidden="true"
+                ></span>
+              </span>
               {{ member.name }}
+              <span class="sr-only">{{ presenceService.isOnline(member.uid) ? 'online' : 'offline' }}</span>
             </button>
           </li>
         }
