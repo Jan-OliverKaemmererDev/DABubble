@@ -42,11 +42,11 @@
     color: v.color('primary');
 
     .channel__title-icon {
-      content: url('../../../../../public/icons/tag-hover.svg');
+      content: url('../../../../../public/app-icons/tag-hover.svg');
     }
 
     .channel__caret {
-      content: url('../../../../../public/icons/arrow-down-hover.svg');
+      content: url('../../../../../public/app-icons/arrow-down-hover.svg');
     }
   }
 }
@@ -118,7 +118,7 @@
 
   &:hover {
     img {
-      content: url('../../../../../public/icons/add-person-hover.svg');
+      content: url('../../../../../public/app-icons/add-person-hover.svg');
     }
   }
 
