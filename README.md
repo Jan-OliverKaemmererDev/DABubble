@@ -8,8 +8,7 @@ reactions, mentions and global search, with real-time updates across clients.
 
 ## Live demo
 
-- **Firebase Hosting:** https://dabubble-b918d.web.app
-- **Developer Akademie:** https://yannick-oetelshoven.developerakademie.net/da-bubble/browser/
+- **Portfolio App:** https://dabubble.jan-oliver-kaemmerer.de/
 
 > Try it without an account via the **Guest login** on the sign-in screen.
 
