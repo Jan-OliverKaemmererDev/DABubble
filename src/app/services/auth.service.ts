@@ -136,7 +136,10 @@ export class AuthService {
    * @param email Address entered on the forgot-password screen.
    */
   sendPasswordReset(email: string): Promise<void> {
-    const settings = { url: document.baseURI };
+    const settings = { 
+      url: 'https://dabubble.jan-oliver-kaemmerer.de/#/auth/login',
+      handleCodeInApp: true
+    };
     return this.inContext(() => sendPasswordResetEmail(this.auth, email, settings));
   }
 
