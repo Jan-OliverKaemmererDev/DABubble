@@ -22,6 +22,12 @@
     aria-modal="true"
     [attr.aria-labelledby]="labelledBy()"
     (keydown.tab)="trapFocus($event)"
+    (touchstart)="onTouchStart($event)"
+    (touchmove)="onTouchMove($event)"
+    (touchend)="onTouchEnd()"
+    [style.animation]="hasInteracted() ? 'none' : null"
+    [style.transform]="dragTransform()"
+    [style.transition]="dragTransition()"
   >
     <ng-content />
   </section>

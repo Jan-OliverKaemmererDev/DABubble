@@ -8,8 +8,10 @@ import {
   Component,
   ElementRef,
   OnDestroy,
+  computed,
   input,
   output,
+  signal,
   viewChild,
 } from '@angular/core';
 
@@ -82,6 +84,21 @@ export class DialogShellComponent implements AfterViewInit, OnDestroy {
 
   private readonly card = viewChild.required<ElementRef<HTMLElement>>('card');
 
+  protected readonly dragY = signal(0);
+  protected readonly isDragging = signal(false);
+  protected readonly hasInteracted = signal(false);
+
+  protected readonly dragTransform = computed(() => {
+    const y = this.dragY();
+    return y > 0 ? `translateY(${y}px)` : null;
+  });
+
+  protected readonly dragTransition = computed(() => {
+    return this.isDragging() ? 'none' : 'transform 200ms ease';
+  });
+
+  private touchStartY = 0;
+
 
   /**
    * Focuses the first focusable element once the dialog is rendered.
@@ -135,6 +152,55 @@ export class DialogShellComponent implements AfterViewInit, OnDestroy {
     } else if (!event.shiftKey && document.activeElement === last) {
       event.preventDefault();
       first.focus();
+    }
+  }
+
+
+  /**
+   * Initializes the swipe-to-close gesture on mobile viewports.
+   */
+  protected onTouchStart(event: TouchEvent): void {
+    if (window.innerWidth > 992) return;
+    if (this.card().nativeElement.scrollTop > 0) return;
+
+    this.hasInteracted.set(true);
+    this.touchStartY = event.touches[0].clientY;
+    this.isDragging.set(true);
+  }
+
+
+  /**
+   * Updates the sheet position during a drag gesture.
+   */
+  protected onTouchMove(event: TouchEvent): void {
+    if (!this.isDragging()) return;
+
+    const currentY = event.touches[0].clientY;
+    const deltaY = currentY - this.touchStartY;
+
+    if (deltaY > 0) {
+      this.dragY.set(deltaY);
+      if (event.cancelable) {
+        event.preventDefault();
+      }
+    } else {
+      this.dragY.set(0);
+    }
+  }
+
+
+  /**
+   * Evaluates the drag gesture to close or snap back the sheet.
+   */
+  protected onTouchEnd(): void {
+    if (!this.isDragging()) return;
+    this.isDragging.set(false);
+
+    if (this.dragY() > 100) {
+      this.dragY.set(window.innerHeight);
+      setTimeout(() => this.closed.emit(), 200);
+    } else {
+      this.dragY.set(0);
     }
   }
 
