@@ -210,6 +210,17 @@ export class ChannelService {
 
 
   /**
+   * Deletes a channel and all its messages completely.
+   * The default channel is never deleted.
+   * @param channel Channel to delete.
+   */
+  async deleteChannel(channel: Channel): Promise<void> {
+    if (this.isDefaultChannel(channel)) return;
+    return this.deleteChannelDeep(channel.id);
+  }
+
+
+  /**
    * Reports whether a channel is the permanent default channel, which must
    * never be deleted (matched by its fixed id or the isDefault flag).
    * @param channel Channel under consideration.

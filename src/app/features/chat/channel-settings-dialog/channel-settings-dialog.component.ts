@@ -23,6 +23,7 @@ const NAME_REQUIRED_ERROR = 'Bitte gib einen Channel-Namen ein.';
 const NAME_DUPLICATE_ERROR = 'Ein Channel mit diesem Namen existiert bereits.';
 const SAVE_ERROR = 'Die Änderung konnte nicht gespeichert werden.';
 const LEAVE_ERROR = 'Der Channel konnte nicht verlassen werden.';
+const DELETE_ERROR = 'Der Channel konnte nicht gelöscht werden.';
 const UNKNOWN_CREATOR = 'Unbekannt';
 const SELF_SUFFIX = ' (Du)';
 
@@ -87,6 +88,10 @@ export class ChannelSettingsDialogComponent {
   protected readonly isMobile = this.layoutService.isMobile;
 
   protected readonly hasCreator = computed(() => Boolean(this.channel().createdBy));
+
+  protected readonly isCreator = computed(
+    () => this.channel().createdBy === this.authService.currentUser()?.uid
+  );
 
   protected readonly members = computed(() => this.resolveMembers());
 
@@ -169,6 +174,22 @@ export class ChannelSettingsDialogComponent {
       await this.router.navigate(['/app']);
     } catch {
       this.toastService.show(LEAVE_ERROR);
+      this.isPending.set(false);
+    }
+  }
+
+
+  /**
+   * Deletes the channel completely and returns to the default channel route.
+   */
+  protected async deleteChannel(): Promise<void> {
+    this.isPending.set(true);
+    try {
+      await this.channelService.deleteChannel(this.channel());
+      this.closed.emit();
+      await this.router.navigate(['/app']);
+    } catch {
+      this.toastService.show(DELETE_ERROR);
       this.isPending.set(false);
     }
   }

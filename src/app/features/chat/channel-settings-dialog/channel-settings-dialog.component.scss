@@ -81,6 +81,11 @@
 .settings__actions {
   display: flex;
   justify-content: flex-end;
+  gap: v.space('md');
+
+  @include m.respond-md {
+    flex-direction: column-reverse;
+  }
 }
 
 .settings__icon-btn {

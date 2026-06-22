@@ -126,6 +126,11 @@
   }
 
   <footer class="settings__actions">
+    @if (isCreator()) {
+      <button class="btn btn-secondary" type="button" [disabled]="isPending()" (click)="deleteChannel()">
+        Channel löschen
+      </button>
+    }
     <button class="btn btn-primary" type="button" [disabled]="isPending()" (click)="leave()">
       Channel verlassen
     </button>
